@@ -1,8 +1,9 @@
+
+#include "functions.h"
+
 #include <stdio.h>
-
-
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h> 	//for close()
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -11,8 +12,11 @@
 #include <netinet/in.h>
 #include <net/if.h>
 
-
-
+ 
+// Function Name	get_paddr(ifname)
+// Description		get ip address from ifname
+// Return value		char* ipaddr_string
+// Arguments		ifname->  interface name
 char* get_paddr(const char* ifname){
 	int sockd;
 	struct ifreq ifr;
@@ -37,7 +41,10 @@ char* get_paddr(const char* ifname){
 }
 
 
-
+// Function Name	get_haddr(ifname)
+// Description		get MAC address from ifname
+// Return Value		u_char* (u_char[6]) address
+// Arguments		ifname->	interface name
 u_char* get_haddr( const char* ifname){
 	static u_char *haddr;
 	int sockd;
@@ -64,14 +71,4 @@ u_char* get_haddr( const char* ifname){
 
 
 
-int main(){
-	char* str = get_paddr("eth0");
-	printf("%s\n", str);
-	
-	u_char* strs = get_haddr("eth0");
-	for(int i=0; i<6; i++)	printf("%02X:", strs[i]);
-	printf("\n");
-
-	return 0;
-}
 
