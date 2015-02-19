@@ -16,7 +16,7 @@
 // Description		get ip address from ifname
 // Return value		char* ipaddr_string
 // Arguments		ifname->  interface name
-char* get_paddr(const char* ifname){//[[[
+char* get_paddr(const char* ifname){
 	int sockd;
 	struct ifreq ifr;
 	struct sockaddr_in *sa;
@@ -37,14 +37,14 @@ char* get_paddr(const char* ifname){//[[[
 
 	ipstr = inet_ntoa(sa->sin_addr);
 	return ipstr;
-}//]]]
+}
 
 
 // Function Name	get_haddr(ifname)
 // Description		get MAC address from ifname
 // Return Value		u_char* (u_char[6]) address
 // Arguments		ifname->	interface name
-u _char* get_haddr( const char* ifname){//[[[
+u _char* get_haddr( const char* ifname){
 	static u_char *haddr;
 	int sockd;
 	struct ifreq ifr;	//<net/if.h>
@@ -66,7 +66,7 @@ u _char* get_haddr( const char* ifname){//[[[
 		haddr[i] = (unsigned char)ifr.ifr_hwaddr.sa_data[i];
 
 	return haddr;
-}//]]]
+}
 
 
 
