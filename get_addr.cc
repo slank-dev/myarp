@@ -1,15 +1,6 @@
 #include <stdio.h>
 
 
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>		//for close()
-#include <net/if.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/ioctl.h>
-#include <netinet/in.h>
-
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> 	//for close()
@@ -19,6 +10,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <net/if.h>
+
+
 
 char* get_paddr(const char* ifname){
 	int sockd;
@@ -42,7 +35,6 @@ char* get_paddr(const char* ifname){
 	ipstr = inet_ntoa(sa->sin_addr);
 	return ipstr;
 }
-
 
 
 
@@ -82,3 +74,4 @@ int main(){
 
 	return 0;
 }
+
