@@ -1,5 +1,4 @@
 
-//#include "functions.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -23,7 +22,7 @@ char* get_paddr(const char* ifname){
 	struct sockaddr_in *sa;
 	char* ipstr;
 
-	if((sockd=socket(AF_INET, SOCK_DGRAM, 0)) < 0){
+	if ((sockd=socket(AF_INET, SOCK_DGRAM, 0)) < 0){
 		perror("socket()!");
 		exit(-1);
 	}
@@ -52,7 +51,7 @@ u_char* get_haddr( const char* ifname){
 
 	haddr = (u_char*)malloc(sizeof(u_char)*6);
 
-	if((sockd=socket(AF_INET,SOCK_DGRAM,0)) < 0){
+	if ((sockd=socket(AF_INET,SOCK_DGRAM,0)) < 0){
 		perror("socket()!");
 		exit(-1);
 	}
@@ -63,7 +62,8 @@ u_char* get_haddr( const char* ifname){
 	ioctl(sockd, SIOCGIFHWADDR, &ifr);
 	close(sockd);
 	
-	for(int i=0; i<6; i++)	haddr[i] = (unsigned char)ifr.ifr_hwaddr.sa_data[i];
+	for(int i=0; i<6; i++)	
+		haddr[i] = (unsigned char)ifr.ifr_hwaddr.sa_data[i];
 
 	return haddr;
 }
