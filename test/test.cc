@@ -3,47 +3,52 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "functions.h"
-#include "head.h"
-
 #include <net/ethernet.h>
 #include <net/if_arp.h>
 #include <netinet/if_ether.h>
 #include <unistd.h>	//for write()
 
-
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <net/if.h>
 
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
 
 
+typedef struct{
+	struct ether_header ethh;
+	struct ether_arp 	arp;
+}PACK_ARP;
 
 void send_arp_request(const u_int32_t  ipaddr, const char* ifname){
-	struct PACK_ARP{
-		struct ether_header ethh;
-		struct ether_arp 	arp;
-	};
-	union lc{
-		unsigned long l;
-		u_char	c[4];
-	};
-	
-	
 	int sock;
 	struct sockaddr sa;
 
-	struct PACK_ARP 	arp;
-	union lc lc1, lc2;
-	
+	PACK_ARP 	arp;
 	u_char 		*p;
 	u_char		buf[sizeof(struct ether_header)+sizeof(struct ether_arp)];
 	int 		total;
 	
+	union lc{
+		unsigned long l;
+		u_char	c[4];
+	};
+	lc lc1, lc2;
+	
+	
+	int len = sizeof(struct ether_header) + sizeof(struct ether_arp);
 	const u_int32_t myip = inet_addr("192.168.179.8");
 	const u_char mymac[6] = {0xcc,0xe1,0xd5,0x15,0x17,0xb5};
 	const u_char mac_bcast[6] = {0xff,0xff,0xff,0xff,0xff,0xff};
 	
 
-	
 	
 	if((sock=socket(PF_PACKET, SOCK_PACKET, htons(ETH_P_ARP)))<0){
 		perror("socket()!!");
@@ -113,13 +118,10 @@ void send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 }
 
 
-
-
 int main(){
 	u_int32_t ip = inet_addr("192.168.179.4");
-
-	deb;
 	send_arp_request(ip, "wlan0");
-
+	
+	deb;
 	return 0;
 }
