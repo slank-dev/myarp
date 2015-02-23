@@ -1,2 +1,7 @@
 # send_pack
-arp command by slank
+arp command for linux from slank
+
+## instration
+	$ make
+	$ sudo ./main [target ip address] [interface]
+	$ make clean
