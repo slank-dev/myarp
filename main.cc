@@ -36,13 +36,10 @@ int recv_arp_reply(const u_int32_t ipaddr,
 
 
 
-
 	if((sock=socket(PF_PACKET, SOCK_PACKET, htons(ETH_P_ARP)))<0){
 		perror("recv_socket");
 		return -1;
 	}
-
-	//printf("recv socket handle: %d\n", sock);
 
 	memset(&sa, 0, sizeof(sa));
 	sa.sa_family = PF_PACKET;
@@ -63,16 +60,13 @@ int recv_arp_reply(const u_int32_t ipaddr,
 			perror("recv_recvfrom");
 			return -1;
 		}
-		//printf("recv!!!\n");
-		
+
 
 		//open packet to ethp and arpp
 		ethp = (struct ether_header*)p;
 		p += sizeof(struct ether_header);
 		arpp = (struct ether_arp*)p;
 
-
-		//if arp reply from target then return 1 and print info
 		
 		//check packet's header
 		if(ethp->ether_type==htons(ETHERTYPE_ARP) &&
@@ -85,14 +79,10 @@ int recv_arp_reply(const u_int32_t ipaddr,
 				}
 			}
 				
-
-			for(int i=0; i<6; i++){
+			for(int i=0; i<6; i++)
 				macaddr[i] = arpp->arp_sha[i];
 
-				//printf("%2x", arpp->arp_sha[i]);
-				//if(i==5)	printf("\n");
-				//else		printf(":");
-			}
+
 			return 1;
 		}
 	}
@@ -185,16 +175,6 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 		return -1;
 	}
 	close(sock);
-	
-
-	//print info
-	//printf("- Arp packet was sent to target(");
-	//for(int i=0; i<4; i++){
-	//	printf("%d", arp.arp.arp_tpa[i]);
-	//	if(i!=3)	printf(".");
-	//	else		printf(") on %5s\n", ifname);
-	//}
-
 
 	return 1;
 }
