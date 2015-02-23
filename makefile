@@ -2,7 +2,7 @@
 
 program = main
 
-SRC = main.cc get_addr.cc 
+SRC = main.cc get_addr.cc arp.cc
 OBJ = $(SRC:.cc=.o)
 CFLAGS = -Wall
 CPP = g++ 

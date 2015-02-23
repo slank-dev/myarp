@@ -15,3 +15,8 @@
 
 char* get_paddr(const char* ifname);
 void  get_haddr( const char* ifname, u_char haddr[6]);
+
+
+int send_arp_request(const u_int32_t  ipaddr, const char* ifname);
+int recv_arp_reply(const u_int32_t ipaddr, 
+				const char* ifname, u_char macaddr[6]);
