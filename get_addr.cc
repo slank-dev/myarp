@@ -44,12 +44,11 @@ char* get_paddr(const char* ifname){
 // Description		get MAC address from ifname
 // Return Value		u_char* (u_char[6]) address
 // Arguments		ifname->	interface name
-u_char* get_haddr( const char* ifname){
-	static u_char *haddr;
+void get_haddr( const char* ifname, u_char haddr[6]){
 	int sockd;
 	struct ifreq ifr;	//<net/if.h>
 
-	haddr = (u_char*)malloc(sizeof(u_char)*6);
+	//haddr = (u_char*)malloc(sizeof(u_char)*6);
 
 	if ((sockd=socket(AF_INET,SOCK_DGRAM,0)) < 0){
 		perror("socket()!");
@@ -65,7 +64,7 @@ u_char* get_haddr( const char* ifname){
 	for(int i=0; i<6; i++)	
 		haddr[i] = (unsigned char)ifr.ifr_hwaddr.sa_data[i];
 
-	return haddr;
+//	return haddr;
 }
 
 

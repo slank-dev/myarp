@@ -14,4 +14,4 @@
 
 
 char* get_paddr(const char* ifname);
-u_char* get_haddr( const char* ifname);
+void  get_haddr( const char* ifname, u_char haddr[6]);

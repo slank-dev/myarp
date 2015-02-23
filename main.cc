@@ -38,9 +38,11 @@ void send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 	u_char		buf[sizeof(struct ether_header)+sizeof(struct ether_arp)];
 	int 		total;
 	
-	const u_int32_t myip = inet_addr("192.168.179.8");
-	const u_char mymac[6] = {0xcc,0xe1,0xd5,0x15,0x17,0xb5};
+	const u_int32_t myip = inet_addr(get_paddr(ifname));
 	const u_char mac_bcast[6] = {0xff,0xff,0xff,0xff,0xff,0xff};
+	//const u_char mymac[6] = {0xcc,0xe1,0xd5,0x15,0x17,0xb5};
+	u_char mymac[6];
+	get_haddr(ifname, mymac);
 	
 
 	
@@ -103,23 +105,28 @@ void send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 	p += sizeof(struct ether_arp);
 	total = p-buf;
 
-	while(1){
+	for(int i=1; i<=10; i++){
 		if((sendto(sock, buf, total, 0, &sa, sizeof(sa)))<0){
 			perror("write()!!");
 			exit(-1);
 		}
-		printf("  - arp sent to target\n");
+		printf("  - arp sent to target (%d)\n", i);
 	}
 }
 
 
 
 
-int main(){
-	u_int32_t ip = inet_addr("192.168.179.4");
+int main(int argc, char **argv){
+	if(argc < 3){
+		printf("usage: %s [ip address] [interface] \n", argv[0]);
+		exit(-1);
+	}
+
+	u_int32_t ip = inet_addr(argv[1]);
 
 	deb;
-	send_arp_request(ip, "wlan0");
+	send_arp_request(ip, argv[2]);
 
 	return 0;
 }
