@@ -1,6 +1,6 @@
 #makefile
 
-program = main
+program = myarp.out
 
 SRC = main.cc get_addr.cc arp.cc
 OBJ = $(SRC:.cc=.o)
@@ -14,4 +14,4 @@ $(program): $(OBJ)
 
 
 clean:
-	rm *.o $(program)
+	rm *.o *.out
