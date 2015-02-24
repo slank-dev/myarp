@@ -110,7 +110,7 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 int recv_arp_reply(const u_int32_t ipaddr, 
 				const char* ifname, u_char macaddr[6]){
 // default timeout is 0.5 sec
-
+	
 
 	union lc{
 		unsigned long l;
@@ -133,6 +133,19 @@ int recv_arp_reply(const u_int32_t ipaddr,
 	fd_set readfds;
 	fd_set fds;
 	struct timeval timeout;
+	
+	
+	// if arp to mine
+	if(ipaddr == myip){
+		get_haddr(ifname, macaddr);
+		return 1;
+	}
+
+
+
+
+	// endif
+
 
 
 	if((sock=socket(PF_PACKET, SOCK_PACKET, htons(ETH_P_ARP)))<0){
