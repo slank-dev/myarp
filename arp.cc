@@ -7,8 +7,12 @@
 #include <net/if_arp.h>
 #include <netinet/if_ether.h>
 
-#include "functions.h"
+//for timeout function
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
+#include "functions.h"
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
 
 
@@ -77,8 +81,6 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 		arp.ethh.ether_shost[i]=mymac[i];
 	}
 	arp.ethh.ether_type = htons(ETHERTYPE_ARP);
-
-
 	
 	//make final packet 
 	memset(buf, 0, sizeof(buf));
@@ -105,7 +107,9 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 
 int recv_arp_reply(const u_int32_t ipaddr, 
 				const char* ifname, u_char macaddr[6]){
-	
+// default timeout is 1.0 sec
+
+
 	union lc{
 		unsigned long l;
 		u_char c[4];
@@ -124,6 +128,9 @@ int recv_arp_reply(const u_int32_t ipaddr,
 	u_char mymac[6];
 	get_haddr(ifname, mymac);
 
+	fd_set readfds;
+	fd_set fds;
+	struct timeval timeout;
 
 
 	if((sock=socket(PF_PACKET, SOCK_PACKET, htons(ETH_P_ARP)))<0){
@@ -137,40 +144,48 @@ int recv_arp_reply(const u_int32_t ipaddr,
 	
 	if(bind(sock, &sa, sizeof(sa)) < 0){
 		perror("recv_bind");
+		close(sock);
 		return -1;
 	}
 
+	timeout.tv_sec = 1;			// 1 sec
+	timeout.tv_usec = 00000;	// 00000 micro sec
+	FD_ZERO(&readfds);
+	FD_SET(sock, &readfds);	
+	
 	while(1){
 		p = buf;
+		memset(buf, 0, sizeof(buf));		
+		memcpy(&fds, &readfds, sizeof(fd_set));
 
-		memset(buf, 0, sizeof(buf));
-		
-		if((total = recvfrom(sock, buf, sizeof(buf), 
-						0, &sa, (unsigned int*)&len_sa)) < 0){
-			perror("recv_recvfrom");
+		if(select(sock+1, &fds, NULL, NULL, &timeout)==0){
+			fprintf(stderr, "select timeout: target may be down\n");
+			close(sock);
 			return -1;
 		}
-
-
-		//open packet to ethp and arpp
-		ethp = (struct ether_header*)p;
-		p += sizeof(struct ether_header);
-		arpp = (struct ether_arp*)p;
-
 		
-		//check packet's header
-		if(ethp->ether_type==htons(ETHERTYPE_ARP) &&
-				arpp->arp_op==htons(ARPOP_REPLY) ){
-			for(int i=0; i<6; i++){
-				if(arpp->arp_tha[i] != mymac[i]){
-					printf("recved arp packet is not for me\n");
-					continue;	
-				}
-			}				
-			for(int i=0; i<6; i++)
-				macaddr[i] = arpp->arp_sha[i];
+		if(FD_ISSET(sock, &fds)){
+			total = recvfrom(sock, buf, sizeof(buf), 0, &sa, (unsigned int*)&len_sa);
+			
+			//open packet to ethp and arpp
+			ethp = (struct ether_header*)p;
+			p += sizeof(struct ether_header);
+			arpp = (struct ether_arp*)p;
+			
+			//check packet's header
+			if(ethp->ether_type==htons(ETHERTYPE_ARP) &&
+					arpp->arp_op==htons(ARPOP_REPLY) ){
+				for(int i=0; i<6; i++){
+					if(arpp->arp_tha[i] != mymac[i]){
+						printf("recved arp packet is not for me\n");
+						continue;	
+					}
+				}				
+				for(int i=0; i<6; i++)
+					macaddr[i] = arpp->arp_sha[i];
 
-			return 1;
+				return 1;
+			}
 		}
 	}
 }
