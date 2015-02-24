@@ -109,7 +109,7 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 
 int recv_arp_reply(const u_int32_t ipaddr, 
 				const char* ifname, u_char macaddr[6]){
-// default timeout is 1.0 sec
+// default timeout is 0.5 sec
 
 
 	union lc{
@@ -150,8 +150,8 @@ int recv_arp_reply(const u_int32_t ipaddr,
 		return -1;
 	}
 
-	timeout.tv_sec = 1;			// 1 sec
-	timeout.tv_usec = 00000;	// 00000 micro sec
+	timeout.tv_sec = 0;			// 1 sec
+	timeout.tv_usec = 500000;	// 500000 micro sec
 	FD_ZERO(&readfds);
 	FD_SET(sock, &readfds);	
 	
