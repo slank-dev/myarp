@@ -27,10 +27,7 @@ int main(int argc, char** argv){
 	char bender_name[256];
 	int live_count;
 
-
-/*	for(int i=0 ;i<addr_count; i++){
-		print_ipaddr(&alladdr[i]);
-	}*/
+	
 
 	for(int i=0; i<addr_count; i++){
 		memset(macaddr, 0, sizeof(macaddr));

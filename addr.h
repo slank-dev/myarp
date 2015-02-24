@@ -30,5 +30,6 @@ void count_next_addr(unsigned int *p);
 void print_ipaddr(unsigned int* addr);
 char* addrtostr(const unsigned int addr);
 int getclassbyaddr(unsigned int addr);
-int getaddrsinlan(const char *ifname, int size);
+int getaddrsinlan(const char *ifname, u_int32_t alladdr[], int size);
 
+void getbenderbymac(const u_char data[6], char* bender);

@@ -28,11 +28,11 @@ void count_next_addr(unsigned int *p);
 void print_ipaddr(unsigned int* addr);
 char* addrtostr(const unsigned int addr);
 int getclassbyaddr(unsigned int addr);
-int getaddrsinlan(const char *ifname, int size);
+int getaddrsinlan(const char *ifname,  u_int32_t alladdr[], int size);
 
 void getbenderbymac(const u_char data[6], char* bender);
 
-
+//[[[
 
 // Function Name	get_paddr(ifname)
 // Description		get ip address from ifname
@@ -137,9 +137,9 @@ int getclassbyaddr(unsigned int addr){
 	else 	return -1;	// error
 }
 
+//]]]
 
-
-int getaddrsinlan(const char* ifname, int size){
+int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 	u_int32_t myip = inet_addr(get_paddr(ifname));
 	
 	int addr_class_id = getclassbyaddr((unsigned int)myip);
@@ -166,47 +166,26 @@ int getaddrsinlan(const char* ifname, int size){
 	const u_int32_t endaddr = (u_int32_t)lc.l;
 	u_int32_t addr = startaddr;
 	
+	/*
 	printf("---scan-info------------------------\n");
 	printf("your ip : %s\n", addrtostr((unsigned int)myip));
 	printf("netmask : %s\n", addrtostr((unsigned int)mask[2]));
 	printf("start   : %s\n", addrtostr((unsigned int)startaddr));
 	printf("end(max): %s\n", addrtostr((unsigned int)endaddr));
 	printf("------------------------------------\n\n");
-	
+	*/
 	
 	u_char macaddr[6];
-	int count=0;
 	char bender_name[256];
-	if(size == 0)	size = 10000000;
-	for(int i=0; addr != endaddr && i<size; i++){
-		memset(macaddr, 0, sizeof(macaddr));
-		
-		send_arp_request(addr, ifname);
-
-		if(recv_arp_reply(addr, ifname, macaddr) != -999){
-			printf("%4d: %-16s\t", count+1, addrtostr((unsigned int)addr));
-			
-			for(int i=0; i<6; i++){
-				printf("%02x", macaddr[i]);
-				if(i<5)	printf(":");
-				else	printf("\t");
-			}
-			
-			getbenderbymac(macaddr, bender_name);
-			printf("%s\n", bender_name);
-
-			count++;
-		}
-					
-			
-
-
+	int count;
+	for(count=0; addr != endaddr && count<size; count++){
+		alladdr[count] = addr;
 		count_next_addr((unsigned int*)&addr);
 	}
 	return count;
 }
 
-
+//[[[
 
 void getbenderbymac(const u_char data[6], char* bender){
 	FILE *fp;
@@ -236,9 +215,10 @@ void getbenderbymac(const u_char data[6], char* bender){
 		memset(bender, 0, sizeof(bender));
 		memset(strbuf, 0, sizeof(strbuf));
 	}
-	strcpy(bender, "bender_name_not_found");
+	
+	strcpy(bender, "not-found");
 
 	fclose(fp);
 	
 	return;
-}
+}//]]]
