@@ -2,7 +2,7 @@
 
 program = myarp.out
 
-SRC = main.cc get_addr.cc arp.cc
+SRC = main.cc get_addr.cc arp.cc ipaddr.cc
 OBJ = $(SRC:.cc=.o)
 CFLAGS = -Wall
 CPP = g++ 
