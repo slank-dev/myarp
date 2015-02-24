@@ -12,7 +12,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include "functions.h"
+//#include "arp.h"
+#include "get_addr.h"
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
 
 

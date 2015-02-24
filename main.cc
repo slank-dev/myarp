@@ -7,8 +7,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include "functions.h"
 
+#include "arp.h"
 
 int main(int argc, char **argv){
 	if(argc < 3){
