@@ -28,44 +28,32 @@ int main(int argc, char** argv){
 	int live_count;
 
 
-
+	printf("Arp Scaning! \n");
+	printf(" ---------------------------------------------------------\n");
+	printf(" |    |   ip address    |    MAC address    |   bender   |\n");
+	printf(" |-------------------------------------------------------|\n");
 	for(int i=0; i<atoi(argv[2]); i++){
 		memset(macaddr, 0, sizeof(macaddr));
-
 		send_arp_request(alladdr[i], argv[1]);
 		if(recv_arp_reply(alladdr[i], argv[1], macaddr) != -999){
 			live_count++;
 			getbenderbymac(macaddr, bender_name);
 
-			printf("%4d: %-16s\t", live_count, 
+			printf(" | %2d | %-15s | ", live_count, 
 					addrtostr((unsigned int)alladdr[i]));
 			for(int i=0; i<6; i++){
 				printf("%02x", macaddr[i]);
 				if(i<5)	printf(":");
-				else	printf("\t");
+				else	printf(" | ");
 			}
-			printf("%s\n", bender_name);	
+			printf("%10s |\n", bender_name);	
 			continue;
 		}
 
-		memset(macaddr, 0, sizeof(macaddr));
 
-		send_arp_request(alladdr[i], argv[1]);
-		if(recv_arp_reply(alladdr[i], argv[1], macaddr) != -999){
-			live_count++;
-			getbenderbymac(macaddr, bender_name);
-
-			printf("%4d: %-16s\t", live_count, 
-					addrtostr((unsigned int)alladdr[i]));
-			for(int i=0; i<6; i++){
-				printf("%02x", macaddr[i]);
-				if(i<5)	printf(":");
-				else	printf("\t");
-			}
-			printf("%s\n", bender_name);	
-			continue;
-		}
 	}
+	printf(" ---------------------------------------------------------\n");
+	printf("%d devices are liveing\n", live_count);
 	
 
 }
