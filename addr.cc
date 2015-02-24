@@ -167,30 +167,33 @@ int getaddrsinlan(const char* ifname, int size){
 	u_int32_t addr = startaddr;
 	
 	printf("---scan-info------------------------\n");
-	printf("ipaddr : %s\n", addrtostr((unsigned int)myip));
-	printf("netmask: %s\n", addrtostr((unsigned int)mask[2]));
-	printf("start  : %s\n", addrtostr((unsigned int)startaddr));
-	printf("end    : %s\n", addrtostr((unsigned int)endaddr));
+	printf("your ip : %s\n", addrtostr((unsigned int)myip));
+	printf("netmask : %s\n", addrtostr((unsigned int)mask[2]));
+	printf("start   : %s\n", addrtostr((unsigned int)startaddr));
+	printf("end(max): %s\n", addrtostr((unsigned int)endaddr));
 	printf("------------------------------------\n\n");
 	
 	
 	u_char macaddr[6];
-	int count;
+	int count=0;
 	if(size == 0)	size = 10000000;
-	for(count=0; addr != endaddr && count<size; count++){
+	for(int i=0; addr != endaddr && i<size; i++){
 		memset(macaddr, 0, sizeof(macaddr));
 		
 		send_arp_request(addr, ifname);
-		recv_arp_reply(addr, ifname, macaddr);
 
-
-		printf("%4d: %-16s    ", count+1, addrtostr((unsigned int)addr));
-		
-		for(int i=0; i<6; i++){
-			printf("%02x", macaddr[i]);
-			if(i<5)	printf(":");
-			else	printf("\n");
+		if(recv_arp_reply(addr, ifname, macaddr) != -999){
+			printf("%4d: %-16s    ", count+1, addrtostr((unsigned int)addr));
+			
+			for(int i=0; i<6; i++){
+				printf("%02x", macaddr[i]);
+				if(i<5)	printf(":");
+				else	printf("\n");
+			}
+			count++;
 		}
+					
+			
 
 
 		count_next_addr((unsigned int*)&addr);

@@ -1,6 +1,6 @@
 #makefile
 
-program = myarp.out
+program = arpscan.out
 
 SRC = main.cc addr.cc arp.cc 
 OBJ = $(SRC:.cc=.o)
