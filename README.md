@@ -3,5 +3,5 @@ arp command for linux from slank
 
 ## instration
 	$ make
-	$ sudo ./main [target ip address] [interface]
+	$ sudo ./main  [interface] [max count]
 	$ make clean
