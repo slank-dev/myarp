@@ -12,20 +12,23 @@
 #include <netinet/in.h>
 #include <net/if.h>
 
-
-
-
-
-#include <arpa/inet.h>		//for main()
-#include <netinet/in.h>		//for main()
-
 #include <stdlib.h>
 #include <stdio.h>
-//#include "ipaddr.h"
-//#include "get_addr.h"
 
 #include "addr.h"
 
+#include "arp.h"
+
+
+
+char* get_paddr(const char* ifname);
+void  get_haddr( const char* ifname, u_char haddr[6]);
+
+void count_next_addr(unsigned int *p);
+void print_ipaddr(unsigned int* addr);
+char* addrtostr(const unsigned int addr);
+int getclassbyaddr(unsigned int addr);
+int getaddrsinlan(const char *ifname, int size);
 
 
 
@@ -59,6 +62,7 @@ char* get_paddr(const char* ifname){
 }
 
 
+
 // Function Name	get_haddr(ifname)
 // Description		get MAC address from ifname
 // Return Value		u_char* (u_char[6]) address
@@ -66,8 +70,6 @@ char* get_paddr(const char* ifname){
 void get_haddr( const char* ifname, u_char haddr[6]){
 	int sockd;
 	struct ifreq ifr;	//<net/if.h>
-
-	//haddr = (u_char*)malloc(sizeof(u_char)*6);
 
 	if ((sockd=socket(AF_INET,SOCK_DGRAM,0)) < 0){
 		perror("socket()!");
@@ -82,13 +84,7 @@ void get_haddr( const char* ifname, u_char haddr[6]){
 	
 	for(int i=0; i<6; i++)	
 		haddr[i] = (unsigned char)ifr.ifr_hwaddr.sa_data[i];
-
-//	return haddr;
 }
-
-
-
-
 
 
 
@@ -106,6 +102,8 @@ void count_next_addr(unsigned int *p){
 	}
 }
 
+
+
 void print_ipaddr( unsigned int* addr){
 	union lc *lc = (union lc*)addr;
 	for(int i=0; i<4; i++){
@@ -114,6 +112,8 @@ void print_ipaddr( unsigned int* addr){
 		else		printf("\n");
 	}
 }
+
+
 
 char* addrtostr(const unsigned int addr){
 	char *str;
@@ -125,6 +125,8 @@ char* addrtostr(const unsigned int addr){
 	return str;
 }
 
+
+
 int getclassbyaddr(unsigned int addr){
 	union lc lc;
 	lc.l = addr;
@@ -135,42 +137,64 @@ int getclassbyaddr(unsigned int addr){
 	else 	return -1;	// error
 }
 
+
+
 int getaddrsinlan(const char* ifname, int size){
-	int count;
 	u_int32_t myip = inet_addr(get_paddr(ifname));
+	
 	int addr_class_id = getclassbyaddr((unsigned int)myip);
 	if(addr_class_id < 0){
 		fprintf(stderr, "getclassbyaddr: address error \n");
 		return -1;
 	}
+
 	const u_int32_t mask[3] = {
 		inet_addr(IPMASK_CLASS_A),
 		inet_addr(IPMASK_CLASS_B),
-		inet_addr(IPMASK_CLASS_C)
+		inet_addr(IPMASK_CLASS_C)	
 	};
+
 	const u_int32_t startaddr = (mask[addr_class_id] & myip);
 	union lc lc;
 	lc.l = startaddr;
+	
 	for(int i=0; i<4; i++){
 		if(lc.c[i]==0)	lc.c[i]=255;	
 	}
 	count_next_addr((unsigned int*)&startaddr);
+	
 	const u_int32_t endaddr = (u_int32_t)lc.l;
 	u_int32_t addr = startaddr;
 	
-	/*
+	printf("---scan-info------------------------\n");
 	printf("ipaddr : %s\n", addrtostr((unsigned int)myip));
 	printf("netmask: %s\n", addrtostr((unsigned int)mask[2]));
 	printf("start  : %s\n", addrtostr((unsigned int)startaddr));
 	printf("end    : %s\n", addrtostr((unsigned int)endaddr));
-	*/
+	printf("------------------------------------\n\n");
+	
+	
+	u_char macaddr[6];
+	int count;
 	if(size == 0)	size = 10000000;
 	for(count=0; addr != endaddr && count<size; count++){
-		printf("%4d: ", count);
-		print_ipaddr((unsigned int*)&addr);
+		memset(macaddr, 0, sizeof(macaddr));
+		
+		send_arp_request(addr, ifname);
+		recv_arp_reply(addr, ifname, macaddr);
+
+
+		printf("%4d: %-16s    ", count+1, addrtostr((unsigned int)addr));
+		
+		for(int i=0; i<6; i++){
+			printf("%02x", macaddr[i]);
+			if(i<5)	printf(":");
+			else	printf("\n");
+		}
+
+
 		count_next_addr((unsigned int*)&addr);
 	}
 	return count;
-
 }
 

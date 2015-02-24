@@ -7,10 +7,28 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-
 #include "arp.h"
+#include "addr.h"
 
-int main(int argc, char **argv){
+
+int main(int argc, char** argv){
+	if(argc < 3){
+		printf("usage: %s [interface] [device_count]\n", argv[0]);
+		return -1;
+	}
+
+	int num = getaddrsinlan(argv[1], atoi(argv[2]));
+	
+	printf("\n");
+	printf("%d devices found in Local Area Network\n", num);
+
+	return 1;	
+}
+
+
+/*
+int main2(int argc, char **argv){
+	
 	if(argc < 3){
 		printf("usage: %s [ip address] [interface] \n", argv[0]);
 		exit(-1);
@@ -33,4 +51,4 @@ int main(int argc, char **argv){
 
 
 	return 0;
-}
+}*/

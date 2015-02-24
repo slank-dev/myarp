@@ -161,9 +161,9 @@ int recv_arp_reply(const u_int32_t ipaddr,
 		memcpy(&fds, &readfds, sizeof(fd_set));
 
 		if(select(sock+1, &fds, NULL, NULL, &timeout)==0){
-			fprintf(stderr, "select timeout: target may be down\n");
+			//fprintf(stderr, "select timeout: target may be down\n");
 			close(sock);
-			return -1;
+			return -999;
 		}
 		
 		if(FD_ISSET(sock, &fds)){
