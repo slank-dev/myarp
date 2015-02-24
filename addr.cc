@@ -30,7 +30,7 @@ char* addrtostr(const unsigned int addr);
 int getclassbyaddr(unsigned int addr);
 int getaddrsinlan(const char *ifname, int size);
 
-
+void getbenderbymac(const u_char data[6], char* bender);
 
 
 
@@ -176,6 +176,7 @@ int getaddrsinlan(const char* ifname, int size){
 	
 	u_char macaddr[6];
 	int count=0;
+	char bender_name[256];
 	if(size == 0)	size = 10000000;
 	for(int i=0; addr != endaddr && i<size; i++){
 		memset(macaddr, 0, sizeof(macaddr));
@@ -183,13 +184,17 @@ int getaddrsinlan(const char* ifname, int size){
 		send_arp_request(addr, ifname);
 
 		if(recv_arp_reply(addr, ifname, macaddr) != -999){
-			printf("%4d: %-16s    ", count+1, addrtostr((unsigned int)addr));
+			printf("%4d: %-16s\t", count+1, addrtostr((unsigned int)addr));
 			
 			for(int i=0; i<6; i++){
 				printf("%02x", macaddr[i]);
 				if(i<5)	printf(":");
-				else	printf("\n");
+				else	printf("\t");
 			}
+			
+			getbenderbymac(macaddr, bender_name);
+			printf("%s\n", bender_name);
+
 			count++;
 		}
 					
@@ -201,3 +206,39 @@ int getaddrsinlan(const char* ifname, int size){
 	return count;
 }
 
+
+
+void getbenderbymac(const u_char data[6], char* bender){
+	FILE *fp;
+	const char* filename = "mac_code.txt";
+	u_char dev_mac[3] = {data[0],data[1],data[2]};
+	
+
+	if((fp=fopen(filename, "r")) == NULL){
+		perror("getbenderbymac fopen");
+		strcpy(bender, "getbenderbymac error");
+		return;
+	}
+
+	char strbuf[256];
+	unsigned int  mac[3];
+
+	while(fgets(strbuf, sizeof(strbuf), fp) != NULL){
+		sscanf(strbuf, "%2x%2x%2x\t%s", &mac[0],&mac[1],&mac[2],bender);
+		
+		if(mac[0]==dev_mac[0]&&mac[1]==dev_mac[1]&&mac[2]==dev_mac[2]){
+			//printf("%02X:%02x:%02x (%s)\n",mac[0],mac[1],mac[2],bender);
+			return;
+		}
+
+
+		memset(mac, 0, sizeof(mac));
+		memset(bender, 0, sizeof(bender));
+		memset(strbuf, 0, sizeof(strbuf));
+	}
+	strcpy(bender, "bender_name_not_found");
+
+	fclose(fp);
+	
+	return;
+}
