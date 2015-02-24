@@ -4,8 +4,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "ipaddr.h"
-#include "get_addr.h"
+//#include "ipaddr.h"
+//#include "get_addr.h"
+
+#include "addr.h"
 
 
 void count_next_addr(unsigned int *p){

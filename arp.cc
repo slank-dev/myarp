@@ -13,7 +13,8 @@
 #include <netinet/in.h>
 
 //#include "arp.h"
-#include "get_addr.h"
+//#include "get_addr.h"
+#include "addr.h"
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
 
 
