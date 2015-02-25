@@ -46,6 +46,7 @@ union lc{
 
 
 char* get_paddr(const char* ifname);
+char* get_pmask(const char* ifname);
 void  get_haddr( const char* ifname, u_char haddr[6]);
 
 void count_next_addr(unsigned int *p);

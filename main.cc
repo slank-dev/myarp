@@ -32,7 +32,7 @@
 #include "arp.h"
 #include "addr.h"
 #include "scanLan.h"
-
+#include "debug.h"
 
 
 
@@ -40,15 +40,14 @@ enum{PROGNAME, IFNAME};
 
 
 int main(int argc, char** argv){
-	if(argc < 2){
-		printf("usage: %s [interface]\n", argv[PROGNAME]);
+	if(argc < 3){
+		printf("usage: %s [interface] [arg]\n", argv[PROGNAME]);
 		return -1;
 	}
 
 
-	//capture_main_loop(argv[IFNAME]);
-
-	send_ArpRequest_AllAddr(argv[IFNAME]);
+	if(atoi(argv[2]) == 0)	capture_main_loop(argv[IFNAME]);
+	else 					send_ArpRequest_AllAddr(argv[IFNAME]);
 }
 
 

@@ -30,12 +30,11 @@
 #include "arp.h"
 #include "addr.h"
 
-#define MAX_DEVICES 1000
-//#define DEBUG
-
 #include <pcap.h>
 #include <net/ethernet.h>
 #include <netinet/if_ether.h>
+
+#define MAX_DEVICES 1000
 
 int send_ArpRequest_AllAddr(const char* ifname){
 	// wait just moment	
@@ -79,7 +78,7 @@ void func(u_char *nouse, const struct pcap_pkthdr *header,
 		//printf("arp!!!\n");
 		
 		arp = (struct ether_arp*)packet;
-		if(arp->arp_op == ntohs(ARPOP_REQUEST)){
+		if(arp->arp_op == ntohs(ARPOP_REPLY)){
 			printf("arp-rep!!!\t");
 			
 			for(int i=0; i<4; i++){

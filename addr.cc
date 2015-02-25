@@ -38,28 +38,12 @@
 
 #include "addr.h"
 #include "arp.h"
+#include "debug.h"
 
-#define DEBUG
 
 
-/*
-char* get_paddr(const char* ifname);
-void  get_haddr( const char* ifname, u_char haddr[6]);
-
-void count_next_addr(unsigned int *p);
-void print_ipaddr(unsigned int* addr);
-char* addrtostr(const unsigned int addr);
-int getclassbyaddr(unsigned int addr);
-int getaddrsinlan(const char *ifname,  u_int32_t alladdr[], int size);
-
-void getbenderbymac(const u_char data[6], char* bender);
-*/
  
 
-// Function Name	get_paddr(ifname)
-// Description		get ip address from ifname
-// Return value		char* ipaddr_string
-// Arguments		ifname->  interface name
 char* get_paddr(const char* ifname){
 	int sockd;
 	struct ifreq ifr;
@@ -74,7 +58,6 @@ char* get_paddr(const char* ifname){
 	ifr.ifr_addr.sa_family = AF_INET;
 	strncpy(ifr.ifr_name, ifname, IFNAMSIZ-1);
 	ioctl(sockd, SIOCGIFADDR, &ifr);
-	
 	close(sockd);
 	
 	sa = (struct sockaddr_in*)&ifr.ifr_addr;
@@ -83,12 +66,30 @@ char* get_paddr(const char* ifname){
 	return ipstr;
 }
 
+char* get_pmask(const char* ifname){
+	int sockd;
+	struct ifreq ifr;
+	struct sockaddr_in *sa;
+	char* maskstr;
+
+	if((sockd=socket(AF_INET, SOCK_DGRAM, 0)) < 0){
+		perror("socket");
+		exit(-1);
+	}
+
+	ifr.ifr_addr.sa_family = AF_INET;
+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ-1);
+	ioctl(sockd, SIOCGIFNETMASK, &ifr);
+	close(sockd);
+
+	sa = (struct sockaddr_in*)&ifr.ifr_addr;
+	maskstr = inet_ntoa(sa->sin_addr);
+
+	return maskstr;
+}
 
 
-// Function Name	get_haddr(ifname)
-// Description		get MAC address from ifname
-// Return Value		u_char* (u_char[6]) address
-// Arguments		ifname->	interface name
+
 void get_haddr( const char* ifname, u_char haddr[6]){
 	int sockd;
 	struct ifreq ifr;
@@ -163,37 +164,25 @@ int getclassbyaddr(unsigned int addr){
 
 
 int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
-	u_int32_t myip = inet_addr(get_paddr(ifname));
+	const u_int32_t myip = inet_addr(get_paddr(ifname));
+	const u_int32_t mask = inet_addr(get_pmask(ifname));
+	u_int32_t startaddr = (mask & myip);
 	
-	int addr_class_id = getclassbyaddr((unsigned int)myip);
-	if(addr_class_id < 0){
-		fprintf(stderr, "getclassbyaddr: address error \n");
-		return -1;
-	}
-
-	const u_int32_t mask[3] = {
-		inet_addr(IPMASK_CLASS_A),
-		inet_addr(IPMASK_CLASS_B),
-		inet_addr(IPMASK_CLASS_C)	
-	};
-
-	const u_int32_t startaddr = (mask[addr_class_id] & myip);
 	union lc lc;
 	lc.l = startaddr;
-	
 	for(int i=0; i<4; i++){
 		if(lc.c[i]==0)	lc.c[i]=255;	
 	}
+
 	count_next_addr((unsigned int*)&startaddr);
-	
 	const u_int32_t endaddr = (u_int32_t)lc.l;
 	u_int32_t addr = startaddr;
 	
-#ifdef DEBUG
+#ifdef DEBUG_getaddrsinlan
 	printf("\n[DEBUG] in function \"%s\"  %s:%d\n", __func__, __FILE__, __LINE__);
 	printf("---scan-info------------------------\n");
 	printf("your ip : %s\n", addrtostr((unsigned int)myip));
-	printf("netmask : %s\n", addrtostr((unsigned int)mask[2]));
+	printf("netmask : %s\n", addrtostr((unsigned int)mask));
 	printf("start   : %s\n", addrtostr((unsigned int)startaddr));
 	printf("end(max): %s\n", addrtostr((unsigned int)endaddr));
 	printf("------------------------------------\n\n");
@@ -230,7 +219,7 @@ void getbenderbymac(const u_char data[6], char* bender){
 		sscanf(strbuf, "%2x%2x%2x\t%s", &mac[0],&mac[1],&mac[2],bender);
 		
 		if(mac[0]==dev_mac[0]&&mac[1]==dev_mac[1]&&mac[2]==dev_mac[2]){
-#ifdef DEBUG
+#ifdef DEBUG_getbenderbymac
 			printf("\n[DEBUG] in function \"%s\" %s:%d  \n", __func__, __FILE__, __LINE__);
 			printf("search hit!  %02X:%02x:%02x (%s) \n\n",mac[0],mac[1],mac[2],bender);
 #endif
