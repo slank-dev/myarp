@@ -37,7 +37,7 @@
 #include <net/ethernet.h>
 #include <netinet/if_ether.h>
 
-int send_ArpRequest_AllAddr(const char* ifname){//[[[
+int send_ArpRequest_AllAddr(const char* ifname){
 	// wait just moment	
 	
 	u_int32_t alladdr[MAX_DEVICES];
@@ -60,7 +60,7 @@ int send_ArpRequest_AllAddr(const char* ifname){//[[[
 
 	return addr_count;
 	// wait just moment
-}//]]]
+}
 
 
 void func(u_char *nouse, const struct pcap_pkthdr *header,
@@ -68,16 +68,35 @@ void func(u_char *nouse, const struct pcap_pkthdr *header,
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
 	struct ether_arp *arp;
+	
+	lc *lc1;
+
 
 	ethh = (struct ether_header*)packet;
 	packet += sizeof(struct ether_header);
 
 	if(ntohs(ethh->ether_type) == ETHERTYPE_ARP){
-		printf("arp!!!\n");
-	}else{
-		return;	
-	}
+		//printf("arp!!!\n");
+		
+		arp = (struct ether_arp*)packet;
+		if(arp->arp_op == ntohs(ARPOP_REQUEST)){
+			printf("arp-rep!!!\t");
+			
+			for(int i=0; i<4; i++){
+				printf("%d", arp->arp_spa[i]);
+				if(i<3)	printf(".");
+				else	printf("\t");
+			}
 
+			for(int i=0; i<6; i++){
+				printf("%x", arp->arp_sha[i]);
+				if(i<5)	printf(":");
+				else	printf("\n");
+			}
+			
+		}
+
+	}
 }
 
 

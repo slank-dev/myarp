@@ -39,7 +39,7 @@
 #include "addr.h"
 #include "arp.h"
 
-//#define DEBUG
+#define DEBUG
 
 
 /*

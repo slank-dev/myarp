@@ -40,7 +40,7 @@
 #include "addr.h"
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
 
-//#define DEBUG
+#define DEBUG
 
 
 int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
@@ -124,6 +124,12 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 		perror("send_sendto");
 		return -1;
 	}
+#ifdef DEBUG
+	printf("[DEBUG] in function \"%s\" %s:%d  ", 
+					__func__, __FILE__, __LINE__);
+	print_ipaddr((unsigned int*)&ipaddr);
+#endif 
+
 	close(sock);
 
 	return 1;

@@ -46,9 +46,9 @@ int main(int argc, char** argv){
 	}
 
 
-	capture_main_loop(argv[IFNAME]);
+	//capture_main_loop(argv[IFNAME]);
 
-	//send_ArpRequest_AllAddr(argv[IFNAME]);
+	send_ArpRequest_AllAddr(argv[IFNAME]);
 }
 
 
