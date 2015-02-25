@@ -39,10 +39,10 @@
 #include "addr.h"
 #include "arp.h"
 
-#define DEBUG 1
+//#define DEBUG
 
 
-
+/*
 char* get_paddr(const char* ifname);
 void  get_haddr( const char* ifname, u_char haddr[6]);
 
@@ -53,7 +53,7 @@ int getclassbyaddr(unsigned int addr);
 int getaddrsinlan(const char *ifname,  u_int32_t alladdr[], int size);
 
 void getbenderbymac(const u_char data[6], char* bender);
-
+*/
  
 
 // Function Name	get_paddr(ifname)

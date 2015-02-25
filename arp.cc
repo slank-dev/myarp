@@ -40,7 +40,7 @@
 #include "addr.h"
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
 
-#define DEBUG 0
+//#define DEBUG
 
 
 int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
