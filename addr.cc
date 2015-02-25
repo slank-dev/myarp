@@ -1,4 +1,27 @@
-// addr.cc
+
+/*
+ *
+ *	Copyright (C) 2014-2015 Hiroki Shirokura <mail: slank.dev@gmail.com>
+ *
+ *	This file is part of this program .
+ *
+ *	PROGRAMNAME is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program.  
+ *	If not, see <http://slankdev.wordpress.com>.
+ *	slank (Hiroki Shirokura) <mail: slank.dev@gmail.com>
+ *
+ */
 
 
 #include <stdio.h>
@@ -16,8 +39,9 @@
 #include <stdio.h>
 
 #include "addr.h"
-
 #include "arp.h"
+
+#define DEBUG 1
 
 
 
@@ -32,7 +56,7 @@ int getaddrsinlan(const char *ifname,  u_int32_t alladdr[], int size);
 
 void getbenderbymac(const u_char data[6], char* bender);
 
-//[[[
+ 
 
 // Function Name	get_paddr(ifname)
 // Description		get ip address from ifname
@@ -69,7 +93,7 @@ char* get_paddr(const char* ifname){
 // Arguments		ifname->	interface name
 void get_haddr( const char* ifname, u_char haddr[6]){
 	int sockd;
-	struct ifreq ifr;	//<net/if.h>
+	struct ifreq ifr;
 
 	if ((sockd=socket(AF_INET,SOCK_DGRAM,0)) < 0){
 		perror("socket()!");
@@ -84,6 +108,7 @@ void get_haddr( const char* ifname, u_char haddr[6]){
 	
 	for(int i=0; i<6; i++)	
 		haddr[i] = (unsigned char)ifr.ifr_hwaddr.sa_data[i];
+
 }
 
 
@@ -137,7 +162,7 @@ int getclassbyaddr(unsigned int addr){
 	else 	return -1;	// error
 }
 
-//]]]
+
 
 int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 	u_int32_t myip = inet_addr(get_paddr(ifname));
@@ -166,14 +191,15 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 	const u_int32_t endaddr = (u_int32_t)lc.l;
 	u_int32_t addr = startaddr;
 	
-	/*
+#ifdef DEBUG
+	printf("\n[DEBUG] in function \"%s\"  %s:%d\n", __func__, __FILE__, __LINE__);
 	printf("---scan-info------------------------\n");
 	printf("your ip : %s\n", addrtostr((unsigned int)myip));
 	printf("netmask : %s\n", addrtostr((unsigned int)mask[2]));
 	printf("start   : %s\n", addrtostr((unsigned int)startaddr));
 	printf("end(max): %s\n", addrtostr((unsigned int)endaddr));
 	printf("------------------------------------\n\n");
-	*/
+#endif
 	
 	u_char macaddr[6];
 	char bender_name[256];
@@ -185,7 +211,7 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 	return count;
 }
 
-//[[[
+ 
 
 void getbenderbymac(const u_char data[6], char* bender){
 	FILE *fp;
@@ -206,7 +232,10 @@ void getbenderbymac(const u_char data[6], char* bender){
 		sscanf(strbuf, "%2x%2x%2x\t%s", &mac[0],&mac[1],&mac[2],bender);
 		
 		if(mac[0]==dev_mac[0]&&mac[1]==dev_mac[1]&&mac[2]==dev_mac[2]){
-			//printf("%02X:%02x:%02x (%s)\n",mac[0],mac[1],mac[2],bender);
+#ifdef DEBUG
+			printf("\n[DEBUG] in function \"%s\" %s:%d  \n", __func__, __FILE__, __LINE__);
+			printf("search hit!  %02X:%02x:%02x (%s) \n\n",mac[0],mac[1],mac[2],bender);
+#endif
 			return;
 		}
 
@@ -221,4 +250,4 @@ void getbenderbymac(const u_char data[6], char* bender){
 	fclose(fp);
 	
 	return;
-}//]]]
+}
