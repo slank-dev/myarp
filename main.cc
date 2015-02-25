@@ -34,9 +34,36 @@
 
 #define MAX_DEVICES 1000
 
+enum{PROGNAME, IFNAME};
 
 
 int main(int argc, char** argv){
+	if(argc < 2){
+		printf("usage: %s [interface]\n", argv[PROGNAME]);
+		return -1;
+	}
+	
+
+
+	u_int32_t alladdr[MAX_DEVICES];
+	u_char macaddr[6];
+	int addr_count = getaddrsinlan(argv[IFNAME], alladdr, MAX_DEVICES);
+	int live_count = 0;
+	char bender_name[256];
+
+
+	for(int i=0; i<addr_count; i++){
+		print_ipaddr((unsigned int*)&alladdr[i]);
+		send_arp_request(alladdr[i], argv[IFNAME]);
+	}
+	printf("%d devices can exist\n", addr_count);
+	
+
+}
+
+
+/*
+int main-old(int argc, char** argv){//[[[
 	if(argc < 3){
 		printf("usage: %s [interface] [device_count]\n", argv[0]);
 		return -1;
@@ -76,6 +103,6 @@ int main(int argc, char** argv){
 	printf("%d devices are liveing\n", live_count);
 	
 
-}
-
+}//]]]
+*/
 

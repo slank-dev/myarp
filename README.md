@@ -3,5 +3,5 @@ arp command for linux from slank
 
 ## instration
 	$ make
-	$ sudo ./main  [interface] [max count]
+	$ sudo ./main  [interface]
 	$ make clean
