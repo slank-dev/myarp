@@ -37,6 +37,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+#include <netdb.h>
+
 #define MAX_DEVICES 1000
 
 int send_ArpRequest_AllAddr(const char* ifname){
@@ -78,7 +80,8 @@ void recvPackHandle(u_char *nouse, const struct pcap_pkthdr *header,
 	char mac_str[6];
 	char bender_str[256];
 	
-	lc *lc1;
+	lc lc;
+	struct hostent *host;
 
 
 	ethh = (struct ether_header*)packet;
@@ -92,6 +95,7 @@ void recvPackHandle(u_char *nouse, const struct pcap_pkthdr *header,
 			
 			for(int i=0; i<4; i++){
 				printf("%d", arp->arp_spa[i]);
+				lc.c[i] = arp->arp_spa[i];
 				if(i<3)	fputc('.', stdout);
 				else	fputc('\t', stdout);
 			}
@@ -99,14 +103,18 @@ void recvPackHandle(u_char *nouse, const struct pcap_pkthdr *header,
 			for(int i=0; i<6; i++){
 				printf("%x", arp->arp_sha[i]);
 				if(i<5)	fputc(':', stdout);
-				else	fputc('\t', stdout);
+				//else	fputc('\t', stdout);
 			}
 
-			//print bender
 			getbenderbymac(arp->arp_sha, bender_str);
-			printf("%s\n", bender_str);
-			memset(bender_str, 0, sizeof(bender_str));
+			host = gethostbyaddr((char*)lc.c, sizeof(lc), AF_INET);
 			
+			/*dns search need many time, so desplay is slow*/
+			printf("(%s)\t", bender_str);
+			if(host != NULL)	printf("%s\n", host->h_name);
+			else				printf("\n");
+
+			memset(bender_str, 0, sizeof(bender_str));
 		}
 
 	}

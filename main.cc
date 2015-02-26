@@ -46,11 +46,7 @@ int main(int argc, char** argv){
 	}
 	
 	scanLan(argv[IFNAME]);
-	
 
-
-//	if(atoi(argv[2]) == 0)	capture_main_loop(argv[IFNAME]);
-//	else 					send_ArpRequest_AllAddr(argv[IFNAME]);
 }
 
 
