@@ -24,30 +24,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/types.h>
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
-#include "arp.h"
-#include "addr.h"
-#include "scanLan.h"
-#include "slank.h"
+//#define DEBUG_getaddrsinlan
+//#define DEBUG_getbenderbymac
+//#define DEBUG_send_arp_request
 
 
 
-enum{PROGNAME, IFNAME};
-
-
-int main(int argc, char** argv){
-	if(argc < 2){
-		printf("usage: %s [interface]\n", argv[PROGNAME]);
-		return -1;
-	}
-	
-	scanLan(argv[IFNAME]);
-
-}
-
-
-
+struct device{
+	u_int32_t pa;
+	u_char ha[6];
+	bool live;
+};

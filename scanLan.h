@@ -25,7 +25,6 @@
 
 int send_ArpRequest_AllAddr(const char* ifname);
 	
-int capture_main_loop(const char *ifname);
 void recvPackHandle(u_char* nouse, const struct pcap_pkthdr* header,
 					const u_char* packet);
 int scanLan(const char* ifname);

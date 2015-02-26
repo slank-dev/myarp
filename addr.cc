@@ -38,7 +38,7 @@
 
 #include "addr.h"
 #include "arp.h"
-#include "debug.h"
+#include "slank.h"
 
 
 

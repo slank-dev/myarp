@@ -38,7 +38,7 @@
 //#include "arp.h"
 //#include "get_addr.h"
 #include "addr.h"
-#include "debug.h"
+#include "slank.h"
 
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
 

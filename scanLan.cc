@@ -26,22 +26,28 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
-#include "arp.h"
-#include "addr.h"
-
 #include <pcap.h>
 #include <net/ethernet.h>
 #include <netinet/if_ether.h>
-
 #include <unistd.h>
 #include <sys/wait.h>
-
 #include <netdb.h>
+
+#include "arp.h"
+#include "addr.h"
+#include "slank.h"
 
 #define MAX_DEVICES 1000
 
-int send_ArpRequest_AllAddr(const char* ifname){
+
+int send_ArpRequest_AllAddr(const char* ifname);
+void recvPackHandle(u_char *nouse, 
+		const struct pcap_pkthdr *header, const u_char* packet);
+int scanLan(const char* ifname);
+
+
+
+int send_ArpRequest_AllAddr(const char* ifname){//[[[
 	// wait just moment	
 	usleep(800000);
 	printf(" Send Arp to AlL in LAN \n");
@@ -68,7 +74,7 @@ int send_ArpRequest_AllAddr(const char* ifname){
 
 	usleep(3000000);
 	return addr_count;
-}
+}//]]]
 
 
 void recvPackHandle(u_char *nouse, const struct pcap_pkthdr *header,
@@ -101,7 +107,7 @@ void recvPackHandle(u_char *nouse, const struct pcap_pkthdr *header,
 			}
 
 			for(int i=0; i<6; i++){
-				printf("%x", arp->arp_sha[i]);
+				printf("%02x", arp->arp_sha[i]);
 				if(i<5)	fputc(':', stdout);
 				//else	fputc('\t', stdout);
 			}
@@ -122,46 +128,34 @@ void recvPackHandle(u_char *nouse, const struct pcap_pkthdr *header,
 
 
 
-int capture_main_loop(const char *ifname){
+int scanLan(const char* ifname){
 	char errbuf[PCAP_ERRBUF_SIZE];
 	struct bpf_program fp;
 	bpf_u_int32 mask;
 	bpf_u_int32 net;
 	pcap_t* handle;
 
+	pid_t pid;
+	int status;
+	int addr_count;
+
 	if(pcap_lookupnet(ifname, &net, &mask, errbuf) == -1){
 		perror("pcap_lookupnet");
 		return -1;
 	}
-
 	if((handle=pcap_open_live(ifname, 1000, 1, 1000, errbuf)) == NULL){
 		perror("pcap_open_live");
 		return -1;
 	}
 
-	pcap_loop(handle, 0, recvPackHandle, NULL);
 
-
-	return 1;	
-}
-
-
-int scanLan(const char* ifname){
-
-	pid_t pid;
-	int status;
-	int addr_count;
 
 	if((pid=fork()) == 0){
-		
 		addr_count = send_ArpRequest_AllAddr(ifname);
-
-
 	}else{
-		
-		capture_main_loop(ifname);
+		//capture_main_loop(ifname);
+		pcap_loop(handle, 0, recvPackHandle, NULL);
 		wait(&status);
-		
 	}
 
 	return 1;
