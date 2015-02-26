@@ -34,11 +34,17 @@
 #include <net/ethernet.h>
 #include <netinet/if_ether.h>
 
+#include <unistd.h>
+#include <sys/wait.h>
+
 #define MAX_DEVICES 1000
 
 int send_ArpRequest_AllAddr(const char* ifname){
 	// wait just moment	
+	usleep(800000);
+	printf(" Send Arp to AlL in LAN \n");
 	
+
 	u_int32_t alladdr[MAX_DEVICES];
 	u_char macaddr[6];
 	int addr_count = getaddrsinlan(ifname, alladdr, MAX_DEVICES);
@@ -53,20 +59,24 @@ int send_ArpRequest_AllAddr(const char* ifname){
 #endif
 		send_arp_request(alladdr[i], ifname);
 	}
+
+#ifdef DEBUG_send_ArpReqest_AALAddr
 	printf("%d devices can exist\n", addr_count);
+#endif
 
-	
-
+	usleep(3000000);
 	return addr_count;
-	// wait just moment
 }
 
 
-void func(u_char *nouse, const struct pcap_pkthdr *header,
+void recvPackHandle(u_char *nouse, const struct pcap_pkthdr *header,
 										const u_char* packet){
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
 	struct ether_arp *arp;
+
+	char mac_str[6];
+	char bender_str[256];
 	
 	lc *lc1;
 
@@ -75,23 +85,27 @@ void func(u_char *nouse, const struct pcap_pkthdr *header,
 	packet += sizeof(struct ether_header);
 
 	if(ntohs(ethh->ether_type) == ETHERTYPE_ARP){
-		//printf("arp!!!\n");
 		
 		arp = (struct ether_arp*)packet;
 		if(arp->arp_op == ntohs(ARPOP_REPLY)){
-			printf("arp-rep!!!\t");
+			printf("UP\t");
 			
 			for(int i=0; i<4; i++){
 				printf("%d", arp->arp_spa[i]);
-				if(i<3)	printf(".");
-				else	printf("\t");
+				if(i<3)	fputc('.', stdout);
+				else	fputc('\t', stdout);
 			}
 
 			for(int i=0; i<6; i++){
 				printf("%x", arp->arp_sha[i]);
-				if(i<5)	printf(":");
-				else	printf("\n");
+				if(i<5)	fputc(':', stdout);
+				else	fputc('\t', stdout);
 			}
+
+			//print bender
+			getbenderbymac(arp->arp_sha, bender_str);
+			printf("%s\n", bender_str);
+			memset(bender_str, 0, sizeof(bender_str));
 			
 		}
 
@@ -117,9 +131,30 @@ int capture_main_loop(const char *ifname){
 		return -1;
 	}
 
-	pcap_loop(handle, 0, func, NULL);
+	pcap_loop(handle, 0, recvPackHandle, NULL);
 
 
 	return 1;	
 }
 
+
+int scanLan(const char* ifname){
+
+	pid_t pid;
+	int status;
+	int addr_count;
+
+	if((pid=fork()) == 0){
+		
+		addr_count = send_ArpRequest_AllAddr(ifname);
+
+
+	}else{
+		
+		capture_main_loop(ifname);
+		wait(&status);
+		
+	}
+
+	return 1;
+}
