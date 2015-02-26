@@ -26,6 +26,11 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
+#include <vector>
+#include <string>
+
+
+
 
 //#define DEBUG_getaddrsinlan
 //#define DEBUG_getbenderbymac
@@ -33,8 +38,47 @@
 
 
 
-struct device{
-	u_int32_t pa;
-	u_char ha[6];
-	bool live;
+class device{
+	public:
+		u_int32_t pa;
+		u_char ha[6];
+		std::string bender;
+		std::string hostname;
+		std::string comment;
+		bool live;
+		//time info
+
+		void showinfo(){
+			printf(" %s\t", (live==true)?"UP" : "DOWN");
+			printf("  %s\t[",addrtostr((unsigned int)pa));
+			for(int i=0; i<6; i++){
+				printf("%02x", ha[i]);
+				if(i<5)	fputc(':', stdout);
+				//else	fputc('\t', stdout);
+			}
+			printf("(%s)]\t", bender.c_str());
+			printf("%s\n", hostname.c_str());
+		}
+
+		void writeLog(){
+			printf( "write log!!\n");
+			FILE *fp;
+			if((fp=fopen("test.log", "a")) == NULL){
+				perror("write log");
+				return;
+			}
+
+			fprintf(fp, "%s\t", (live==true)?"UP" : "DOWN");
+			fprintf(fp, "%s\t",addrtostr((unsigned int)pa));
+			for(int i=0; i<6; i++){
+				fprintf(fp, "%02x", ha[i]);
+				if(i<5)	fputc(':', fp);
+				else	fputc('\t', fp);
+			}
+			fprintf(fp, "%s\t", bender.c_str());
+			fprintf(fp, "%s\n", hostname.c_str());
+
+			fclose(fp);
+
+		}
 };

@@ -164,11 +164,14 @@ int getclassbyaddr(unsigned int addr){
 
 
 int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
+	int  addr_count;
+	char bender_name[256];
 	const u_int32_t myip = inet_addr(get_paddr(ifname));
 	const u_int32_t mask = inet_addr(get_pmask(ifname));
-	u_int32_t startaddr = (mask & myip);
-	
 	union lc lc;
+	u_int32_t startaddr = (mask & myip);
+	u_char macaddr[6];
+	
 	lc.l = startaddr;
 	for(int i=0; i<4; i++){
 		if(lc.c[i]==0)	lc.c[i]=255;	
@@ -178,7 +181,7 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 	const u_int32_t endaddr = (u_int32_t)lc.l;
 	u_int32_t addr = startaddr;
 	
-#ifdef DEBUG_getaddrsinlan
+	#ifdef DEBUG_getaddrsinlan
 	printf("\n[DEBUG] in function \"%s\"  %s:%d\n", __func__, __FILE__, __LINE__);
 	printf("---scan-info------------------------\n");
 	printf("your ip : %s\n", addrtostr((unsigned int)myip));
@@ -186,16 +189,13 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 	printf("start   : %s\n", addrtostr((unsigned int)startaddr));
 	printf("end(max): %s\n", addrtostr((unsigned int)endaddr));
 	printf("------------------------------------\n\n");
-#endif
+	#endif
 	
-	u_char macaddr[6];
-	char bender_name[256];
-	int count;
-	for(count=0; addr != endaddr && count<size; count++){
-		alladdr[count] = addr;
+	for(addr_count=0; addr != endaddr && addr_count<size; addr_count++){
+		alladdr[addr_count] = addr;
 		count_next_addr((unsigned int*)&addr);
 	}
-	return count;
+	return addr_count;
 }
 
  
@@ -203,6 +203,8 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 void getbenderbymac(const u_char data[6], char* bender){
 	FILE *fp;
 	const char* filename = "mac_code.txt";
+	char strbuf[256];
+	unsigned int  mac[3];
 	u_char dev_mac[3] = {data[0],data[1],data[2]};
 	
 
@@ -212,20 +214,16 @@ void getbenderbymac(const u_char data[6], char* bender){
 		return;
 	}
 
-	char strbuf[256];
-	unsigned int  mac[3];
-
 	while(fgets(strbuf, sizeof(strbuf), fp) != NULL){
 		sscanf(strbuf, "%2x%2x%2x\t%s", &mac[0],&mac[1],&mac[2],bender);
 		
 		if(mac[0]==dev_mac[0]&&mac[1]==dev_mac[1]&&mac[2]==dev_mac[2]){
-#ifdef DEBUG_getbenderbymac
+			#ifdef DEBUG_getbenderbymac
 			printf("\n[DEBUG] in function \"%s\" %s:%d  \n", __func__, __FILE__, __LINE__);
 			printf("search hit!  %02X:%02x:%02x (%s) \n\n",mac[0],mac[1],mac[2],bender);
-#endif
+			#endif
 			return;
 		}
-
 
 		memset(mac, 0, sizeof(mac));
 		memset(bender, 0, sizeof(bender));

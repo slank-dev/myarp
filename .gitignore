@@ -1,4 +1,3 @@
-main
-a.out
 *.o
 *.out
+*.log
