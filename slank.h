@@ -77,13 +77,19 @@ class device{
 		}
 
 		void writeLog(){
-			
+			unsigned int data=0;
+			data = (unsigned int)pa;
+			for(int i=0; i<6; i++)	data += (unsigned int)ha[i];	
+			id = data;
+				
+
 			FILE *fp;
 			if((fp=fopen(LOGFILE_NAME, "a")) == NULL){
 				perror("write log");
 				return;
 			}
-
+			
+			fprintf(fp, "%u ", id);
 			fprintf(fp, "%s ", (live==true)?"UP" : "DOWN");
 			fprintf(fp, "%s ",addrtostr((unsigned int)pa));
 			for(int i=0; i<6; i++){

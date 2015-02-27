@@ -174,6 +174,7 @@ int scanLan(const char* ifname){
 	}
 		
 	char str[256];
+	unsigned int bid;
 	char blive[16];
 	char bipaddr[16];
 	unsigned int bmac[6];
@@ -186,7 +187,7 @@ int scanLan(const char* ifname){
 		memset(bbender, 0, sizeof(bbender));
 		memset(bhostname, 0, sizeof(bhostname));
 
-		sscanf(str, "%s %s %x:%x:%x:%x:%x:%x %s %s", blive, bipaddr, 
+		sscanf(str, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", &bid, blive, bipaddr, 
 				&bmac[0],&bmac[1],&bmac[2],&bmac[3],&bmac[4],&bmac[5],
 				bbender, bhostname);
 
