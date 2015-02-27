@@ -24,16 +24,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <vector>
 
 #include "arp.h"
 #include "addr.h"
 #include "scanLan.h"
 #include "slank.h"
+#include "util.h"
 
+#include <iostream>
 
 
 enum{PROGNAME, IFNAME};
@@ -46,8 +48,19 @@ int main(int argc, char** argv){
 		printf("usage: %s [interface]\n", argv[PROGNAME]);
 		return -1;
 	}
+	std::vector<unsigned int> vec;
+	load_log(vec);
+
+	for(int i=0; i<vec.size(); i++){
+		std::cout << vec[i] << std::endl;
+	}
+
 	
-	scanLan(argv[IFNAME]);
+	//scanLan(argv[IFNAME]);
+
+
+
+
 
 }
 

@@ -2,7 +2,7 @@
 
 program = nscan.out
 
-SRC = main.cc addr.cc arp.cc scanLan.cc util.h
+SRC = main.cc addr.cc arp.cc scanLan.cc util.cc
 OBJ = $(SRC:.cc=.o)
 CFLAGS = -Wall -lpcap
 CPP = g++ 
