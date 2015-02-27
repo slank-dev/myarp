@@ -49,7 +49,8 @@ int scanLan(const char* ifname);
 
 
 
-int send_ArpRequest_AllAddr(const char* ifname){
+
+int send_ArpRequest_AllAddr(const char* ifname){//[[[
 	u_int32_t alladdr[MAX_DEVICES];
 	u_char macaddr[6];
 	int addr_count = getaddrsinlan(ifname, alladdr, MAX_DEVICES);
@@ -59,7 +60,6 @@ int send_ArpRequest_AllAddr(const char* ifname){
 
 	// wait just moment	
 	usleep(800000);
-	printf("[ArpSend in LAN Started] \n");
 
 	for(int i=0; i<addr_count; i++){
 		#ifdef DEBUG_send_ArpReqest_AALAddr
@@ -69,12 +69,11 @@ int send_ArpRequest_AllAddr(const char* ifname){
 	}
 
 	usleep(5000000);
-	printf("[Scan Finished]\n");
 	return addr_count;
-}
+}//]]] 
 
 
-void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
+void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
 										const u_char* packet){
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
@@ -93,8 +92,9 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 	if(ntohs(ethh->ether_type) == ETHERTYPE_ARP){
 		arp = (struct ether_arp*)packet;
 		if(arp->arp_op == ntohs(ARPOP_REPLY)){
-			devbuf.live = true;
+			memset(bender_str, 0, sizeof(bender_str));
 			
+			devbuf.live = true;
 			for(int i=0; i<4; i++)	lc.c[i] = arp->arp_spa[i];
 			for(int i=0; i<6; i++)	devbuf.ha[i] = arp->arp_sha[i];
 			devbuf.pa = lc.l;
@@ -106,26 +106,29 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 			/*dns search need many time, so desplay is slow*/
 			if(host != NULL)	devbuf.hostname = host->h_name;
 			
-			devbuf.showinfo();
+			//devbuf.showinfo();
 			devbuf.writeLog();
 
-			memset(bender_str, 0, sizeof(bender_str));
 		}
 	}
 
-}
+}//]]]
 
 
 
 int scanLan(const char* ifname){
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
-	struct bpf_program fp;
+	struct device dev;
 	bpf_u_int32 mask;
 	bpf_u_int32 net;
 	pcap_t* handle;
 	pid_t pid;
-	//std::vector<device> vec;
+	std::vector<device> vec;
+
+	FILE *fp;
+
+
 
 
 	if(pcap_lookupnet(ifname, &net, &mask, errbuf) == -1){
@@ -140,13 +143,66 @@ int scanLan(const char* ifname){
 
 
 	if((pid=fork()) == 0){
+		printf("[ArpSend in LAN Started] \n");
 		pcap_loop(handle, 0, recvPackHandle, NULL);
-		pcap_close(handle);
 	}else{
 		addr_count = send_ArpRequest_AllAddr(ifname);
 		kill(pid, SIGINT);
 		wait(NULL);
 	}
+
+	printf("[Scan Finished]\n");
+	pcap_close(handle);
+		
+
+
+	//read log file
+	if((fp=fopen(LOGFILE_NAME, "r")) == NULL){
+		perror("scanLan fopen");
+		return -1;
+	}
+		
+	char str[256];
+	char blive[16];
+	char bipaddr[16];
+	unsigned int bmac[6];
+	char bbender[16];
+	char bhostname[16];
+	while(fgets(str, sizeof(str), fp) != NULL){
+		memset(blive, 0, sizeof(blive));
+		memset(bipaddr, 0, sizeof(bipaddr));
+		memset(bmac, 0, sizeof(bmac));
+		memset(bbender, 0, sizeof(bbender));
+		memset(bhostname, 0, sizeof(bhostname));
+
+		sscanf(str, "%s %s %x:%x:%x:%x:%x:%x %s %s", blive, bipaddr, 
+				&bmac[0],&bmac[1],&bmac[2],&bmac[3],&bmac[4],&bmac[5],
+				bbender, bhostname);
+
+		#ifdef DEBUG_scanLan
+		printf("%s\t%s\t%2x:%2x:%2x:%2x:%2x:%2x\t%s\t%s \n", blive, bipaddr, 
+				bmac[0],bmac[1],bmac[2],bmac[3],bmac[4],bmac[5],
+				bbender, bhostname);
+		#endif
+
+
+		if(strcmp("UP", blive) == 0)	dev.live=true;
+		else							dev.live=false;
+		for(int i=0; i<6; i++)	dev.ha[i] = bmac[i];
+		dev.pa = inet_addr(bipaddr);
+		dev.bender = bbender;
+		dev.hostname = bhostname;
+
+
+		//dev.showinfo();
+		vec.push_back(dev);
+	}
+
+	printf("----------------------------------------------------------\n");
+	for(int i=0; i<vec.size(); i++){
+		vec[i].showinfo();	
+	}
+	printf("----------------------------------------------------------\n");
 
 
 

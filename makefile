@@ -15,3 +15,7 @@ $(program): $(OBJ)
 
 clean:
 	rm *.o *.out
+
+
+allclean:
+	sudo rm *.o *.out *.log

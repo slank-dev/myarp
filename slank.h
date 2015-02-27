@@ -29,6 +29,7 @@
 #include <vector>
 #include <string>
 
+#define LOGFILE_NAME "test.log"
 
 
 
@@ -61,21 +62,21 @@ class device{
 		}
 
 		void writeLog(){
-			printf( "write log!!\n");
+			printf( "write log... \n");
 			FILE *fp;
-			if((fp=fopen("test.log", "a")) == NULL){
+			if((fp=fopen(LOGFILE_NAME, "a")) == NULL){
 				perror("write log");
 				return;
 			}
 
-			fprintf(fp, "%s\t", (live==true)?"UP" : "DOWN");
-			fprintf(fp, "%s\t",addrtostr((unsigned int)pa));
+			fprintf(fp, "%s ", (live==true)?"UP" : "DOWN");
+			fprintf(fp, "%s ",addrtostr((unsigned int)pa));
 			for(int i=0; i<6; i++){
 				fprintf(fp, "%02x", ha[i]);
 				if(i<5)	fputc(':', fp);
-				else	fputc('\t', fp);
+				else	fputc(' ', fp);
 			}
-			fprintf(fp, "%s\t", bender.c_str());
+			fprintf(fp, "%s ", bender.c_str());
 			fprintf(fp, "%s\n", hostname.c_str());
 
 			fclose(fp);
