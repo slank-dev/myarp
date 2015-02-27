@@ -32,14 +32,12 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <net/if.h>
-
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "addr.h"
 #include "arp.h"
 #include "slank.h"
 
+
+#define MACCODE_FILE "mac_code.txt"
 
 
  
@@ -181,7 +179,7 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 	const u_int32_t endaddr = (u_int32_t)lc.l;
 	u_int32_t addr = startaddr;
 	
-	#ifdef DEBUG_getaddrsinlan
+#ifdef DEBUG_getaddrsinlan
 	printf("\n[DEBUG] in function \"%s\"  %s:%d\n", __func__, __FILE__, __LINE__);
 	printf("---scan-info------------------------\n");
 	printf("your ip : %s\n", addrtostr((unsigned int)myip));
@@ -189,7 +187,7 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 	printf("start   : %s\n", addrtostr((unsigned int)startaddr));
 	printf("end(max): %s\n", addrtostr((unsigned int)endaddr));
 	printf("------------------------------------\n\n");
-	#endif
+#endif
 	
 	for(addr_count=0; addr != endaddr && addr_count<size; addr_count++){
 		alladdr[addr_count] = addr;
@@ -202,7 +200,7 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 
 void getbenderbymac(const u_char data[6], char* bender){
 	FILE *fp;
-	const char* filename = "mac_code.txt";
+	const char* filename = MACCODE_FILE;
 	char strbuf[256];
 	unsigned int  mac[3];
 	u_char dev_mac[3] = {data[0],data[1],data[2]};
@@ -218,10 +216,10 @@ void getbenderbymac(const u_char data[6], char* bender){
 		sscanf(strbuf, "%2x%2x%2x\t%s", &mac[0],&mac[1],&mac[2],bender);
 		
 		if(mac[0]==dev_mac[0]&&mac[1]==dev_mac[1]&&mac[2]==dev_mac[2]){
-			#ifdef DEBUG_getbenderbymac
+#ifdef DEBUG_getbenderbymac
 			printf("\n[DEBUG] in function \"%s\" %s:%d  \n", __func__, __FILE__, __LINE__);
 			printf("search hit!  %02X:%02x:%02x (%s) \n\n",mac[0],mac[1],mac[2],bender);
-			#endif
+#endif
 			return;
 		}
 

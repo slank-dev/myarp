@@ -29,6 +29,8 @@
 #include <vector>
 #include <string>
 
+#include "util.h"
+
 #define LOGFILE_NAME "test.log"
 
 
@@ -36,7 +38,7 @@
 //#define DEBUG_getaddrsinlan
 //#define DEBUG_getbenderbymac
 //#define DEBUG_send_arp_request
-
+//#define DEBUG_send_ArpReqest_AllAddr
 
 
 class device{
@@ -47,7 +49,20 @@ class device{
 		std::string hostname;
 		std::string comment;
 		bool live;
+		unsigned int id;
 		//time info
+		
+		device(){}
+
+		device(const device &c){
+			//printf("copy constracter!!\n");
+			
+			live = c.live;
+			for(int i=0; i<6; i++)	ha[i] = c.ha[i];
+			pa = c.pa;
+			bender = c.bender;
+			hostname = c.hostname;
+		}
 
 		void showinfo(){
 			printf(" %s\t", (live==true)?"UP" : "DOWN");
@@ -62,7 +77,7 @@ class device{
 		}
 
 		void writeLog(){
-			printf( "write log... \n");
+			
 			FILE *fp;
 			if((fp=fopen(LOGFILE_NAME, "a")) == NULL){
 				perror("write log");
@@ -81,5 +96,18 @@ class device{
 
 			fclose(fp);
 
+		}
+
+		unsigned int getid(){
+			unsigned int data=0;
+
+			data = (unsigned int)pa;
+			for(int i=0; i<6; i++){
+				data += (unsigned int)ha[i];	
+			}
+			
+			//printf("id: %u\n", data);
+			id = data;
+			return 	4;
 		}
 };

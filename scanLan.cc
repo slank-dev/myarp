@@ -62,18 +62,27 @@ int send_ArpRequest_AllAddr(const char* ifname){//[[[
 	usleep(800000);
 
 	for(int i=0; i<addr_count; i++){
-		#ifdef DEBUG_send_ArpReqest_AALAddr
+#ifdef DEBUG_send_ArpReqest_AllAddr
 		print_ipaddr((unsigned int*)&alladdr[i]);
-		#endif
+#endif
 		send_arp_request(alladdr[i], ifname);
 	}
 
-	usleep(5000000);
+	for(int i=0; i<addr_count; i++){
+#ifdef DEBUG_send_ArpReqest_AllAddr
+		print_ipaddr((unsigned int*)&alladdr[i]);
+#endif
+		send_arp_request(alladdr[i], ifname);
+	}
+
+
+	//usleep(5000000);
+	usleep(8000000);
 	return addr_count;
 }//]]] 
 
 
-void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
+ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
 										const u_char* packet){
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
@@ -106,9 +115,11 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
 			/*dns search need many time, so desplay is slow*/
 			if(host != NULL)	devbuf.hostname = host->h_name;
 			
+			devbuf.getid();
+			
+
 			//devbuf.showinfo();
 			devbuf.writeLog();
-
 		}
 	}
 
@@ -154,7 +165,7 @@ int scanLan(const char* ifname){
 	printf("[Scan Finished]\n");
 	pcap_close(handle);
 		
-
+	printf("\n");
 
 	//read log file
 	if((fp=fopen(LOGFILE_NAME, "r")) == NULL){
@@ -179,11 +190,11 @@ int scanLan(const char* ifname){
 				&bmac[0],&bmac[1],&bmac[2],&bmac[3],&bmac[4],&bmac[5],
 				bbender, bhostname);
 
-		#ifdef DEBUG_scanLan
+#ifdef DEBUG_scanLan
 		printf("%s\t%s\t%2x:%2x:%2x:%2x:%2x:%2x\t%s\t%s \n", blive, bipaddr, 
 				bmac[0],bmac[1],bmac[2],bmac[3],bmac[4],bmac[5],
 				bbender, bhostname);
-		#endif
+#endif
 
 
 		if(strcmp("UP", blive) == 0)	dev.live=true;

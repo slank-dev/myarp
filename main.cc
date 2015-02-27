@@ -39,6 +39,8 @@
 enum{PROGNAME, IFNAME};
 
 
+
+
 int main(int argc, char** argv){
 	if(argc < 2){
 		printf("usage: %s [interface]\n", argv[PROGNAME]);
