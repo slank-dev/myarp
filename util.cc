@@ -47,7 +47,7 @@ uint32_t hash(uint8_t *bytes, size_t length){
 }
 
 
-std::vector<unsigned int> return_log(){
+std::vector<unsigned int> getidbylogfile(){
 	FILE *fp;
 	char line[100];
 	unsigned int buf;
@@ -68,5 +68,33 @@ std::vector<unsigned int> return_log(){
 }
 
 
-void usage(){	
+void usage(int argc, char **argv){	
+	printf("usage: %s\t[-i interface] [-c count_scan_loop]\n", argv[0]);
+	printf("\t\t\t[-t timeout] [-f filename]\n");
+
+	return;
+}
+
+void version(){
+	printf("PROGRAMNAME version 0.00 \n\n");
+	printf("Copyright (C) 2014-2015 Hiroki Shirokura <mail: slank.dev@gmail.com>\n");
+	//printf("\n");
+	printf("This file is part of PROGRAMNAME.\n");
+	//printf("\n");
+	printf("PROGRAMNAME is free software: you can redistribute it and/or modify\n");
+	printf("it under the terms of the GNU General Public License as published by\n");
+	printf("the Free Software Foundation, either version 3 of the License, or\n");
+	printf("(at your option) any later version.\n");
+	//printf("\n");
+	printf("PROGRAMNAME is distributed in the hope that it will be useful,\n");
+	//printf("\n");
+	printf("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+	printf("GNU General Public License for more details.\n");
+	//printf("\n");
+	printf("You should have received a copy of the GNU General Public License\n");
+	printf("along with this program.  \n");
+	printf("If not, see <http://slankdev.wordpress.com>.\n");
+	printf("slank (Hiroki Shirokura) <mail: slank.dev@gmail.com>\n");
+
 }

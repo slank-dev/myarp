@@ -31,5 +31,6 @@
 
 
 uint32_t hash(uint8_t *bytes, size_t length);
-std::vector<unsigned int> return_log();
-void usage();
+std::vector<unsigned int> getidbylogfile();
+void usage(int argc, char** argv);
+void version();

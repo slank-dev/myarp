@@ -37,7 +37,6 @@
 #include <iostream>
 
 
-enum{PROGNAME, IFNAME};
 
 
 
@@ -47,40 +46,41 @@ int main(int argc, char** argv){
 	char ifname[32];
 	int count;
 	int timeout;
+	scanLanConfig conf;
 
-	strncpy(ifname, "wlan0", sizeof("wlan0"));	//set default interface
-	count = 1;
-	timeout = 5;
-		
+	
+
 	/*read options*/
-	while((opt=getopt(argc, argv, "hvi:c:t:")) != -1){
+	while((opt=getopt(argc, argv, "hvi:c:t:f:")) != -1){
 		switch(opt){
 			case 'h':
-				printf("[opt]help\n");
+				usage(argc, argv);
+				return 1;
 				break;
 			case 'v':
-				printf("[opt]version\n");
+				version();
+				return 1;
+				break;
+			case 'f':
+				printf("load file only()() korekara!!\n");
+				return 1;
 				break;
 			case 'i':
-				strncpy(ifname, optarg, sizeof(ifname));
-				printf("[opt select interface] iface: %s\n", ifname);
+				strncpy(conf.ifname, optarg, sizeof(conf.ifname));
 				break;
 			case 'c':
-				count = atoi(optarg);
-				printf("[opt set count] count: %d \n", atoi(optarg));
+				conf.scanLoopCount = atoi(optarg);
 				break;
 			case 't':
-				timeout = atoi(optarg);
-				printf("[opt set timeout] timeout: %d \n", atoi(optarg));
+				conf.timeout = atoi(optarg);
 				break;
 		}
 	}
 	
 		
-
 	
 	printf("\n");
-	scanLan(ifname, count, timeout);
+	scanLan(conf);
 	printf("\n");
 
 }

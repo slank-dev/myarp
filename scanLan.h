@@ -21,10 +21,31 @@
  *
  */
 
+class scanLanConfig{
+	public:
+		char ifname[32];
+		int scanLoopCount;
+		int timeout;
+
+	scanLanConfig(){
+		strcpy(ifname, "wlan0");
+		scanLoopCount = 1;
+		timeout = 5;
+	}
+
+	void showConfig(){
+		printf("----------------------------------\n");
+		printf("Interface: %s\n", ifname);
+		printf("scan_count: %d\n", scanLoopCount);
+		printf("timeout: %d\n", timeout);
+		printf("----------------------------------\n");
+	}
+};
 
 
-int send_ArpRequest_AllAddr(const char* ifname,int count,int timeout);
+
+int send_ArpRequest_AllAddr(scanLanConfig sconfig);
 	
 void recvPackHandle(u_char* nouse, const struct pcap_pkthdr* header,
 					const u_char* packet);
-int scanLan(const char* ifname, int count, int timeout);
+int scanLan(scanLanConfig sconfig);

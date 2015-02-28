@@ -37,23 +37,18 @@
 #include "arp.h"
 #include "addr.h"
 #include "slank.h"
+#include "scanLan.h"
 
 #define MAX_DEVICES 1000
 
-/*
-int send_ArpRequest_AllAddr(const char* ifname, int);
-void recvPackHandle(u_char *nouse, 
-		const struct pcap_pkthdr *header, const u_char* packet);
-int scanLan(const char* ifname, int count, int timeout);
-*/
 
 
 
 
-int send_ArpRequest_AllAddr(const char* ifname, int count, int timeout){ 
+int send_ArpRequest_AllAddr(scanLanConfig sconfig){ 
 	u_int32_t alladdr[MAX_DEVICES];
 	u_char macaddr[6];
-	int addr_count = getaddrsinlan(ifname, alladdr, MAX_DEVICES);
+	int addr_count = getaddrsinlan(sconfig.ifname, alladdr, MAX_DEVICES);
 	int live_count = 0;
 	char bender_name[256];
 	
@@ -61,17 +56,17 @@ int send_ArpRequest_AllAddr(const char* ifname, int count, int timeout){
 	usleep(0.8 * 1000000);
 	
 
-	for(int k=0; k<count; k++){
+	for(int k=0; k<sconfig.scanLoopCount; k++){
 		
 		//printf("send count[%d]\n", k);
 		for(int i=0; i<addr_count; i++){
 #ifdef DEBUG_send_ArpReqest_AllAddr
 			print_ipaddr((unsigned int*)&alladdr[i]);
 #endif
-			send_arp_request(alladdr[i], ifname);
+			send_arp_request(alladdr[i], sconfig.ifname);
 		}
 		
-		usleep(timeout * 1000000);
+		usleep(sconfig.timeout * 1000000);
 	}
 
 	//return addr_count;
@@ -89,7 +84,6 @@ int send_ArpRequest_AllAddr(const char* ifname, int count, int timeout){
 	struct device devbuf;
 	char mac_str[6];
 	char bender_str[256];
-	//static std::vector<device> vec;
 	lc lc;
 
 
@@ -115,8 +109,6 @@ int send_ArpRequest_AllAddr(const char* ifname, int count, int timeout){
 			
 			devbuf.getid();
 			
-
-			//devbuf.showinfo();
 			devbuf.writeLog();
 		}
 	}
@@ -125,7 +117,7 @@ int send_ArpRequest_AllAddr(const char* ifname, int count, int timeout){
 
 
 
-int scanLan(const char* ifname, int scan_count,int timeout){
+int scanLan(scanLanConfig sconfig){
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	struct device dev;
@@ -139,17 +131,17 @@ int scanLan(const char* ifname, int scan_count,int timeout){
 	
 
 	printf("--------------------------------\n");
-	printf("ScaningInterface: %s(wlan0)\n", ifname);
-	printf("ScanCount: %d(1)\n", scan_count);
-	printf("Timeout: %d(5) sec\n", timeout);
+	printf("ScaningInterface: %s(wlan0)\n", sconfig.ifname);
+	printf("ScanCount: %d(1)\n", sconfig.scanLoopCount);
+	printf("Timeout: %d(5) sec\n", sconfig.timeout);
 	printf("--------------------------------\n");
 
 
-	if(pcap_lookupnet(ifname, &net, &mask, errbuf) == -1){
+	if(pcap_lookupnet(sconfig.ifname, &net, &mask, errbuf) == -1){
 		perror("pcap_lookupnet");
 		return -1;
 	}
-	if((handle=pcap_open_live(ifname, 0, 0, 1000, errbuf)) == NULL){
+	if((handle=pcap_open_live(sconfig.ifname, 0, 0, 1000, errbuf)) == NULL){
 		perror("pcap_open_live");
 		return -1;
 	}
@@ -160,7 +152,7 @@ int scanLan(const char* ifname, int scan_count,int timeout){
 		printf("[ArpSend in LAN Started] \n");
 		pcap_loop(handle, 0, recvPackHandle, NULL);
 	}else{
-		addr_count = send_ArpRequest_AllAddr(ifname, scan_count,timeout);
+		addr_count = send_ArpRequest_AllAddr(sconfig);
 		kill(pid, SIGINT);
 		wait(NULL);
 	}
@@ -177,42 +169,47 @@ int scanLan(const char* ifname, int scan_count,int timeout){
 	}
 		
 	char str[256];
-	unsigned int bid;
-	char blive[16];
-	char bipaddr[16];
-	unsigned int bmac[6];
-	char bbender[16];
-	char bhostname[16];
+	unsigned int buf_id;
+	char buf_live[16];
+	char buf_ipaddr[16];
+	unsigned int buf_mac[6];
+	char buf_bender[16];
+	char buf_hostname[16];
 	while(fgets(str, sizeof(str), fp) != NULL){
-		memset(blive, 0, sizeof(blive));
-		memset(bipaddr, 0, sizeof(bipaddr));
-		memset(bmac, 0, sizeof(bmac));
-		memset(bbender, 0, sizeof(bbender));
-		memset(bhostname, 0, sizeof(bhostname));
+		memset(buf_live, 0, sizeof(buf_live));
+		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
+		memset(buf_mac, 0, sizeof(buf_mac));
+		memset(buf_bender, 0, sizeof(buf_bender));
+		memset(buf_hostname, 0, sizeof(buf_hostname));
 
-		sscanf(str, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", &bid, blive, bipaddr, 
-				&bmac[0],&bmac[1],&bmac[2],&bmac[3],&bmac[4],&bmac[5],
-				bbender, bhostname);
+		sscanf(str, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
+				&buf_id, buf_live, buf_ipaddr, 
+				&buf_mac[0],&buf_mac[1],&buf_mac[2],
+				&buf_mac[3],&buf_mac[4],&buf_mac[5],
+				buf_bender, buf_hostname);
 
 #ifdef DEBUG_scanLan
-		printf("%s\t%s\t%2x:%2x:%2x:%2x:%2x:%2x\t%s\t%s \n", blive, bipaddr, 
-				bmac[0],bmac[1],bmac[2],bmac[3],bmac[4],bmac[5],
-				bbender, bhostname);
+		printf("%s\t%s\t%2x:%2x:%2x:%2x:%2x:%2x\t%s\t%s \n", 
+				buf_live, buf_ipaddr, 
+				buf_mac[0],buf_mac[1],buf_mac[2],
+				buf_mac[3],buf_mac[4],buf_mac[5],
+				buf_bender, buf_hostname);
 #endif
 
 
-		if(strcmp("UP", blive) == 0)	dev.live=true;
+		if(strcmp("UP", buf_live) == 0)	dev.live=true;
 		else							dev.live=false;
-		for(int i=0; i<6; i++)	dev.ha[i] = bmac[i];
-		dev.pa = inet_addr(bipaddr);
-		dev.bender = bbender;
-		dev.hostname = bhostname;
+		for(int i=0; i<6; i++)	dev.ha[i] = buf_mac[i];
+		dev.pa = inet_addr(buf_ipaddr);
+		dev.bender = buf_bender;
+		dev.hostname = buf_hostname;
 
 
-		//dev.showinfo();
 		vec.push_back(dev);
 	}
 
+
+	//show log info
 	printf("----------------------------------------------------------\n");
 	for(int i=0; i<vec.size(); i++){
 		vec[i].showinfo();	

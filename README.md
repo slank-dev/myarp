@@ -1,9 +1,9 @@
 # send_pack
-arp command for linux from slank
+local area network scaner for linux from slank
 
 ## instration
 	$ make
-	$ sudo ./nscan.out  [interface]
+	$ sudo ./nscan.out
 	[ArpSend in LAN Started] 
 	load_log: No such file or directory
 	 - add new log [192.168.179.1, a2:12:42:aa:aa:aa, 28551988]
