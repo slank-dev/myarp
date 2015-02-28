@@ -50,6 +50,7 @@ class device{
 		std::string comment;
 		bool live;
 		unsigned int id;
+		std::vector<unsigned int> log;
 		//time info
 		
 		device(){}
@@ -81,13 +82,22 @@ class device{
 			data = (unsigned int)pa;
 			for(int i=0; i<6; i++)	data += (unsigned int)ha[i];	
 			id = data;
-				
+			
+			loadLog();
+			
+			for(int i=0; i<log.size(); i++){
+				if(id == log[i]){
+					printf(" - found this log\n");
+					return;
+				}
+			}
 
 			FILE *fp;
 			if((fp=fopen(LOGFILE_NAME, "a")) == NULL){
 				perror("write log");
 				return;
 			}
+			
 			
 			fprintf(fp, "%u ", id);
 			fprintf(fp, "%s ", (live==true)?"UP" : "DOWN");
@@ -99,9 +109,43 @@ class device{
 			}
 			fprintf(fp, "%s ", bender.c_str());
 			fprintf(fp, "%s\n", hostname.c_str());
-
 			fclose(fp);
 
+			printf(" - add new log [%s, ", addrtostr((unsigned int)pa));
+			for(int i=0; i<6; i++){
+				printf("%02x", ha[i]);
+				if(i<5)	fputc(':', stdout);
+				else	printf(", %u]\n", id);
+			}
+			
+
+		}
+		void loadLog(){
+			FILE *fp;
+			char line[100];
+			unsigned int buf;
+
+			log.clear();
+
+			if((fp=fopen("test.log", "r")) == NULL){
+				perror("load_log");
+				return;
+			}
+
+			while(fgets(line, sizeof(line), fp) != NULL){
+				sscanf(line, "%d", &buf);
+				log.push_back(buf);
+			}
+
+			/*
+			printf("-------------------\n");
+			for(int i=0; i<log.size(); i++)
+				printf("[debug load_log_indev] id: %d\n", log[i]);
+			printf("-------------------\n");
+			*/
+
+			fclose(fp);
+			return;
 		}
 
 		unsigned int getid(){

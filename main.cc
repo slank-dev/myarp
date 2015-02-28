@@ -48,20 +48,12 @@ int main(int argc, char** argv){
 		printf("usage: %s [interface]\n", argv[PROGNAME]);
 		return -1;
 	}
-	std::vector<unsigned int> vec;
-	load_log(vec);
-
-	for(int i=0; i<vec.size(); i++){
-		std::cout << vec[i] << std::endl;
-	}
-
 	
-	//scanLan(argv[IFNAME]);
+	printf("\n");
 
+	scanLan(argv[IFNAME]);
 
-
-
-
+	printf("\n");
 }
 
 

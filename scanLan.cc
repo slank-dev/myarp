@@ -68,13 +68,6 @@ int send_ArpRequest_AllAddr(const char* ifname){//[[[
 		send_arp_request(alladdr[i], ifname);
 	}
 
-	for(int i=0; i<addr_count; i++){
-#ifdef DEBUG_send_ArpReqest_AllAddr
-		print_ipaddr((unsigned int*)&alladdr[i]);
-#endif
-		send_arp_request(alladdr[i], ifname);
-	}
-
 
 	//usleep(5000000);
 	usleep(8000000);
@@ -146,7 +139,7 @@ int scanLan(const char* ifname){
 		perror("pcap_lookupnet");
 		return -1;
 	}
-	if((handle=pcap_open_live(ifname, 0, 1, 1000, errbuf)) == NULL){
+	if((handle=pcap_open_live(ifname, 0, 0, 1000, errbuf)) == NULL){
 		perror("pcap_open_live");
 		return -1;
 	}
