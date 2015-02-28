@@ -42,10 +42,51 @@
 #define MAX_DEVICES 1000
 
 
+void printLog(const char* filename){
+	FILE* fp;
+	char line[100];
+	unsigned int buf_id;
+	char buf_live[16];
+	char buf_ipaddr[16];
+	unsigned int buf_mac[6];
+	char buf_bender[16];
+	char buf_hostname[16];
+	device buf_dev;
+
+	if((fp=fopen(filename, "r")) == NULL){
+		perror("printLog");
+		return;
+	}
+
+	while((fgets(line, sizeof(line), fp)) != NULL){
+		memset(buf_live, 0, sizeof(buf_live));
+		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
+		memset(buf_mac, 0, sizeof(buf_mac));
+		memset(buf_bender, 0, sizeof(buf_bender));
+		memset(buf_hostname, 0, sizeof(buf_hostname));
+		
+		sscanf(line, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
+				&buf_id, buf_live, buf_ipaddr, 
+				&buf_mac[0],&buf_mac[1],&buf_mac[2],
+				&buf_mac[3],&buf_mac[4],&buf_mac[5],
+				buf_bender, buf_hostname);
+		
+
+		if(strcmp("UP", buf_live) == 0)	buf_dev.live=true;
+		else							buf_dev.live=false;
+		for(int i=0; i<6; i++)	buf_dev.ha[i] = buf_mac[i];
+		buf_dev.pa = inet_addr(buf_ipaddr);
+		buf_dev.bender = buf_bender;
+		buf_dev.hostname = buf_hostname;
+	
+		buf_dev.showinfo();
+	}
+}
 
 
 
-int send_ArpRequest_AllAddr(scanLanConfig sconfig){ 
+
+int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 	u_int32_t alladdr[MAX_DEVICES];
 	u_char macaddr[6];
 	int addr_count = getaddrsinlan(sconfig.ifname, alladdr, MAX_DEVICES);
@@ -72,10 +113,10 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){
 	//return addr_count;
 	return 1;
 
-} 
+} //]]]
 
 
- void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
+ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
 										const u_char* packet){
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
@@ -113,11 +154,11 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){
 		}
 	}
 
-}
+}//]]]
 
 
 
-int scanLan(scanLanConfig sconfig){
+int scanLan(scanLanConfig sconfig){//[[[
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	struct device dev;
@@ -167,56 +208,8 @@ int scanLan(scanLanConfig sconfig){
 		perror("scanLan fopen");
 		return -1;
 	}
-		
-	char str[256];
-	unsigned int buf_id;
-	char buf_live[16];
-	char buf_ipaddr[16];
-	unsigned int buf_mac[6];
-	char buf_bender[16];
-	char buf_hostname[16];
-	while(fgets(str, sizeof(str), fp) != NULL){
-		memset(buf_live, 0, sizeof(buf_live));
-		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
-		memset(buf_mac, 0, sizeof(buf_mac));
-		memset(buf_bender, 0, sizeof(buf_bender));
-		memset(buf_hostname, 0, sizeof(buf_hostname));
 
-		sscanf(str, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
-				&buf_id, buf_live, buf_ipaddr, 
-				&buf_mac[0],&buf_mac[1],&buf_mac[2],
-				&buf_mac[3],&buf_mac[4],&buf_mac[5],
-				buf_bender, buf_hostname);
-
-#ifdef DEBUG_scanLan
-		printf("%s\t%s\t%2x:%2x:%2x:%2x:%2x:%2x\t%s\t%s \n", 
-				buf_live, buf_ipaddr, 
-				buf_mac[0],buf_mac[1],buf_mac[2],
-				buf_mac[3],buf_mac[4],buf_mac[5],
-				buf_bender, buf_hostname);
-#endif
-
-
-		if(strcmp("UP", buf_live) == 0)	dev.live=true;
-		else							dev.live=false;
-		for(int i=0; i<6; i++)	dev.ha[i] = buf_mac[i];
-		dev.pa = inet_addr(buf_ipaddr);
-		dev.bender = buf_bender;
-		dev.hostname = buf_hostname;
-
-
-		vec.push_back(dev);
-	}
-
-
-	//show log info
-	printf("----------------------------------------------------------\n");
-	for(int i=0; i<vec.size(); i++){
-		vec[i].showinfo();	
-	}
-	printf("----------------------------------------------------------\n");
-
-
-
+	printLog("test.log");
+	
 	return 1;
-}
+}//]]]

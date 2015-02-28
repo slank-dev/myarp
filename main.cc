@@ -63,6 +63,7 @@ int main(int argc, char** argv){
 				break;
 			case 'f':
 				printf("load file only()() korekara!!\n");
+				printLog(optarg);
 				return 1;
 				break;
 			case 'i':

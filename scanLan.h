@@ -43,6 +43,7 @@ class scanLanConfig{
 };
 
 
+void printLog(const char* filename);
 
 int send_ArpRequest_AllAddr(scanLanConfig sconfig);
 	
