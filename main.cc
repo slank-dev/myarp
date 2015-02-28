@@ -43,14 +43,18 @@ enum{PROGNAME, IFNAME};
 
 
 int main(int argc, char** argv){
-	int c;
+	int opt;
 	char ifname[32];
+	int count;
+	int timeout;
 
 	strncpy(ifname, "wlan0", sizeof("wlan0"));	//set default interface
-
+	count = 1;
+	timeout = 5;
+		
 	/*read options*/
-	while((c=getopt(argc, argv, "hvi:")) != -1){
-		switch(c){
+	while((opt=getopt(argc, argv, "hvi:c:t:")) != -1){
+		switch(opt){
 			case 'h':
 				printf("[opt]help\n");
 				break;
@@ -58,9 +62,17 @@ int main(int argc, char** argv){
 				printf("[opt]version\n");
 				break;
 			case 'i':
-				printf("[opt]select interface\n");
 				strncpy(ifname, optarg, sizeof(ifname));
-				printf("iface: %s\n", ifname);
+				printf("[opt select interface] iface: %s\n", ifname);
+				break;
+			case 'c':
+				count = atoi(optarg);
+				printf("[opt set count] count: %d \n", atoi(optarg));
+				break;
+			case 't':
+				timeout = atoi(optarg);
+				printf("[opt set timeout] timeout: %d \n", atoi(optarg));
+				break;
 		}
 	}
 	
@@ -68,7 +80,7 @@ int main(int argc, char** argv){
 
 	
 	printf("\n");
-	scanLan(ifname);
+	scanLan(ifname, count, timeout);
 	printf("\n");
 
 }

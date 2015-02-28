@@ -40,42 +40,47 @@
 
 #define MAX_DEVICES 1000
 
-
-int send_ArpRequest_AllAddr(const char* ifname);
+/*
+int send_ArpRequest_AllAddr(const char* ifname, int);
 void recvPackHandle(u_char *nouse, 
 		const struct pcap_pkthdr *header, const u_char* packet);
-int scanLan(const char* ifname);
+int scanLan(const char* ifname, int count, int timeout);
+*/
 
 
 
 
-
-int send_ArpRequest_AllAddr(const char* ifname){//[[[
+int send_ArpRequest_AllAddr(const char* ifname, int count, int timeout){ 
 	u_int32_t alladdr[MAX_DEVICES];
 	u_char macaddr[6];
 	int addr_count = getaddrsinlan(ifname, alladdr, MAX_DEVICES);
 	int live_count = 0;
 	char bender_name[256];
 	
-
 	// wait just moment	
-	usleep(800000);
+	usleep(0.8 * 1000000);
+	
 
-	for(int i=0; i<addr_count; i++){
+	for(int k=0; k<count; k++){
+		
+		//printf("send count[%d]\n", k);
+		for(int i=0; i<addr_count; i++){
 #ifdef DEBUG_send_ArpReqest_AllAddr
-		print_ipaddr((unsigned int*)&alladdr[i]);
+			print_ipaddr((unsigned int*)&alladdr[i]);
 #endif
-		send_arp_request(alladdr[i], ifname);
+			send_arp_request(alladdr[i], ifname);
+		}
+		
+		usleep(timeout * 1000000);
 	}
 
+	//return addr_count;
+	return 1;
 
-	//usleep(5000000);
-	usleep(8000000);
-	return addr_count;
-}//]]] 
+} 
 
 
- void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
+ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 										const u_char* packet){
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
@@ -116,11 +121,11 @@ int send_ArpRequest_AllAddr(const char* ifname){//[[[
 		}
 	}
 
-}//]]]
+}
 
 
 
-int scanLan(const char* ifname){
+int scanLan(const char* ifname, int scan_count,int timeout){
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	struct device dev;
@@ -131,8 +136,13 @@ int scanLan(const char* ifname){
 	std::vector<device> vec;
 
 	FILE *fp;
+	
 
-	printf("ScaningInterface: %s\n", ifname);
+	printf("--------------------------------\n");
+	printf("ScaningInterface: %s(wlan0)\n", ifname);
+	printf("ScanCount: %d(1)\n", scan_count);
+	printf("Timeout: %d(5) sec\n", timeout);
+	printf("--------------------------------\n");
 
 
 	if(pcap_lookupnet(ifname, &net, &mask, errbuf) == -1){
@@ -150,7 +160,7 @@ int scanLan(const char* ifname){
 		printf("[ArpSend in LAN Started] \n");
 		pcap_loop(handle, 0, recvPackHandle, NULL);
 	}else{
-		addr_count = send_ArpRequest_AllAddr(ifname);
+		addr_count = send_ArpRequest_AllAddr(ifname, scan_count,timeout);
 		kill(pid, SIGINT);
 		wait(NULL);
 	}

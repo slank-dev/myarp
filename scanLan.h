@@ -23,8 +23,8 @@
 
 
 
-int send_ArpRequest_AllAddr(const char* ifname);
+int send_ArpRequest_AllAddr(const char* ifname,int count,int timeout);
 	
 void recvPackHandle(u_char* nouse, const struct pcap_pkthdr* header,
 					const u_char* packet);
-int scanLan(const char* ifname);
+int scanLan(const char* ifname, int count, int timeout);
