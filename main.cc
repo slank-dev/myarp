@@ -49,9 +49,9 @@ int main(int argc, char** argv){
 	scanLanConfig conf;
 
 	
-
-	/*read options*/
-	while((opt=getopt(argc, argv, "hvi:c:t:f:")) != -1){
+	
+	//read options
+	while((opt=getopt(argc, argv, "hvi:c:t:f:s:")) != -1){
 		switch(opt){
 			case 'h':
 				usage(argc, argv);
@@ -62,8 +62,11 @@ int main(int argc, char** argv){
 				return 1;
 				break;
 			case 'f':
-				printf("load file only()() korekara!!\n");
 				printLog(optarg);
+				return 1;
+				break;
+			case 's':
+				sortLog(optarg);
 				return 1;
 				break;
 			case 'i':

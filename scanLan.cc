@@ -33,6 +33,7 @@
 #include <netdb.h>
 
 #include <vector>
+#include <algorithm>
 
 #include "arp.h"
 #include "addr.h"
@@ -40,6 +41,61 @@
 #include "scanLan.h"
 
 #define MAX_DEVICES 1000
+
+void sortLog(const char* filename){
+	FILE* fp;
+	char line[100];
+	unsigned int buf_id;
+	char buf_live[16];
+	char buf_ipaddr[16];
+	unsigned int buf_mac[6];
+	char buf_bender[16];
+	char buf_hostname[16];
+	device buf_dev;
+	std::vector<device> vec;
+
+	if((fp=fopen(filename, "r")) == NULL){
+		perror("printLog");
+		return;
+	}
+
+	while((fgets(line, sizeof(line), fp)) != NULL){
+		memset(buf_live, 0, sizeof(buf_live));
+		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
+		memset(buf_mac, 0, sizeof(buf_mac));
+		memset(buf_bender, 0, sizeof(buf_bender));
+		memset(buf_hostname, 0, sizeof(buf_hostname));
+		
+		sscanf(line, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
+				&buf_id, buf_live, buf_ipaddr, 
+				&buf_mac[0],&buf_mac[1],&buf_mac[2],
+				&buf_mac[3],&buf_mac[4],&buf_mac[5],
+				buf_bender, buf_hostname);
+		
+
+		if(strcmp("UP", buf_live) == 0)	buf_dev.live=true;
+		else							buf_dev.live=false;
+		for(int i=0; i<6; i++)	buf_dev.ha[i] = buf_mac[i];
+		buf_dev.pa = inet_addr(buf_ipaddr);
+		buf_dev.bender = buf_bender;
+		buf_dev.hostname = buf_hostname;
+	
+		vec.push_back(buf_dev);
+	}
+	
+	for(int i=0; i<vec.size()-1; i++){
+		for(int j=vec.size()-1; j>i; j--){
+			if(vec[j-1] > vec[j]){
+				std::swap(vec[j-1], vec[j]);	
+			}
+		}
+	}
+//	std::sort(vec.begin(), vec.end());
+
+	for(int i=0; i<vec.size(); i++){
+		vec[i].showinfo();	
+	}
+}
 
 
 void printLog(const char* filename){

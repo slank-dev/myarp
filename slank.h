@@ -64,6 +64,50 @@ class device{
 			bender = c.bender;
 			hostname = c.hostname;
 		}
+		
+		//operator <, >, ==
+		bool operator<(device dev){
+			union data{
+				u_char c[4];
+				u_int32_t l;
+			};
+			data d1, d2;
+			d1.l = pa;
+			d2.l = dev.pa;
+			
+			for(int i=0; i<4; i++){
+				if(d1.c[i] == d2.c[i])	continue;
+				if(d1.c[i] < d2.c[i])		return true;
+				else if(d1.c[i] > d2.c[i])	return false;
+			}
+			//return false;
+		}
+		bool operator>(device dev){
+			union data{
+				u_char c[4];
+				u_int32_t l;
+			};
+			data d1, d2;
+			d1.l = pa;
+			d2.l = dev.pa;
+			
+			for(int i=0; i<4; i++){
+				if(d1.c[i] == d2.c[i])	continue;
+				if(d1.c[i] > d2.c[i])	return true;
+				if(d1.c[i] < d2.c[i])	return false;
+			}
+			return false;
+		}
+		bool operator==(device dev){
+			if(dev.pa == pa)	return true;
+			else				return false;
+		}
+		bool operator!=(device dev){
+			if(dev.pa != pa)	return true;
+			else				return false;
+		}
+
+
 
 		void showinfo(){
 			printf(" %s\t", (live==true)?"UP" : "DOWN");
@@ -78,11 +122,14 @@ class device{
 		}
 
 		void writeLog(){
+			/*
 			unsigned int data=0;
 			data = (unsigned int)pa;
 			for(int i=0; i<6; i++)	data += (unsigned int)ha[i];	
 			id = data;
-			
+			*/
+
+			getid();
 			loadLog();
 			
 			for(int i=0; i<log.size(); i++){
@@ -96,8 +143,7 @@ class device{
 			if((fp=fopen(LOGFILE_NAME, "a")) == NULL){
 				perror("write log");
 				return;
-			}
-			
+			}	
 			
 			fprintf(fp, "%u ", id);
 			fprintf(fp, "%s ", (live==true)?"UP" : "DOWN");
@@ -117,9 +163,8 @@ class device{
 				if(i<5)	fputc(':', stdout);
 				else	printf(", %u]\n", id);
 			}
-			
-
 		}
+
 		void loadLog(){
 			FILE *fp;
 			char line[100];
@@ -148,7 +193,7 @@ class device{
 			return;
 		}
 
-		unsigned int getid(){
+		void getid(){
 			unsigned int data=0;
 
 			data = (unsigned int)pa;
@@ -158,6 +203,6 @@ class device{
 			
 			//printf("id: %u\n", data);
 			id = data;
-			return 	4;
+			return 	;
 		}
 };
