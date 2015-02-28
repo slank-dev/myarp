@@ -24,10 +24,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <vector>
+
+#include <unistd.h>
 
 #include "arp.h"
 #include "addr.h"
@@ -44,16 +43,34 @@ enum{PROGNAME, IFNAME};
 
 
 int main(int argc, char** argv){
-	if(argc < 2){
-		printf("usage: %s [interface]\n", argv[PROGNAME]);
-		return -1;
+	int c;
+	char ifname[32];
+
+	strncpy(ifname, "wlan0", sizeof("wlan0"));	//set default interface
+
+	/*read options*/
+	while((c=getopt(argc, argv, "hvi:")) != -1){
+		switch(c){
+			case 'h':
+				printf("[opt]help\n");
+				break;
+			case 'v':
+				printf("[opt]version\n");
+				break;
+			case 'i':
+				printf("[opt]select interface\n");
+				strncpy(ifname, optarg, sizeof(ifname));
+				printf("iface: %s\n", ifname);
+		}
 	}
 	
+		
+
+	
+	printf("\n");
+	scanLan(ifname);
 	printf("\n");
 
-	scanLan(argv[IFNAME]);
-
-	printf("\n");
 }
 
 

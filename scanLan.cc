@@ -132,7 +132,7 @@ int scanLan(const char* ifname){
 
 	FILE *fp;
 
-
+	printf("ScaningInterface: %s\n", ifname);
 
 
 	if(pcap_lookupnet(ifname, &net, &mask, errbuf) == -1){
