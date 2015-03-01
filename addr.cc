@@ -200,7 +200,7 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 
 void getbenderbymac(const u_char data[6], char* bender){
 	FILE *fp;
-	const char* filename = MACCODE_FILE;
+	const char* filename = "mac_code.list";
 	char strbuf[256];
 	unsigned int  mac[3];
 	u_char dev_mac[3] = {data[0],data[1],data[2]};
