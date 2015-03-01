@@ -1,5 +1,5 @@
 # TLexScan 
-The whole area of LAN examination Scaner  
+TLexScan version 0.10 -The whole area of LAN examination Scaner  
 Local area network scaner for linux from slank  
 
 ## Description
