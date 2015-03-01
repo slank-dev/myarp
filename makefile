@@ -1,6 +1,6 @@
 #makefile
 
-program = nscan.out
+program = tlex.out
 
 SRC = main.cc addr.cc arp.cc scanLan.cc util.cc
 OBJ = $(SRC:.cc=.o)

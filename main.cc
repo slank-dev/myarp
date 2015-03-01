@@ -83,7 +83,8 @@ int main(int argc, char** argv){
 		}
 	}
 	
-		
+	printf("Starting TLexScan 0.00 ");
+	conf.showConfig();
 	
 	printf("\n");
 	scanLan(conf);

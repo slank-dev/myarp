@@ -236,7 +236,7 @@ int scanLan(scanLanConfig sconfig){
 
 	FILE *fp;
 	
-	sconfig.showConfig();
+	//sconfig.showConfig();
 	
 
 	if(pcap_lookupnet(sconfig.ifname, &net, &mask, errbuf) == -1){

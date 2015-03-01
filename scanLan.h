@@ -38,13 +38,13 @@ class scanLanConfig{
 	}
 
 	void showConfig(){
-		printf("----------------------------------\n");
+		//printf("----------------------------------\n");
 		printf("Interface: %s\n", ifname);
-		printf("scan_count: %d\n", scanLoopCount);
-		printf("timeout: %d\n", timeout);
+		printf("scan_count: %d times\n", scanLoopCount);
+		printf("timeout: %d sec\n", timeout);
 		printf("logfile: %s\n", logname);
 		printf("verbose info: %d\n", verbose);
-		printf("----------------------------------\n");
+		//printf("----------------------------------\n");
 	}
 };
 
