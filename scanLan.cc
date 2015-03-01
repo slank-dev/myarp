@@ -99,7 +99,7 @@ void sortLog(const char* filename){
 		return;
 	}
 	for(int i=0; i<vec.size(); i++){
-		vec[i].writeLog(filename);
+		vec[i].writeLog(filename, 0);
 	}
 
 	fclose(fp);
@@ -178,7 +178,7 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 	//return addr_count;
 	return 1;
 
-} //]]]
+} //]]] 
 
 
  void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
@@ -191,6 +191,7 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 	char mac_str[6];
 	char bender_str[256];
 	lc lc;
+	scanLanConfig* config = (scanLanConfig*)data;
 
 
 	ethh = (struct ether_header*)packet;
@@ -215,7 +216,7 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 			
 			devbuf.getid();
 			
-			devbuf.writeLog("test.log");
+			devbuf.writeLog(config->logname);
 		}
 	}
 
@@ -223,7 +224,7 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 
 
 
-int scanLan(scanLanConfig sconfig){//[[[
+int scanLan(scanLanConfig sconfig){
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	struct device dev;
@@ -240,6 +241,7 @@ int scanLan(scanLanConfig sconfig){//[[[
 	printf("ScaningInterface: %s(wlan0)\n", sconfig.ifname);
 	printf("ScanCount: %d(1)\n", sconfig.scanLoopCount);
 	printf("Timeout: %d(5) sec\n", sconfig.timeout);
+	printf("Logname: %s(test.log)\n", sconfig.logname);
 	printf("--------------------------------\n");
 
 
@@ -256,7 +258,7 @@ int scanLan(scanLanConfig sconfig){//[[[
 
 	if((pid=fork()) == 0){
 		printf("[ArpSend in LAN Started] \n");
-		pcap_loop(handle, 0, recvPackHandle, NULL);
+		pcap_loop(handle, 0, recvPackHandle, (u_char*)&sconfig);
 	}else{
 		addr_count = send_ArpRequest_AllAddr(sconfig);
 		kill(pid, SIGINT);
@@ -269,12 +271,12 @@ int scanLan(scanLanConfig sconfig){//[[[
 	printf("\n");
 
 	//read log file
-	if((fp=fopen(LOGFILE_NAME, "r")) == NULL){
+	if((fp=fopen(sconfig.logname, "a+")) == NULL){
 		perror("scanLan fopen");
 		return -1;
 	}
-
-	printLog("test.log");
+	sortLog(sconfig.logname);
+	printLog(sconfig.logname);
 	
 	return 1;
-}//]]]
+}

@@ -65,7 +65,7 @@ class device{
 			hostname = c.hostname;
 		}
 		
-		//operator <, >, ==
+		//operator <, >, ==//[[[
 		bool operator<(device dev){
 			union data{
 				u_char c[4];
@@ -105,8 +105,7 @@ class device{
 		bool operator!=(device dev){
 			if(dev.pa != pa)	return true;
 			else				return false;
-		}
-
+		}//]]]
 
 
 		void showinfo(){
@@ -121,7 +120,7 @@ class device{
 			printf("%s\n", hostname.c_str());
 		}
 
-		void writeLog(const char* filename){
+		void writeLog(const char* filename, int varbose=1){
 			/*
 			unsigned int data=0;
 			data = (unsigned int)pa;
@@ -156,12 +155,14 @@ class device{
 			fprintf(fp, "%s ", bender.c_str());
 			fprintf(fp, "%s\n", hostname.c_str());
 			fclose(fp);
-
-			printf(" - add new log [%s, ", addrtostr((unsigned int)pa));
-			for(int i=0; i<6; i++){
-				printf("%02x", ha[i]);
-				if(i<5)	fputc(':', stdout);
-				else	printf(", %u]\n", id);
+			
+			if(varbose==1){
+				printf(" - add new log [%s, ", addrtostr((unsigned int)pa));
+				for(int i=0; i<6; i++){
+					printf("%02x", ha[i]);
+					if(i<5)	fputc(':', stdout);
+					else	printf(", %u]\n", id);
+				}
 			}
 		}
 

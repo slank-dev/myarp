@@ -25,7 +25,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <vector>
-
 #include <unistd.h>
 
 #include "arp.h"
@@ -34,11 +33,7 @@
 #include "slank.h"
 #include "util.h"
 
-#include <iostream>
-
-
-
-
+//#include <iostream>
 
 
 int main(int argc, char** argv){
@@ -51,7 +46,7 @@ int main(int argc, char** argv){
 	
 	
 	//read options
-	while((opt=getopt(argc, argv, "hvi:c:t:f:s:")) != -1){
+	while((opt=getopt(argc, argv, "hvi:c:t:p:s:f:")) != -1){
 		switch(opt){
 			case 'h':
 				usage(argc, argv);
@@ -61,7 +56,8 @@ int main(int argc, char** argv){
 				version();
 				return 1;
 				break;
-			case 'f':
+			case 'p':
+				sortLog(optarg);
 				printLog(optarg);
 				return 1;
 				break;
@@ -77,6 +73,9 @@ int main(int argc, char** argv){
 				break;
 			case 't':
 				conf.timeout = atoi(optarg);
+				break;
+			case 'f':
+				strcpy(conf.logname, optarg);
 				break;
 		}
 	}

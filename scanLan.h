@@ -26,11 +26,13 @@ class scanLanConfig{
 		char ifname[32];
 		int scanLoopCount;
 		int timeout;
+		char logname[64];
 
 	scanLanConfig(){
 		strcpy(ifname, "wlan0");
 		scanLoopCount = 1;
 		timeout = 5;
+		strcpy(logname, "test.log");
 	}
 
 	void showConfig(){
