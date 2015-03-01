@@ -10,8 +10,8 @@ User will be able to know the information of the LAN
 that is quickly and easily and safely your connection .  
 
 ## Demo
- makeing now  
- comming soon  
+ please see this video
+ http://youtu.be/S6B1QEPSF5g
 
 ## VS.
  Fing <http://www.overlooksoft.com/fing>  
