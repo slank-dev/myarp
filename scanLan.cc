@@ -83,6 +83,8 @@ void sortLog(const char* filename){
 		vec.push_back(buf_dev);
 	}
 	
+	
+	// sort logs
 	for(int i=0; i<vec.size()-1; i++){
 		for(int j=vec.size()-1; j>i; j--){
 			if(vec[j-1] > vec[j]){
@@ -90,11 +92,18 @@ void sortLog(const char* filename){
 			}
 		}
 	}
-//	std::sort(vec.begin(), vec.end());
-
-	for(int i=0; i<vec.size(); i++){
-		vec[i].showinfo();	
+	
+	// write sorted log
+	if((fp = fopen(filename, "w")) == NULL){
+		perror("fopen");
+		return;
 	}
+	for(int i=0; i<vec.size(); i++){
+		vec[i].writeLog(filename);
+	}
+
+	fclose(fp);
+
 }
 
 
@@ -206,7 +215,7 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 			
 			devbuf.getid();
 			
-			devbuf.writeLog();
+			devbuf.writeLog("test.log");
 		}
 	}
 

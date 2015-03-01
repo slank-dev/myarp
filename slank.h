@@ -121,7 +121,7 @@ class device{
 			printf("%s\n", hostname.c_str());
 		}
 
-		void writeLog(){
+		void writeLog(const char* filename){
 			/*
 			unsigned int data=0;
 			data = (unsigned int)pa;
@@ -130,7 +130,7 @@ class device{
 			*/
 
 			getid();
-			loadLog();
+			loadLog(filename);
 			
 			for(int i=0; i<log.size(); i++){
 				if(id == log[i]){
@@ -140,7 +140,7 @@ class device{
 			}
 
 			FILE *fp;
-			if((fp=fopen(LOGFILE_NAME, "a")) == NULL){
+			if((fp=fopen(filename, "a")) == NULL){
 				perror("write log");
 				return;
 			}	
@@ -165,14 +165,14 @@ class device{
 			}
 		}
 
-		void loadLog(){
+		void loadLog(const char* filename){
 			FILE *fp;
 			char line[100];
 			unsigned int buf;
 
 			log.clear();
 
-			if((fp=fopen("test.log", "r")) == NULL){
+			if((fp=fopen(filename, "r")) == NULL){
 				perror("load_log");
 				return;
 			}

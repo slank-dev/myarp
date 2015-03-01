@@ -70,7 +70,8 @@ std::vector<unsigned int> getidbylogfile(){
 
 void usage(int argc, char **argv){	
 	printf("usage: %s\t[-i interface] [-c count_scan_loop]\n", argv[0]);
-	printf("\t\t\t[-t timeout] [-f filename]\n");
+	printf("\t\t\t[-t timeout] [-f filename] [-s filename(print sort)]\n");
+	printf("\t\t\t\n");
 
 	return;
 }
