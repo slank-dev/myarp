@@ -27,12 +27,14 @@ class scanLanConfig{
 		int scanLoopCount;
 		int timeout;
 		char logname[64];
+		int verbose;
 
 	scanLanConfig(){
 		strcpy(ifname, "wlan0");
 		scanLoopCount = 1;
 		timeout = 5;
 		strcpy(logname, "test.log");
+		verbose = 1;
 	}
 
 	void showConfig(){
@@ -40,6 +42,8 @@ class scanLanConfig{
 		printf("Interface: %s\n", ifname);
 		printf("scan_count: %d\n", scanLoopCount);
 		printf("timeout: %d\n", timeout);
+		printf("logfile: %s\n", logname);
+		printf("verbose info: %d\n", verbose);
 		printf("----------------------------------\n");
 	}
 };

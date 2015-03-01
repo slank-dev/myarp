@@ -46,8 +46,11 @@ int main(int argc, char** argv){
 	
 	
 	//read options
-	while((opt=getopt(argc, argv, "hvi:c:t:p:s:f:")) != -1){
+	while((opt=getopt(argc, argv, "nhvi:c:t:p:s:f:")) != -1){
 		switch(opt){
+			case 'n':
+				conf.verbose = 0;
+				break;
 			case 'h':
 				usage(argc, argv);
 				return 1;

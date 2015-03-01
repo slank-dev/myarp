@@ -120,20 +120,15 @@ class device{
 			printf("%s\n", hostname.c_str());
 		}
 
-		void writeLog(const char* filename, int varbose=1){
-			/*
-			unsigned int data=0;
-			data = (unsigned int)pa;
-			for(int i=0; i<6; i++)	data += (unsigned int)ha[i];	
-			id = data;
-			*/
+		void writeLog(const char* filename, int verbose=1){
 
 			getid();
 			loadLog(filename);
-			
+					
 			for(int i=0; i<log.size(); i++){
 				if(id == log[i]){
-					printf(" - found this log\n");
+					if(verbose == 1)
+						printf(" - found this log\n");
 					return;
 				}
 			}
@@ -156,7 +151,7 @@ class device{
 			fprintf(fp, "%s\n", hostname.c_str());
 			fclose(fp);
 			
-			if(varbose==1){
+			if(verbose==1){
 				printf(" - add new log [%s, ", addrtostr((unsigned int)pa));
 				for(int i=0; i<6; i++){
 					printf("%02x", ha[i]);
@@ -174,7 +169,7 @@ class device{
 			log.clear();
 
 			if((fp=fopen(filename, "r")) == NULL){
-				perror("load_log");
+				fprintf(stderr, "loadLog: logfile not found make newfile\n");
 				return;
 			}
 

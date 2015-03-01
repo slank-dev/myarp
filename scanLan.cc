@@ -55,7 +55,7 @@ void sortLog(const char* filename){
 	std::vector<device> vec;
 
 	if((fp=fopen(filename, "r")) == NULL){
-		perror("printLog");
+		perror("sortLog");
 		return;
 	}
 
@@ -95,7 +95,7 @@ void sortLog(const char* filename){
 	
 	// write sorted log
 	if((fp = fopen(filename, "w")) == NULL){
-		perror("fopen");
+		perror("sortLog");
 		return;
 	}
 	for(int i=0; i<vec.size(); i++){
@@ -119,7 +119,7 @@ void printLog(const char* filename){
 	device buf_dev;
 
 	if((fp=fopen(filename, "r")) == NULL){
-		perror("printLog");
+		perror("printLog()");
 		return;
 	}
 
@@ -178,7 +178,7 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 	//return addr_count;
 	return 1;
 
-} //]]] 
+} //]]]  
 
 
  void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
@@ -216,7 +216,7 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 			
 			devbuf.getid();
 			
-			devbuf.writeLog(config->logname);
+			devbuf.writeLog(config->logname, config->verbose);
 		}
 	}
 
@@ -236,14 +236,8 @@ int scanLan(scanLanConfig sconfig){
 
 	FILE *fp;
 	
-
-	printf("--------------------------------\n");
-	printf("ScaningInterface: %s(wlan0)\n", sconfig.ifname);
-	printf("ScanCount: %d(1)\n", sconfig.scanLoopCount);
-	printf("Timeout: %d(5) sec\n", sconfig.timeout);
-	printf("Logname: %s(test.log)\n", sconfig.logname);
-	printf("--------------------------------\n");
-
+	sconfig.showConfig();
+	
 
 	if(pcap_lookupnet(sconfig.ifname, &net, &mask, errbuf) == -1){
 		perror("pcap_lookupnet");
