@@ -41,7 +41,8 @@
 
 #define MAX_DEVICES 1000
 
-void sortLog(const char* filename){
+// use device class
+void sortLog(const char* filename){//[[[
 	FILE* fp;
 	char line[100];
 	unsigned int buf_id;
@@ -50,8 +51,8 @@ void sortLog(const char* filename){
 	unsigned int buf_mac[6];
 	char buf_bender[16];
 	char buf_hostname[16];
-	device buf_dev;
-	std::vector<device> vec;
+	device buf_dev;				// UseMyDataType
+	std::vector<device> vec;	// UseMyDataType
 
 	if((fp=fopen(filename, "r")) == NULL){
 		perror("sortLog");
@@ -72,6 +73,7 @@ void sortLog(const char* filename){
 				buf_bender, buf_hostname);
 		
 
+		// UseMyDataType
 		if(strcmp("UP", buf_live) == 0)	buf_dev.live=true;
 		else							buf_dev.live=false;
 		for(int i=0; i<6; i++)	buf_dev.ha[i] = buf_mac[i];
@@ -79,7 +81,8 @@ void sortLog(const char* filename){
 		buf_dev.bender = buf_bender;
 		buf_dev.hostname = buf_hostname;
 	
-		vec.push_back(buf_dev);
+
+		vec.push_back(buf_dev);		// UseMyDataType
 	}
 	
 	
@@ -98,15 +101,16 @@ void sortLog(const char* filename){
 		return;
 	}
 	for(int i=0; i<vec.size(); i++){
-		vec[i].writeLog(filename, 0);
+		vec[i].writeLog(filename, 0);	// UseMyDataType
 	}
 
 	fclose(fp);
 
-}
+}//]]]
 
 
-void printLog(const char* filename){
+// use device class
+void printLog(const char* filename){//[[[
 	FILE* fp;
 	char line[100];
 	unsigned int buf_id;
@@ -145,11 +149,12 @@ void printLog(const char* filename){
 	
 		buf_dev.showinfo();
 	}
-}
+}//]]]
 
 
-
-
+// use scanLanConfig class
+// use addr.h
+// use arp.h
 int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 	u_int32_t alladdr[MAX_DEVICES];
 	u_char macaddr[6];
@@ -177,16 +182,17 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 	//return addr_count;
 	return 1;
 
-} //]]]  
+}   //]]]
 
-
- void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
+// use device class
+// use scanLanConfig class
+// use addr.h
+void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
 										const u_char* packet){
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
 	struct ether_arp *arp;
 	struct hostent *host;
-	struct device devbuf;
 	char mac_str[6];
 	char bender_str[256];
 	union lc{
@@ -194,6 +200,7 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 		unsigned char c[4];
 	};
 	lc lc;
+	device devbuf;
 	scanLanConfig* config = (scanLanConfig*)data;
 
 
@@ -222,24 +229,22 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 			devbuf.writeLog(config->logname, config->verbose);
 		}
 	}
-
 }//]]]
 
 
-
-int scanLan(scanLanConfig sconfig){
+// use device class
+// use scanLanConfig class
+int scanLan(scanLanConfig sconfig){//[[[
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
-	struct device dev;
 	bpf_u_int32 mask;
 	bpf_u_int32 net;
 	pcap_t* handle;
 	pid_t pid;
+	device dev;
 	std::vector<device> vec;
 
 	FILE *fp;
-	
-	//sconfig.showConfig();
 	
 
 	if(pcap_lookupnet(sconfig.ifname, &net, &mask, errbuf) == -1){
@@ -276,4 +281,4 @@ int scanLan(scanLanConfig sconfig){
 	printLog(sconfig.logname);
 	
 	return 1;
-}
+}//]]]

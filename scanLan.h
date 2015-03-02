@@ -19,6 +19,12 @@
  *slank (Hiroki Shirokura) <mail: slank.dev@gmail.com>
  *
  */
+
+#include <stdio.h>
+#include <string.h>
+
+
+
 class scanLanConfig{
 	public:
 		char ifname[32];
@@ -26,7 +32,7 @@ class scanLanConfig{
 		int timeout;
 		char logname[64];
 		int verbose;
-
+	
 	scanLanConfig(){
 		strcpy(ifname, "wlan0");
 		scanLoopCount = 1;
@@ -50,8 +56,8 @@ class scanLanConfig{
 void sortLog(const char* filename);
 void printLog(const char* filename);
 
+
 int send_ArpRequest_AllAddr(scanLanConfig sconfig);
-	
-void recvPackHandle(u_char* nouse, const struct pcap_pkthdr* header,
-					const u_char* packet);
+void recvPackHandle(u_char* nouse, 
+		const struct pcap_pkthdr* header,const u_char* packet);
 int scanLan(scanLanConfig sconfig);
