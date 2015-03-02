@@ -23,20 +23,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
 #include <net/ethernet.h>
 #include <net/if_arp.h>
 #include <netinet/if_ether.h>
-
-//for timeout function
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-//#include "arp.h"
-//#include "get_addr.h"
+
 #include "addr.h"
-#include "slank.h"
 
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
 
@@ -63,7 +58,7 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 	const u_int32_t myip = inet_addr(get_paddr(ifname));
 	const u_char mac_bcast[6] = {0xff,0xff,0xff,0xff,0xff,0xff};
 	u_char mymac[6];
-	get_haddr(ifname, mymac);
+	get_haddr(ifname, mymac);		// UseMyfunction
 
 
 	if((sock=socket(PF_PACKET, SOCK_PACKET, htons(ETH_P_ARP)))<0){
@@ -126,7 +121,7 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 #ifdef DEBUG_send_arp_request
 	printf("[DEBUG] in function \"%s\" %s:%d  ", 
 					__func__, __FILE__, __LINE__);
-	print_ipaddr((unsigned int*)&ipaddr);
+	print_ipaddr((unsigned int*)&ipaddr);	// UseMyfunction
 #endif 
 
 	close(sock);
@@ -139,8 +134,6 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 
 int recv_arp_reply(const u_int32_t ipaddr, 
 				const char* ifname, u_char macaddr[6]){
-// default timeout is 0.5 sec
-	
 
 	union lc{
 		unsigned long l;
@@ -156,9 +149,9 @@ int recv_arp_reply(const u_int32_t ipaddr,
 	u_char buf[sizeof(struct ether_header)+sizeof(struct ether_arp)];
 	u_char *p;
 	int total;
-	const u_int32_t myip = inet_addr(get_paddr(ifname));
+	const u_int32_t myip = inet_addr(get_paddr(ifname));	//UseMyfunction
 	u_char mymac[6];
-	get_haddr(ifname, mymac);
+	get_haddr(ifname, mymac);			// UseMyfunction
 
 	fd_set readfds;
 	fd_set fds;
@@ -167,7 +160,7 @@ int recv_arp_reply(const u_int32_t ipaddr,
 	
 	// if arp to mine
 	if(ipaddr == myip){
-		get_haddr(ifname, macaddr);
+		get_haddr(ifname, macaddr);		// UseMyfunction
 		return 1;
 	}
 
