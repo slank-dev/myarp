@@ -29,9 +29,9 @@
 
 #include "scanLan.h"	// for class scanLanConfig
 #include "util.h"
+#include "myclass.h"
 
-
-
+// use scanLanConfig class
 int main(int argc, char** argv){
 	int opt;
 	char ifname[32];

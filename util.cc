@@ -27,11 +27,124 @@
 #include <stdlib.h>
 #include <vector>
 
+#include "myclass.h"
+
+
+
+
+void printLog(const char* filename){
+	FILE* fp;
+	char line[100];
+	unsigned int buf_id;
+	char buf_live[16];
+	char buf_ipaddr[16];
+	unsigned int buf_mac[6];
+	char buf_bender[16];
+	char buf_hostname[16];
+	device buf_dev;
+
+	if((fp=fopen(filename, "r")) == NULL){
+		perror("printLog()");
+		return;
+	}
+
+	while((fgets(line, sizeof(line), fp)) != NULL){
+		memset(buf_live, 0, sizeof(buf_live));
+		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
+		memset(buf_mac, 0, sizeof(buf_mac));
+		memset(buf_bender, 0, sizeof(buf_bender));
+		memset(buf_hostname, 0, sizeof(buf_hostname));
+		
+		sscanf(line, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
+				&buf_id, buf_live, buf_ipaddr, 
+				&buf_mac[0],&buf_mac[1],&buf_mac[2],
+				&buf_mac[3],&buf_mac[4],&buf_mac[5],
+				buf_bender, buf_hostname);
+		
+
+		if(strcmp("UP", buf_live) == 0)	buf_dev.live=true;
+		else							buf_dev.live=false;
+		for(int i=0; i<6; i++)	buf_dev.ha[i] = buf_mac[i];
+		buf_dev.pa = inet_addr(buf_ipaddr);
+		buf_dev.bender = buf_bender;
+		buf_dev.hostname = buf_hostname;
+	
+		buf_dev.showinfo();
+	}
+}
+
+
+
+void sortLog(const char* filename){
+	FILE* fp;
+	char line[100];
+	unsigned int buf_id;
+	char buf_live[16];
+	char buf_ipaddr[16];
+	unsigned int buf_mac[6];
+	char buf_bender[16];
+	char buf_hostname[16];
+	device buf_dev;				// UseMyDataType
+	std::vector<device> vec;	// UseMyDataType
+
+	if((fp=fopen(filename, "r")) == NULL){
+		perror("sortLog");
+		return;
+	}
+
+	while((fgets(line, sizeof(line), fp)) != NULL){
+		memset(buf_live, 0, sizeof(buf_live));
+		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
+		memset(buf_mac, 0, sizeof(buf_mac));
+		memset(buf_bender, 0, sizeof(buf_bender));
+		memset(buf_hostname, 0, sizeof(buf_hostname));
+		
+		sscanf(line, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
+				&buf_id, buf_live, buf_ipaddr, 
+				&buf_mac[0],&buf_mac[1],&buf_mac[2],
+				&buf_mac[3],&buf_mac[4],&buf_mac[5],
+				buf_bender, buf_hostname);
+		
+
+		// UseMyDataType
+		if(strcmp("UP", buf_live) == 0)	buf_dev.live=true;
+		else							buf_dev.live=false;
+		for(int i=0; i<6; i++)	buf_dev.ha[i] = buf_mac[i];
+		buf_dev.pa = inet_addr(buf_ipaddr);
+		buf_dev.bender = buf_bender;
+		buf_dev.hostname = buf_hostname;
+	
+
+		vec.push_back(buf_dev);		// UseMyDataType
+	}
+	
+	// sort logs
+	for(int i=0; i<vec.size()-1; i++){
+		for(int j=vec.size()-1; j>i; j--){
+			if(vec[j-1] > vec[j])
+				std::swap(vec[j-1], vec[j]);	
+		}
+	}
+	
+	// write sorted log
+	if((fp = fopen(filename, "w")) == NULL){
+		perror("sortLog");
+		return;
+	}
+	for(int i=0; i<vec.size(); i++){
+		vec[i].writeLog(filename, 0);	// UseMyDataType
+	}
+
+	fclose(fp);
+}
+
+
 
 
 static const uint32_t FNV_OFFSET_BASIS_32 = 2166136261U;
 static const uint32_t FNV_PRIME_32 = 16777619U;
-uint32_t hash(uint8_t *bytes, size_t length){//[[[
+
+uint32_t hash(uint8_t *bytes, size_t length){
     uint32_t h;
     size_t i;
 
@@ -41,10 +154,11 @@ uint32_t hash(uint8_t *bytes, size_t length){//[[[
     }
 
     return h;
-}//]]]
+}
 
 
-std::vector<unsigned int> getidbylogfile(){//[[[
+
+std::vector<unsigned int> getidbylogfile(){
 	FILE *fp;
 	char line[100];
 	unsigned int buf;
@@ -62,10 +176,11 @@ std::vector<unsigned int> getidbylogfile(){//[[[
 
 	fclose(fp);
 	return vec;
-}//]]]
+}
 
 
-void usage(int argc, char **argv){	//[[[
+
+void usage(int argc, char **argv){	
 	printf("usage: %s\t[-i interface] [-c loop_count]\n", argv[0]);
 	printf("\t\t\t[-t timeout] [-p filename] [-s filename]\n");
 	printf("\t\t\t[-f filename] [-n noverbose]\n");
@@ -82,10 +197,11 @@ void usage(int argc, char **argv){	//[[[
 //	printf("\t-s	\n");
 
 	return;
-}//]]]
+}
 
 
-void version(){//[[[
+
+void version(){
 	printf("PROGRAMNAME version 0.10 \n\n");
 	printf("Copyright (C) 2014-2015 Hiroki Shirokura <mail: slank.dev@gmail.com>\n");
 	//printf("\n");
@@ -107,4 +223,4 @@ void version(){//[[[
 	printf("If not, see <http://slankdev.wordpress.com>.\n");
 	printf("slank (Hiroki Shirokura) <mail: slank.dev@gmail.com>\n");
 
-}//]]]
+}

@@ -27,6 +27,8 @@
 #include <vector>
 
 
+void printLog(const char* filename);
+void sortLog(const char* filename);
 
 uint32_t hash(uint8_t *bytes, size_t length);
 std::vector<unsigned int> getidbylogfile();

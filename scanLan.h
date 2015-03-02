@@ -23,38 +23,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "myclass.h"
 
 
-class scanLanConfig{
-	public:
-		char ifname[32];
-		int scanLoopCount;
-		int timeout;
-		char logname[64];
-		int verbose;
-	
-	scanLanConfig(){
-		strcpy(ifname, "wlan0");
-		scanLoopCount = 1;
-		timeout = 5;
-		strcpy(logname, "test.log");
-		verbose = 1;
-	}
 
-	void showConfig(){
-		//printf("----------------------------------\n");
-		printf("Interface: %s\n", ifname);
-		printf("scan_count: %d times\n", scanLoopCount);
-		printf("timeout: %d sec\n", timeout);
-		printf("logfile: %s\n", logname);
-		printf("verbose info: %d\n", verbose);
-		//printf("----------------------------------\n");
-	}
-};
-
-
-void sortLog(const char* filename);
-void printLog(const char* filename);
 
 
 int send_ArpRequest_AllAddr(scanLanConfig sconfig);

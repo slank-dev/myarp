@@ -30,132 +30,23 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <netdb.h>
-
 #include <vector>
 #include <algorithm>
 
 #include "arp.h"
 #include "addr.h"
-#include "slank.h"
-#include "scanLan.h"
+#include "myclass.h"
+#include "util.h"
 
 #define MAX_DEVICES 1000
 
-// use device class
-void sortLog(const char* filename){//[[[
-	FILE* fp;
-	char line[100];
-	unsigned int buf_id;
-	char buf_live[16];
-	char buf_ipaddr[16];
-	unsigned int buf_mac[6];
-	char buf_bender[16];
-	char buf_hostname[16];
-	device buf_dev;				// UseMyDataType
-	std::vector<device> vec;	// UseMyDataType
-
-	if((fp=fopen(filename, "r")) == NULL){
-		perror("sortLog");
-		return;
-	}
-
-	while((fgets(line, sizeof(line), fp)) != NULL){
-		memset(buf_live, 0, sizeof(buf_live));
-		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
-		memset(buf_mac, 0, sizeof(buf_mac));
-		memset(buf_bender, 0, sizeof(buf_bender));
-		memset(buf_hostname, 0, sizeof(buf_hostname));
-		
-		sscanf(line, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
-				&buf_id, buf_live, buf_ipaddr, 
-				&buf_mac[0],&buf_mac[1],&buf_mac[2],
-				&buf_mac[3],&buf_mac[4],&buf_mac[5],
-				buf_bender, buf_hostname);
-		
-
-		// UseMyDataType
-		if(strcmp("UP", buf_live) == 0)	buf_dev.live=true;
-		else							buf_dev.live=false;
-		for(int i=0; i<6; i++)	buf_dev.ha[i] = buf_mac[i];
-		buf_dev.pa = inet_addr(buf_ipaddr);
-		buf_dev.bender = buf_bender;
-		buf_dev.hostname = buf_hostname;
-	
-
-		vec.push_back(buf_dev);		// UseMyDataType
-	}
-	
-	
-	// sort logs
-	for(int i=0; i<vec.size()-1; i++){
-		for(int j=vec.size()-1; j>i; j--){
-			if(vec[j-1] > vec[j]){
-				std::swap(vec[j-1], vec[j]);	
-			}
-		}
-	}
-	
-	// write sorted log
-	if((fp = fopen(filename, "w")) == NULL){
-		perror("sortLog");
-		return;
-	}
-	for(int i=0; i<vec.size(); i++){
-		vec[i].writeLog(filename, 0);	// UseMyDataType
-	}
-
-	fclose(fp);
-
-}//]]]
 
 
-// use device class
-void printLog(const char* filename){//[[[
-	FILE* fp;
-	char line[100];
-	unsigned int buf_id;
-	char buf_live[16];
-	char buf_ipaddr[16];
-	unsigned int buf_mac[6];
-	char buf_bender[16];
-	char buf_hostname[16];
-	device buf_dev;
-
-	if((fp=fopen(filename, "r")) == NULL){
-		perror("printLog()");
-		return;
-	}
-
-	while((fgets(line, sizeof(line), fp)) != NULL){
-		memset(buf_live, 0, sizeof(buf_live));
-		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
-		memset(buf_mac, 0, sizeof(buf_mac));
-		memset(buf_bender, 0, sizeof(buf_bender));
-		memset(buf_hostname, 0, sizeof(buf_hostname));
-		
-		sscanf(line, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
-				&buf_id, buf_live, buf_ipaddr, 
-				&buf_mac[0],&buf_mac[1],&buf_mac[2],
-				&buf_mac[3],&buf_mac[4],&buf_mac[5],
-				buf_bender, buf_hostname);
-		
-
-		if(strcmp("UP", buf_live) == 0)	buf_dev.live=true;
-		else							buf_dev.live=false;
-		for(int i=0; i<6; i++)	buf_dev.ha[i] = buf_mac[i];
-		buf_dev.pa = inet_addr(buf_ipaddr);
-		buf_dev.bender = buf_bender;
-		buf_dev.hostname = buf_hostname;
-	
-		buf_dev.showinfo();
-	}
-}//]]]
 
 
-// use scanLanConfig class
-// use addr.h
-// use arp.h
-int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
+
+
+int send_ArpRequest_AllAddr(scanLanConfig sconfig){ 
 	u_int32_t alladdr[MAX_DEVICES];
 	u_char macaddr[6];
 	int addr_count = getaddrsinlan(sconfig.ifname, alladdr, MAX_DEVICES);
@@ -182,12 +73,10 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 	//return addr_count;
 	return 1;
 
-}   //]]]
+}   
 
-// use device class
-// use scanLanConfig class
-// use addr.h
-void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
+
+void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 										const u_char* packet){
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
@@ -229,12 +118,10 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,//[[[
 			devbuf.writeLog(config->logname, config->verbose);
 		}
 	}
-}//]]]
+}
 
 
-// use device class
-// use scanLanConfig class
-int scanLan(scanLanConfig sconfig){//[[[
+int scanLan(scanLanConfig sconfig){
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	bpf_u_int32 mask;
@@ -281,4 +168,4 @@ int scanLan(scanLanConfig sconfig){//[[[
 	printLog(sconfig.logname);
 	
 	return 1;
-}//]]]
+}
