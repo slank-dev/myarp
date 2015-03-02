@@ -25,6 +25,8 @@
 #include <vector>
 #include <unistd.h>
 
+#include <time.h>
+
 #include "arp.h"
 #include "addr.h"
 #include "scanLan.h"
@@ -81,6 +83,8 @@ int main(int argc, char** argv){
 		}
 	}
 	
+	clock_t starttime=clock();
+
 	printf("Starting TLexScan 0.10 ");
 	conf.showConfig();
 	

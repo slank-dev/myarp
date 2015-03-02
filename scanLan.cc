@@ -189,6 +189,10 @@ int send_ArpRequest_AllAddr(scanLanConfig sconfig){ //[[[
 	struct device devbuf;
 	char mac_str[6];
 	char bender_str[256];
+	union lc{
+		unsigned int l;
+		unsigned char c[4];
+	};
 	lc lc;
 	scanLanConfig* config = (scanLanConfig*)data;
 

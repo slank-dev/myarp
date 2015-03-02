@@ -41,7 +41,7 @@
 
  
 
-char* get_paddr(const char* ifname){
+char* get_paddr(const char* ifname){//[[[
 	int sockd;
 	struct ifreq ifr;
 	struct sockaddr_in *sa;
@@ -61,9 +61,10 @@ char* get_paddr(const char* ifname){
 
 	ipstr = inet_ntoa(sa->sin_addr);
 	return ipstr;
-}
+}//]]]
 
-char* get_pmask(const char* ifname){
+
+char* get_pmask(const char* ifname){//[[[
 	int sockd;
 	struct ifreq ifr;
 	struct sockaddr_in *sa;
@@ -83,11 +84,10 @@ char* get_pmask(const char* ifname){
 	maskstr = inet_ntoa(sa->sin_addr);
 
 	return maskstr;
-}
+}//]]]
 
 
-
-void get_haddr( const char* ifname, u_char haddr[6]){
+void get_haddr( const char* ifname, u_char haddr[6]){//[[[
 	int sockd;
 	struct ifreq ifr;
 
@@ -105,11 +105,15 @@ void get_haddr( const char* ifname, u_char haddr[6]){
 	for(int i=0; i<6; i++)	
 		haddr[i] = (unsigned char)ifr.ifr_hwaddr.sa_data[i];
 
-}
+}//]]]
 
 
 
-void count_next_addr(unsigned int *p){
+void count_next_addr(unsigned int *p){//[[[
+	union lc{
+		unsigned int l;
+		unsigned char c[4];
+	};
 	union lc *lc = (union lc*)p;
 	
 	for(int i=3; i>=0; i--){
@@ -121,34 +125,46 @@ void count_next_addr(unsigned int *p){
 			return;
 		}
 	}
-}
+}//]]]
 
 
 
-void print_ipaddr( unsigned int* addr){
+void print_ipaddr( unsigned int* addr){//[[[
+	union lc{
+		unsigned int l;
+		unsigned char c[4];
+	};
 	union lc *lc = (union lc*)addr;
 	for(int i=0; i<4; i++){
 		printf("%d", lc->c[i]);
 		if(i<3)		printf(".");
 		else		printf("\n");
 	}
-}
+}//]]]
 
 
 
-char* addrtostr(const unsigned int addr){
+char* addrtostr(const unsigned int addr){//[[[
 	char *str;
+	union lc{
+		unsigned int l;
+		unsigned char c[4];
+	};
 	union lc lc;
 	lc.l = (int)addr;
 	str = (char*)malloc(sizeof(char)*16);
 	snprintf(str,sizeof(char[16]),"%u.%u.%u.%u",
 					lc.c[0],lc.c[1],lc.c[2],lc.c[3]);
 	return str;
-}
+}//]]]
 
 
 
-int getclassbyaddr(unsigned int addr){
+int getclassbyaddr(unsigned int addr){//[[[
+	union lc{
+		unsigned int l;
+		unsigned char c[4];
+	};
 	union lc lc;
 	lc.l = addr;
 
@@ -156,15 +172,19 @@ int getclassbyaddr(unsigned int addr){
 	else if(128 <= lc.c[0] && lc.c[0] <= 191)	return 1;	// class B
 	else if(192 <= lc.c[0] && lc.c[0] <= 233)	return 2;	// class C
 	else 	return -1;	// error
-}
+}//]]]
 
 
 
-int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
+int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){//[[[
 	int  addr_count;
 	char bender_name[256];
 	const u_int32_t myip = inet_addr(get_paddr(ifname));
 	const u_int32_t mask = inet_addr(get_pmask(ifname));
+	union lc{
+		unsigned int l;
+		unsigned char c[4];
+	};
 	union lc lc;
 	u_int32_t startaddr = (mask & myip);
 	u_char macaddr[6];
@@ -193,11 +213,11 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 		count_next_addr((unsigned int*)&addr);
 	}
 	return addr_count;
-}
+}//]]]
 
  
 
-void getbenderbymac(const u_char data[6], char* bender){
+void getbenderbymac(const u_char data[6], char* bender){//[[[
 	FILE *fp;
 	const char* filename = "mac_code.list";
 	char strbuf[256];
@@ -216,9 +236,13 @@ void getbenderbymac(const u_char data[6], char* bender){
 		
 		if(mac[0]==dev_mac[0]&&mac[1]==dev_mac[1]&&mac[2]==dev_mac[2]){
 #ifdef DEBUG_getbenderbymac
-			printf("\n[DEBUG] in function \"%s\" %s:%d  \n", __func__, __FILE__, __LINE__);
-			printf("search hit!  %02X:%02x:%02x (%s) \n\n",mac[0],mac[1],mac[2],bender);
-#endif
+			printf("\n[DEBUG] in function \"%s\" %s:%d  \n",
+					__func__, __FILE__, __LINE__);
+			printf("search hit!  %02X:%02x:%02x (%s) \n\n",
+					mac[0],mac[1],mac[2],bender);
+#endif		
+
+			fclose(fp);
 			return;
 		}
 
@@ -232,4 +256,4 @@ void getbenderbymac(const u_char data[6], char* bender){
 	fclose(fp);
 	
 	return;
-}
+}//]]]

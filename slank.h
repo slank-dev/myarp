@@ -24,13 +24,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
-
 #include <vector>
 #include <string>
 
 #include "util.h"
+//#include "slank.h"
 
-#define LOGFILE_NAME "test.log"
 
 
 
@@ -38,6 +37,12 @@
 //#define DEBUG_getbenderbymac
 //#define DEBUG_send_arp_request
 //#define DEBUG_send_ArpReqest_AllAddr
+
+class GeneralInfo{
+	public:
+		std::string version;
+	
+};
 
 
 class device{
