@@ -19,26 +19,31 @@
  *slank (Hiroki Shirokura) <mail: slank.dev@gmail.com>
  *
  */
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <vector>
 #include <unistd.h>
 
-#include <time.h>
+#include <sys/time.h>
 
 #include "scanLan.h"	// for class scanLanConfig
 #include "util.h"
 #include "myclass.h"
+#include "debug.h"
 
-// use scanLanConfig class
+
+
+
 int main(int argc, char** argv){
 	int opt;
-	char ifname[32];
-	int count;
-	int timeout;
+	struct timeval s, e;
+	clock_t startTime, endTime;
 	scanLanConfig conf;		// UseMyDataType
 
+	gettimeofday(&s, NULL);
 	
 	
 	while((opt=getopt(argc, argv, "nhvi:c:t:p:s:f:")) != -1){
@@ -78,14 +83,21 @@ int main(int argc, char** argv){
 		}
 	}
 	
-	clock_t starttime=clock();
-
-	printf("Starting TLexScan 0.10 ");
+	printf("\n");
+	printf("Starting TLex 0.10 \n");
 	conf.showConfig();
-	
-	printf("\n");
+	//printf("\n");
+
 	scanLan(conf);
+	gettimeofday(&e, NULL);
+
+	startTime = s.tv_sec + (double)(s.tv_usec * 1e-6);
+	endTime = e.tv_sec + (double)(e.tv_usec * 1e-6);
+
 	printf("\n");
+	printf("TLex done: scan finished in ");
+	printf("%lu.%lu sec\n",
+			(long)e.tv_sec-s.tv_sec, (long)e.tv_usec-s.tv_usec);
 
 }
 

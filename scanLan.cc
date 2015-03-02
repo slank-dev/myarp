@@ -37,6 +37,7 @@
 #include "addr.h"
 #include "myclass.h"
 #include "util.h"
+#include "debug.h"
 
 #define MAX_DEVICES 1000
 

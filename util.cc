@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "myclass.h"
+#include "debug.h"
 
 
 

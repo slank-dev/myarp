@@ -32,6 +32,7 @@
 
 
 #include "addr.h"
+#include "debug.h"
 
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
 
