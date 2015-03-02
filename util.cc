@@ -31,8 +31,7 @@
 
 static const uint32_t FNV_OFFSET_BASIS_32 = 2166136261U;
 static const uint32_t FNV_PRIME_32 = 16777619U;
-
-uint32_t hash(uint8_t *bytes, size_t length){
+uint32_t hash(uint8_t *bytes, size_t length){//[[[
     uint32_t h;
     size_t i;
 
@@ -42,10 +41,10 @@ uint32_t hash(uint8_t *bytes, size_t length){
     }
 
     return h;
-}
+}//]]]
 
 
-std::vector<unsigned int> getidbylogfile(){
+std::vector<unsigned int> getidbylogfile(){//[[[
 	FILE *fp;
 	char line[100];
 	unsigned int buf;
@@ -63,10 +62,10 @@ std::vector<unsigned int> getidbylogfile(){
 
 	fclose(fp);
 	return vec;
-}
+}//]]]
 
 
-void usage(int argc, char **argv){	
+void usage(int argc, char **argv){	//[[[
 	printf("usage: %s\t[-i interface] [-c loop_count]\n", argv[0]);
 	printf("\t\t\t[-t timeout] [-p filename] [-s filename]\n");
 	printf("\t\t\t[-f filename] [-n noverbose]\n");
@@ -83,7 +82,8 @@ void usage(int argc, char **argv){
 //	printf("\t-s	\n");
 
 	return;
-}
+}//]]]
+
 
 void version(){//[[[
 	printf("PROGRAMNAME version 0.10 \n\n");

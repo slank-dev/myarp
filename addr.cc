@@ -31,9 +31,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <net/if.h>
-#include "addr.h"
-#include "arp.h"
-#include "slank.h"
+
 
 
 #define MACCODE_FILE "mac_code.txt"
@@ -179,8 +177,8 @@ int getclassbyaddr(unsigned int addr){//[[[
 int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){//[[[
 	int  addr_count;
 	char bender_name[256];
-	const u_int32_t myip = inet_addr(get_paddr(ifname));
-	const u_int32_t mask = inet_addr(get_pmask(ifname));
+	const u_int32_t myip = inet_addr(get_paddr(ifname));	// UseMyFunction
+	const u_int32_t mask = inet_addr(get_pmask(ifname));	// UseMyFunction
 	union lc{
 		unsigned int l;
 		unsigned char c[4];
@@ -194,7 +192,7 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){//[[[
 		if(lc.c[i]==0)	lc.c[i]=255;	
 	}
 
-	count_next_addr((unsigned int*)&startaddr);
+	count_next_addr((unsigned int*)&startaddr);				// UseMyFunction
 	const u_int32_t endaddr = (u_int32_t)lc.l;
 	u_int32_t addr = startaddr;
 	
@@ -210,7 +208,7 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){//[[[
 	
 	for(addr_count=0; addr != endaddr && addr_count<size; addr_count++){
 		alladdr[addr_count] = addr;
-		count_next_addr((unsigned int*)&addr);
+		count_next_addr((unsigned int*)&addr);				// UseMyFunction
 	}
 	return addr_count;
 }//]]]

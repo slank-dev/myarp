@@ -27,13 +27,9 @@
 
 #include <time.h>
 
-#include "arp.h"
-#include "addr.h"
-#include "scanLan.h"
-#include "slank.h"
+#include "scanLan.h"	// for class scanLanConfig
 #include "util.h"
 
-//#include <iostream>
 
 
 int main(int argc, char** argv){
@@ -41,11 +37,10 @@ int main(int argc, char** argv){
 	char ifname[32];
 	int count;
 	int timeout;
-	scanLanConfig conf;
+	scanLanConfig conf;		// UseMyDataType
 
 	
 	
-	//read options
 	while((opt=getopt(argc, argv, "nhvi:c:t:p:s:f:")) != -1){
 		switch(opt){
 			case 'n':
@@ -60,7 +55,7 @@ int main(int argc, char** argv){
 				return 1;
 				break;
 			case 'p':
-				sortLog(optarg);
+				sortLog(optarg);		
 				printLog(optarg);
 				return 1;
 				break;
