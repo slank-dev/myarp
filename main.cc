@@ -46,8 +46,12 @@ int main(int argc, char** argv){
 	gettimeofday(&s, NULL);
 	
 	
-	while((opt=getopt(argc, argv, "nhvi:c:t:p:s:f:")) != -1){
+	while((opt=getopt(argc, argv, "lnhvi:c:t:p:s:f:")) != -1){
 		switch(opt){
+			case 'l':
+				printf("long scan!!\n");
+				return 1;
+				break;
 			case 'n':
 				conf.verbose = 0;
 				break;
