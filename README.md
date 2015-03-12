@@ -52,27 +52,31 @@ that is quickly and easily and safely your connection .
 	g++    -c -o scanLan.o scanLan.cc
 	g++    -c -o util.o util.cc
 	g++  main.o addr.o arp.o scanLan.o util.o -o tlex.out -Wall -lpcap
-
-
+	
 	$ sudo ./tlex.out 
-	Starting TLexScan 0.00 Interface: wlan0
-	scan_count: 1 times
-	timeout: 5 sec
-	logfile: test.log
-	verbose info: 1
-
+	Starting TLex 0.10 
+	--------------------------------
+	Interface    :  wlan0          
+	scan_count   :  1              
+	timeout      :  5   sec  
+	logfile      :  test.log       
+	verbose info :  1              
+	--------------------------------
 	[ArpSend in LAN Started] 
+	loadLog: logfile not found make newfile
+	 - add new log [192.168.179.1, a2:12:42:17:d8:8f, 28551988]
+	 - add new log [192.168.179.3, 80:e6:50:17:18:46, 62106347]
+	 - add new log [192.168.179.2, 84:b1:53:6a:2f:20, 45329153]
 	 - found this log
-	 - found this log
-	 - add new log [192.168.179.2, f0:24:75:bf:8d:bf, 45329492]
 	[Scan Finished]
 
 	 UP	  192.168.179.1	[a2:12:42:17:d8:8f(not-found)]	aterm.me
-	 UP	  192.168.179.2	[f0:24:75:bf:8d:bf(Apple)]	
-	 UP	  192.168.179.4	[80:e6:50:17:18:46(Apple)]	
-	
+	 UP	  192.168.179.2	[84:b1:53:6a:2f:20(Apple)]	
+	 UP	  192.168.179.3	[80:e6:50:17:18:46(Apple)]	
+
+	TLex done: scan finished in 86167.18446744073709396316 sec
 	$ 
- 
+
 
 ## Licence
  
