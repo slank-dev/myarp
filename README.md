@@ -11,7 +11,8 @@ that is quickly and easily and safely your connection .
 
 ## Demo
  please see this video
- http://youtu.be/S6B1QEPSF5g
+ http://youtu.be/X75uHbJuGr4
+
 
 ## VS.
  Fing <http://www.overlooksoft.com/fing>  
