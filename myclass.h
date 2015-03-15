@@ -155,13 +155,13 @@ class device{
 
 		void showinfo(){
 			printf(" %s\t", (live==true)?"UP" : "DOWN");
-			printf("  %s\t[",addrtostr((unsigned int)pa));
+			printf("  %s   \t",addrtostr((unsigned int)pa));
 			for(int i=0; i<6; i++){
 				printf("%02x", ha[i]);
 				if(i<5)	fputc(':', stdout);
 				//else	fputc('\t', stdout);
 			}
-			printf("(%s)] ", bender.c_str());
+			printf("(%s)\t", bender.c_str());
 			printf("%s\n", lastchange.c_str());
 		}
 		void writeLog(const char* filename, int verbose=1){
