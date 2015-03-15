@@ -159,7 +159,7 @@ void printLog(const char* filename){
 	char buf_ipaddr[16];
 	unsigned int buf_mac[6];
 	char buf_bender[16];
-	char buf_hostname[16];
+	char buf_lastchange[16];
 	device buf_dev;
 
 	if((fp=fopen(filename, "r")) == NULL){
@@ -172,13 +172,13 @@ void printLog(const char* filename){
 		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
 		memset(buf_mac, 0, sizeof(buf_mac));
 		memset(buf_bender, 0, sizeof(buf_bender));
-		memset(buf_hostname, 0, sizeof(buf_hostname));
+		memset(buf_lastchange, 0, sizeof(buf_lastchange));
 		
 		sscanf(line, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
 				&buf_id, buf_live, buf_ipaddr, 
 				&buf_mac[0],&buf_mac[1],&buf_mac[2],
 				&buf_mac[3],&buf_mac[4],&buf_mac[5],
-				buf_bender, buf_hostname);
+				buf_bender, buf_lastchange);
 		
 
 		if(strcmp("UP", buf_live) == 0)	buf_dev.live=true;
@@ -186,7 +186,7 @@ void printLog(const char* filename){
 		for(int i=0; i<6; i++)	buf_dev.ha[i] = buf_mac[i];
 		buf_dev.pa = inet_addr(buf_ipaddr);
 		buf_dev.bender = buf_bender;
-		buf_dev.hostname = buf_hostname;
+		buf_dev.lastchange = buf_lastchange;
 	
 		buf_dev.showinfo();
 	}
@@ -202,7 +202,7 @@ void sortLog(const char* filename){
 	char buf_ipaddr[16];
 	unsigned int buf_mac[6];
 	char buf_bender[16];
-	char buf_hostname[16];
+	char buf_lastchange[16];
 	device buf_dev;				// UseMyDataType
 	std::vector<device> vec;	// UseMyDataType
 
@@ -216,13 +216,13 @@ void sortLog(const char* filename){
 		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
 		memset(buf_mac, 0, sizeof(buf_mac));
 		memset(buf_bender, 0, sizeof(buf_bender));
-		memset(buf_hostname, 0, sizeof(buf_hostname));
+		memset(buf_lastchange, 0, sizeof(buf_lastchange));
 		
 		sscanf(line, "%u %s %s %x:%x:%x:%x:%x:%x %s %s", 
 				&buf_id, buf_live, buf_ipaddr, 
 				&buf_mac[0],&buf_mac[1],&buf_mac[2],
 				&buf_mac[3],&buf_mac[4],&buf_mac[5],
-				buf_bender, buf_hostname);
+				buf_bender, buf_lastchange);
 		
 
 		// UseMyDataType
@@ -231,7 +231,7 @@ void sortLog(const char* filename){
 		for(int i=0; i<6; i++)	buf_dev.ha[i] = buf_mac[i];
 		buf_dev.pa = inet_addr(buf_ipaddr);
 		buf_dev.bender = buf_bender;
-		buf_dev.hostname = buf_hostname;
+		buf_dev.lastchange = buf_lastchange;
 	
 
 		vec.push_back(buf_dev);		// UseMyDataType
