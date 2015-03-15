@@ -35,6 +35,8 @@
 #ifndef INCLUDED_MYCLASS
 #define INCLUDED_MYCLASS
 
+#define TLEX_INFOPATH "TLEX.tlx"
+
 
 
 class TLexInfo{
@@ -49,7 +51,7 @@ class TLexInfo{
 		TLexInfo(){		/* load file "TLEX" */
 			FILE *fp;
 
-			if((fp=fopen("TLEX", "r")) == NULL){
+			if((fp=fopen(TLEX_INFOPATH, "r")) == NULL){
 				perror("TLexinfo()");
 				strcpy(name, "TLex");
 				strcpy(version, "0.0.0");
