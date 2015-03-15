@@ -37,17 +37,66 @@
 
 
 
-#define TLEXOPTS		100
+class TLexInfo{
+	public:
+		char name[32];
+		char version[16];
+		char url[64];
+		char buf[256];
+		char buf_item[256];
+		char buf_content[256];
 
-/* TLex Original Option Code */
-enum TLexOpcode{ 
+		TLexInfo(){		/* load file "TLEX" */
+			FILE *fp;
+
+			if((fp=fopen("TLEX", "r")) == NULL){
+				perror("TLexinfo()");
+				strcpy(name, "TLex");
+				strcpy(version, "0.0.0");
+				strcpy(url, "http://www.tlex.org");
+				return;
+			}
+			
+			while(fgets(buf, sizeof(buf), fp) != NULL){	
+				memset(buf_item, 0, sizeof buf_item);
+				memset(buf_content, 0, sizeof buf_content);
+
+				sscanf(buf, "%s = %s\n", buf_item, buf_content);
+				if(strcmp(buf_item, "TLEX_NAME") == 0)
+					strcpy(name, buf_content);
+				else if(strcmp(buf_item, "TLEX_VERSION") == 0)
+					strcpy(version, buf_content);
+				else if(strcmp(buf_item, "TLEX_URL") == 0)
+					strcpy(url, buf_content);
+			}
+		}
+
+		char *str(){
+			char *str;
+			str = (char*)malloc(sizeof(char) * 256);
+			sprintf(str, "%s %s ( %s )", name, version, url);
+			return str;
+		}
+
+};
+
+
+
+
+
+enum TLexOpcode{ 	/* TLex Original Option Code */
 	TLEXOPT_HELP,	
 	TLEXOPT_VERSION, 
 	TLEXOPT_PRINTLOG, 
 	TLEXOPT_SORTLOG
 };
+enum TLexModecode{	/* Tlex Originam Mode Code */
+	TLEXMODE_NORMAL,
+	TLEXMODE_MONITOR
+};
 
-class TLexOps{
+#define TLEXOPTS		100
+class TLexOps{//[[[
 	public:
 		char ifname[32];
 		int scanLoopCount;
@@ -81,13 +130,13 @@ class TLexOps{
 		printf("verbose info :  %-10d     \n", verbose);
 		printf("--------------------------------\n");
 	}
-};
+};//]]]
 
 
 
 
 
-class device{
+class device{//[[[
 	public:
 		u_int32_t pa;
 		u_char ha[6];
@@ -244,5 +293,5 @@ class device{
 			id = data;
 			return 	;
 		}
-};
+};//]]]
 #endif

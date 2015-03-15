@@ -52,8 +52,8 @@ int main(int argc, char** argv){
 	struct timeval s, e;
 	clock_t startTime, endTime;
 	TLexOps conf;
+	TLexInfo info;
 	
-
 
 	gettimeofday(&s, NULL);
 
@@ -80,7 +80,7 @@ int main(int argc, char** argv){
 
 
 	if(conf.mode == 1){
-		printf("\nStarting TLex 0.10 \n");
+		printf("\nStarting %s \n", info.str());
 		conf.showConfig();
 
 		scanLan(conf);
