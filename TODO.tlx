@@ -17,7 +17,7 @@
 				* read version from TLEX:TLEX_VERSION
 				* read url from TLEX:TLEX_URL
 				* read name from TLEX:TLEX_NAME
-[2015.03.16]	add class "target"					[2015.03.16]
+[2015.03.16]	add class "target"					[]
 				* member ha is macaddr
 				* member pa is ipaddr
 				* member port is port 
