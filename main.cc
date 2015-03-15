@@ -112,24 +112,19 @@ void parse_option(int argc, char** argv, TLexOps& conf){
 			/* dont get argument */
 			case 'h':
 				printf("-h usage\n");
-				usage(argc, argv);
-				exit(1);
+				conf.mainopt[TLEXOPT_HELP] = 1;
 				break;
 			case 'v':
 				printf("-v version()\n");
-				version();
-				exit(1);
+				conf.mainopt[TLEXOPT_VERSION] = 1;
 				break;
 			case 'p':
 				printf("-p print log\n");
-				sortLog(optarg);		
-				printLog(optarg);
-				exit(1);
+				conf.mainopt[TLEXOPT_PRINTLOG] = 1;
 				break;
 			case 's':
 				printf("-s sort log\n");
-				sortLog(optarg);
-				exit(1);
+				conf.mainopt[TLEXOPT_SORTLOG] = 1;
 				break;
 
 
@@ -170,7 +165,22 @@ int main(int argc, char** argv){
 
 
 	parse_option(argc, argv, conf);
-
+	if(conf.mainopt[TLEXOPT_HELP]){
+		usage(argc,argv);
+		return 1;
+	}
+	else if(conf.mainopt[TLEXOPT_VERSION]){
+		version();
+		return 1;	
+	}
+	else if(conf.mainopt[TLEXOPT_PRINTLOG]){
+		printLog(conf.logname);
+		return 1;	
+	}
+	else if(conf.mainopt[TLEXOPT_SORTLOG]){
+		sortLog(conf.logname);
+		return 1;	
+	}
 
 	
 	printf("\n");

@@ -31,14 +31,22 @@
 
 #include "addr.h"
 
+
 #ifndef INCLUDED_MYCLASS
 #define INCLUDED_MYCLASS
 
 
+
+#define TLEXOPTS		100
+
 /* TLex Original Option Code */
-#define TLEXOPT_MONITOR 1
-
-
+enum TLexOpcode{ 
+	TLEXOPT_MONITOR,
+	TLEXOPT_HELP,	
+	TLEXOPT_VERSION, 
+	TLEXOPT_PRINTLOG, 
+	TLEXOPT_SORTLOG
+};
 
 class TLexOps{
 	public:
@@ -49,8 +57,7 @@ class TLexOps{
 		int verbose;
 
 		/*TLEx Original Option Code*/
-		int OPT_MONITOR;
-
+		int mainopt[TLEXOPTS];
 
 	
 	TLexOps(){
@@ -59,7 +66,9 @@ class TLexOps{
 		timeout = 5;
 		strcpy(logname, "test.log");
 		verbose = 1;
+		memset(mainopt, 0, sizeof(mainopt));
 	}
+
 
 	void showConfig(){
 		printf("--------------------------------\n");
