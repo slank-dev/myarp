@@ -26,24 +26,129 @@
 #include <string.h>
 #include <stdlib.h>
 #include <vector>
-
 #include <getopt.h>
 
 #include "myclass.h"
 #include "debug.h"
 
-/*
-void parse_option(int argc, char** argv){
+
+
+
+
+void parse_option(int argc, char** argv, TLexOps& conf){
+	int opt;
 	struct option long_options[] = {
-		{"version", no_argument, 0, 'V'},
-		{"help", no_argument, 0, 'h'}
+		{"version", no_argument, 0, 0},
+		{"help", no_argument, 0, 0},
+		{"interface", required_argument, 0, 0},
+		{"timeout", required_argument, 0, 0},
+		{"loop", required_argument, 0, 0},
+		{"file", required_argument, 0, 0},
+		{"mode", required_argument, 0, 0}
 	};
+	int opt_index;
+
+
+	while((opt=getopt_long(argc,argv, "hvi:l:t:p:s:f:", long_options, &opt_index)) != -1){
+		switch(opt){
+			case 0:
+				/* dont get argument */
+				if(strcmp(long_options[opt_index].name, "version") == 0){
+					printf("--version version()\n");
+					conf.mainopt[TLEXOPT_VERSION] = 1;
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "help") == 0){
+					printf("--help help()\n");
+					conf.mainopt[TLEXOPT_HELP] = 1;
+					break;
+				}
 
 
 
-		
+				/* get argment */
+				else if(strcmp(long_options[opt_index].name, "interface") == 0){
+					printf("--interface set if\n");
+					strncpy(conf.ifname, optarg, sizeof(conf.ifname));
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "timeout") == 0){
+					printf("--timeout set timeout\n");
+					conf.timeout = atoi(optarg);
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "loop") == 0){
+					printf("--loop loopcount\n");
+					conf.scanLoopCount = atoi(optarg);
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "file") == 0){
+					printf("--file select logfile\n");
+					strcpy(conf.logname, optarg);
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "mode") == 0){
+					printf("--mode select mode\n");
+					if(strcmp(optarg, "normal") == 0)
+						conf.mode = 1;
+					else if(strcmp(optarg, "monitor") == 0)
+						conf.mode = 2;
+					else{
+						fprintf(stderr, "parse_option: mode \"%s\" not found\n", optarg);
+						exit(-1);
+					}
+					break;
+				}
+
+
+
+
+			/* dont get argument */
+			case 'h':
+				printf("-h usage\n");
+				conf.mainopt[TLEXOPT_HELP] = 1;
+				break;
+			case 'v':
+				printf("-v version()\n");
+				conf.mainopt[TLEXOPT_VERSION] = 1;
+				break;
+			case 'p':
+				printf("-p print log\n");
+				conf.mainopt[TLEXOPT_PRINTLOG] = 1;
+				break;
+			case 's':
+				printf("-s sort log\n");
+				conf.mainopt[TLEXOPT_SORTLOG] = 1;
+				break;
+
+
+			/* get argment */
+			case 'i':
+				printf("-i set interface\n");
+				strncpy(conf.ifname, optarg, sizeof(conf.ifname));
+				break;
+			case 'l':
+				printf("-l set loopcount\n");
+				conf.scanLoopCount = atoi(optarg);
+				break;
+			case 't':
+				printf("-t set timeout\n");
+				conf.timeout = atoi(optarg);
+				break;
+			case 'f':
+				printf("-f select logfile\n");
+				strcpy(conf.logname, optarg);
+				break;
+		}
+	}
+
+
+	
 }
-*/
+
+
+
+
 
 
 void printLog(const char* filename){

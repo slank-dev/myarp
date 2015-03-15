@@ -41,7 +41,6 @@
 
 /* TLex Original Option Code */
 enum TLexOpcode{ 
-	TLEXOPT_MONITOR,
 	TLEXOPT_HELP,	
 	TLEXOPT_VERSION, 
 	TLEXOPT_PRINTLOG, 
@@ -56,6 +55,8 @@ class TLexOps{
 		char logname[64];
 		int verbose;
 
+		int mode;	//1:normal, 2:monitor
+
 		/*TLEx Original Option Code*/
 		int mainopt[TLEXOPTS];
 
@@ -66,6 +67,7 @@ class TLexOps{
 		timeout = 5;
 		strcpy(logname, "test.log");
 		verbose = 1;
+		mode = 1;
 		memset(mainopt, 0, sizeof(mainopt));
 	}
 

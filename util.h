@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <vector>
 
+void parse_option(int argc, char** argv, TLexOps& conf);
 
 void printLog(const char* filename);
 void sortLog(const char* filename);
