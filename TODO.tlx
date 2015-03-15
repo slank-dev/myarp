@@ -13,7 +13,7 @@
 				  all infomation
 				* {send packets -> wait 60s}loops
 				* option "monitoring period" KIKAN
-[2015.03.16]	add readGeneralInfo()				[]
+[2015.03.16]	add readGeneralInfo()				[2015.03.16]
 				* read version from TLEX:TLEX_VERSION
 				* read url from TLEX:TLEX_URL
 				* read name from TLEX:TLEX_NAME
