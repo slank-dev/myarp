@@ -4,7 +4,7 @@
 [2015.02.01]	add parse_option()	load option		[2015.03.16]
 [2015.02.01]	GlobalClass "TLexOpt" 				[2015.03.16]
 [2015.02.01]	serch run permission 				[]
-[2015.02.01]	write time to logFile 				[]
+[2015.02.01]	write time to logFile 				[2015.03.16]
 [2015.02.01]	add scan option SYOUSAI 			[]
 [2015.02.01]	write on thread() 					[]
 
@@ -13,6 +13,12 @@
 				  all infomation
 				* {send packets -> wait 60s}loops
 				* option "monitoring period" KIKAN
+
+
+
+
+
+
 
 
 
