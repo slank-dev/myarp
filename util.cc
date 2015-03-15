@@ -27,10 +27,23 @@
 #include <stdlib.h>
 #include <vector>
 
+#include <getopt.h>
+
 #include "myclass.h"
 #include "debug.h"
 
+/*
+void parse_option(int argc, char** argv){
+	struct option long_options[] = {
+		{"version", no_argument, 0, 'V'},
+		{"help", no_argument, 0, 'h'}
+	};
 
+
+
+		
+}
+*/
 
 
 void printLog(const char* filename){

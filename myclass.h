@@ -35,17 +35,25 @@
 #define INCLUDED_MYCLASS
 
 
+/* TLex Original Option Code */
+#define TLEXOPT_MONITOR 1
 
 
-class scanLanConfig{
+
+class TLexOps{
 	public:
 		char ifname[32];
 		int scanLoopCount;
 		int timeout;
 		char logname[64];
 		int verbose;
+
+		/*TLEx Original Option Code*/
+		int OPT_MONITOR;
+
+
 	
-	scanLanConfig(){
+	TLexOps(){
 		strcpy(ifname, "wlan0");
 		scanLoopCount = 1;
 		timeout = 5;
@@ -66,11 +74,6 @@ class scanLanConfig{
 
 
 
-class GeneralInfo{
-	public:
-		std::string version;
-	
-};
 
 
 class device{

@@ -49,7 +49,7 @@
 
 
 
-int send_ArpRequest_AllAddr(scanLanConfig sconfig){ 
+int send_ArpRequest_AllAddr(TLexOps sconfig){ 
 	u_int32_t alladdr[MAX_DEVICES];
 	u_char macaddr[6];
 	int addr_count = getaddrsinlan(sconfig.ifname, alladdr, MAX_DEVICES);
@@ -93,7 +93,7 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 	};
 	lc lc;
 	device devbuf;
-	scanLanConfig* config = (scanLanConfig*)data;
+	TLexOps* config = (TLexOps*)data;
 
 
 	ethh = (struct ether_header*)packet;
@@ -124,7 +124,7 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 }
 
 
-int scanLan(scanLanConfig sconfig){
+int scanLan(TLexOps sconfig){
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	bpf_u_int32 mask;

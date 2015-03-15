@@ -29,7 +29,7 @@
 
 
 
-int send_ArpRequest_AllAddr(scanLanConfig sconfig);
+int send_ArpRequest_AllAddr(TLexOps sconfig);
 void recvPackHandle(u_char* nouse, 
 		const struct pcap_pkthdr* header,const u_char* packet);
-int scanLan(scanLanConfig sconfig);
+int scanLan(TLexOps sconfig);
