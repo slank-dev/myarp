@@ -1,3 +1,10 @@
+# this is comment
+
+#if version update $git commit -m "version 0.00 date"
+# 0.00	2015.2.20
+# 0.10	2015.3.1
+
+
 TLEX_NAME = TLex
 TLEX_VERSION = 0.1.0
 TLEX_URL = http://www.tlex.org

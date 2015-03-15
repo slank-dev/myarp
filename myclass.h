@@ -64,7 +64,10 @@ class TLexInfo{
 				memset(buf_content, 0, sizeof buf_content);
 
 				sscanf(buf, "%s = %s\n", buf_item, buf_content);
-				if(strcmp(buf_item, "TLEX_NAME") == 0)
+				if(buf_item[0] == '#')	/* comment row */
+					continue;	
+
+				else if(strcmp(buf_item, "TLEX_NAME") == 0)
 					strcpy(name, buf_content);
 				else if(strcmp(buf_item, "TLEX_VERSION") == 0)
 					strcpy(version, buf_content);
