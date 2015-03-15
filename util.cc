@@ -195,13 +195,13 @@ std::vector<unsigned int> getidbylogfile(){
 
 
 void usage(int argc, char **argv){	
-	printf("usage: %s\t[-i interface] [-c loop_count]\n", argv[0]);
+	printf("usage: %s\t[-i interface] [-l loop_count]\n", argv[0]);
 	printf("\t\t\t[-t timeout] [-p filename] [-s filename]\n");
 	printf("\t\t\t[-f filename] [-n noverbose]\n");
 	
 	printf("\n");
 	printf("\t-i	select interface\n");
-	printf("\t-c	loop count of send_arp_to_alladdr\n");
+	printf("\t-l	loop count of send_arp_to_alladdr\n");
 	printf("\t-t	timeout\n");
 	printf("\t-f	select logfile if file not found then make newfile\n");
 	printf("\t-p	print logfile only\n");

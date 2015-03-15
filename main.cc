@@ -37,9 +37,6 @@
 #include "debug.h"
 
 
-void parse_option(int argc, char** argv){
-	
-}
 
 
 void MonitorLan(TLexOps opt){
@@ -48,35 +45,27 @@ void MonitorLan(TLexOps opt){
 }
 
 
-int main(int argc, char** argv){
+
+
+
+void parse_option(int argc, char** argv, TLexOps& conf){
 	int opt;
-	struct timeval s, e;
-	clock_t startTime, endTime;
-	TLexOps conf;
-	
-
-
-	gettimeofday(&s, NULL);
-
-
-
-
-
 	struct option long_options[] = {
 		{"version", no_argument, 0, 0},
 		{"help", no_argument, 0, 0},
-		{"monitor", no_argument, 0, 0}
+		{"monitor", no_argument, 0, 0},
+		{"interface", required_argument, 0, 0},
+		{"timeout", required_argument, 0, 0},
+		{"loop", required_argument, 0, 0},
+		{"file", required_argument, 0, 0}
 	};
 	int opt_index;
 
 
-	
-
-
-
-	while((opt=getopt_long(argc,argv, "hvi:c:t:p:s:f:", long_options, &opt_index)) != -1){
+	while((opt=getopt_long(argc,argv, "hvi:l:t:p:s:f:", long_options, &opt_index)) != -1){
 		switch(opt){
 			case 0:
+				/* dont get argument */
 				if(strcmp(long_options[opt_index].name, "version") == 0){
 					printf("--version version()\n");
 					version();
@@ -94,34 +83,63 @@ int main(int argc, char** argv){
 				}
 
 
+				/* get argment */
+				else if(strcmp(long_options[opt_index].name, "interface") == 0){
+					printf("--interface set if\n");
+					strncpy(conf.ifname, optarg, sizeof(conf.ifname));
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "timeout") == 0){
+					printf("--timeout set timeout\n");
+					conf.timeout = atoi(optarg);
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "loop") == 0){
+					printf("--loop loopcount\n");
+					conf.scanLoopCount = atoi(optarg);
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "file") == 0){
+					printf("--file select logfile\n");
+					strcpy(conf.logname, optarg);
+					break;
+				}
 
+
+
+
+
+			/* dont get argument */
 			case 'h':
 				printf("-h usage\n");
 				usage(argc, argv);
-				return 1;
+				exit(1);
 				break;
 			case 'v':
 				printf("-v version()\n");
 				version();
-				return 1;
+				exit(1);
 				break;
 			case 'p':
 				printf("-p print log\n");
 				sortLog(optarg);		
 				printLog(optarg);
-				return 1;
+				exit(1);
 				break;
 			case 's':
 				printf("-s sort log\n");
 				sortLog(optarg);
-				return 1;
+				exit(1);
 				break;
+
+
+			/* get argment */
 			case 'i':
 				printf("-i set interface\n");
 				strncpy(conf.ifname, optarg, sizeof(conf.ifname));
 				break;
-			case 'c':
-				printf("-c set loopcount\n");
+			case 'l':
+				printf("-l set loopcount\n");
 				conf.scanLoopCount = atoi(optarg);
 				break;
 			case 't':
@@ -136,7 +154,22 @@ int main(int argc, char** argv){
 	}
 
 
+	
+}
 
+
+
+int main(int argc, char** argv){
+	struct timeval s, e;
+	clock_t startTime, endTime;
+	TLexOps conf;
+	
+
+
+	gettimeofday(&s, NULL);
+
+
+	parse_option(argc, argv, conf);
 
 
 	
