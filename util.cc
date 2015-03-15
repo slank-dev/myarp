@@ -94,6 +94,8 @@ void parse_option(int argc, char** argv, TLexOps& conf){
 						conf.mode = 1;
 					else if(strcmp(optarg, "monitor") == 0)
 						conf.mode = 2;
+					else if(strcmp(optarg, "capture") == 0)
+						conf.mode = 3;
 					else{
 						fprintf(stderr, "parse_option: mode \"%s\" not found\n", optarg);
 						exit(-1);

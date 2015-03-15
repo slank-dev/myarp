@@ -97,11 +97,12 @@ enum TLexOpcode{ 	/* TLex Original Option Code */
 };
 enum TLexModecode{	/* Tlex Originam Mode Code */
 	TLEXMODE_NORMAL,
-	TLEXMODE_MONITOR
+	TLEXMODE_MONITOR,
+	TLEXMODE_CAPTURE
 };
 
 #define TLEXOPTS		100
-class TLexOps{//[[[
+class TLexOps{//[[[ 
 	public:
 		char ifname[32];
 		int scanLoopCount;
@@ -109,7 +110,7 @@ class TLexOps{//[[[
 		char logname[64];
 		int verbose;
 
-		int mode;	//1:normal, 2:monitor
+		int mode;	//1:normal, 2:monitor , 3:capture
 
 		/*TLEx Original Option Code*/
 		int mainopt[TLEXOPTS];

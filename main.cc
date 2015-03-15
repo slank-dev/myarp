@@ -43,6 +43,10 @@ void MonitorLan(TLexOps opt){
 }
 
 
+void CaptureLan(TLexOps opt){
+	printf("capturing lan!!\n");
+	return;
+}
 
 
 
@@ -94,6 +98,8 @@ int main(int argc, char** argv){
 	
 	}else if(conf.mode == 2){
 		MonitorLan(conf);	
+	}else if(conf.mode == 3){
+		CaptureLan(conf);	
 	}
 
 
