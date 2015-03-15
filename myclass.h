@@ -39,7 +39,26 @@
 
 
 
-class TLexInfo{
+
+class target{
+	public:
+		u_char ha[6];
+		u_int32_t pa;
+		int port;
+
+		target(){}
+		target(u_char iha[6], u_int32_t ipa, int iport){
+			for(int i=0; i<6; i++)
+				ha[i] = iha[i];
+			pa = ipa;
+			port = iport;
+		}
+};
+
+
+
+
+class TLexInfo{//[[[
 	public:
 		char name[32];
 		char version[16];
@@ -83,9 +102,7 @@ class TLexInfo{
 			return str;
 		}
 
-};
-
-
+};//]]]
 
 
 
