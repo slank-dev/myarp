@@ -92,21 +92,22 @@ class device{
 		u_int32_t pa;
 		u_char ha[6];
 		std::string bender;
-		std::string hostname;
-		std::string comment;
+		std::string lastchange;
 		bool live;
 		unsigned int id;
 		std::vector<unsigned int> log;
 		//time info
 		
-		device(){}
+		device(){
+			lastchange = "datefime";
+		}
 
 		device(const device &c){
 			live = c.live;
 			for(int i=0; i<6; i++)	ha[i] = c.ha[i];
 			pa = c.pa;
 			bender = c.bender;
-			hostname = c.hostname;
+			lastchange = c.lastchange;
 		}
 		//operator <, >, ==
 		bool operator<(device dev){
@@ -160,8 +161,8 @@ class device{
 				if(i<5)	fputc(':', stdout);
 				//else	fputc('\t', stdout);
 			}
-			printf("(%s)]\t", bender.c_str());
-			printf("%s\n", hostname.c_str());
+			printf("(%s)] ", bender.c_str());
+			printf("%s\n", lastchange.c_str());
 		}
 		void writeLog(const char* filename, int verbose=1){
 
@@ -191,7 +192,7 @@ class device{
 				else	fputc(' ', fp);
 			}
 			fprintf(fp, "%s ", bender.c_str());
-			fprintf(fp, "%s\n", hostname.c_str());
+			fprintf(fp, "%s \n", lastchange.c_str());
 			fclose(fp);
 			
 			if(verbose==1){

@@ -33,6 +33,7 @@
 #include <vector>
 #include <algorithm>
 
+#include <time.h>
 
 
 #include "arp.h"
@@ -84,7 +85,7 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
 	struct ether_arp *arp;
-	struct hostent *host;
+	//struct hostent *host;
 	char mac_str[6];
 	char bender_str[256];
 	union lc{
@@ -94,6 +95,15 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 	lc lc;
 	device devbuf;
 	TLexOps* config = (TLexOps*)data;
+	
+	char timestr[256];
+	time_t timer = time(NULL);
+	struct tm *time;
+
+	memset(timestr, 0, sizeof(timestr));
+	time  = localtime(&timer);
+	strftime(timestr, 255, "%H:%M:%S", time);
+
 
 
 	ethh = (struct ether_header*)packet;
@@ -110,11 +120,8 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 			devbuf.pa = lc.l;
 
 			getbenderbymac(arp->arp_sha, bender_str);
-			host = gethostbyaddr((char*)lc.c, sizeof(lc), AF_INET);
 			devbuf.bender = bender_str;
-
-			/*dns search need many time, so desplay is slow*/
-			if(host != NULL)	devbuf.hostname = host->h_name;
+			devbuf.lastchange = timestr;
 			
 			devbuf.getid();
 			
