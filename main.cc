@@ -68,17 +68,17 @@ void parse_option(int argc, char** argv, TLexOps& conf){
 				/* dont get argument */
 				if(strcmp(long_options[opt_index].name, "version") == 0){
 					printf("--version version()\n");
-					version();
+					conf.mainopt[TLEXOPT_VERSION] = 1;
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "help") == 0){
 					printf("--help help()\n");
-					usage(argc,argv);
+					conf.mainopt[TLEXOPT_HELP] = 1;
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "monitor") == 0){
 					printf("--monitor monitoring mode!!!!!\n");
-					MonitorLan(conf);
+					conf.mainopt[TLEXOPT_MONITOR] = 1;
 					break;
 				}
 
@@ -179,6 +179,10 @@ int main(int argc, char** argv){
 	}
 	else if(conf.mainopt[TLEXOPT_SORTLOG]){
 		sortLog(conf.logname);
+		return 1;	
+	}
+	else if(conf.mainopt[TLEXOPT_MONITOR]){
+		MonitorLan(conf);
 		return 1;	
 	}
 
