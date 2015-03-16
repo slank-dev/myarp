@@ -1,26 +1,4 @@
 
-/*
- *Copyright (C) 2014-2015 Hiroki Shirokura <mail: slank.dev@gmail.com>
- *
- *TLexScan is free software: you can redistribute it and/or modify
- *it under the terms of the GNU General Public License as published by
- *the Free Software Foundation, either version 3 of the License, or
- *(at your option) any later version.
- *
- *TLexScan is distributed in the hope that it will be useful,
- *
- *but WITHOUT ANY WARRANTY; without even the implied warranty of
- *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *GNU General Public License for more details.
- *
- *You should have received a copy of the GNU General Public License
- *along with this program.  
- *If not, see <http://slankdev.wordpress.com>.
- *slank (Hiroki Shirokura) <mail: slank.dev@gmail.com>
- *
- */
-
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -34,29 +12,17 @@
 #include <algorithm>
 #include <time.h>
 
-
 #include "arp.h"
 #include "addr.h"
 #include "myclass.h"
 #include "util.h"
 #include "debug.h"
 
-#define MAX_DEVICES 1000
-
-
-
-
-
-
-
-
-
-void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
+void CaptureCallback(u_char *data, const struct pcap_pkthdr *header,
 										const u_char* packet){
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
 	struct ether_arp *arp;
-	//struct hostent *host;
 	char mac_str[6];
 	char bender_str[256];
 	union lc{
@@ -96,59 +62,56 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 			
 			devbuf.getid();
 			
-			devbuf.writeLog(config->logname, config->verbose);
+			devbuf.writeLog(config->logname, 2);
 		}
 	}
-}
+} 
 
 
 
+int CaptureLan(TLexOps opt){
 
-int scanLan(TLexOps sconfig){
+	printf("longcapture lan!!\n");
+	
+	int space = 60;
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
+	pcap_t* handle;
 	bpf_u_int32 mask;
 	bpf_u_int32 net;
-	pcap_t* handle;
+	const u_char* packet;
+	struct pcap_pkthdr header;
 	pid_t pid;
-	device dev;
-	std::vector<device> vec;
 
-	FILE *fp;
-	
 
-	if(pcap_lookupnet(sconfig.ifname, &net, &mask, errbuf) == -1){
+
+
+	if(pcap_lookupnet(opt.ifname, &net, &mask, errbuf) == -1){
 		perror("pcap_lookupnet");
 		return -1;
 	}
-	if((handle=pcap_open_live(sconfig.ifname, 0, 0, 1000, errbuf)) == NULL){
+	if((handle=pcap_open_live(opt.ifname, 0, 1, 1000, errbuf)) == NULL){
 		perror("pcap_open_live");
 		return -1;
 	}
-	
-
 
 	if((pid=fork()) == 0){
-		printf("[ArpSend in LAN Started] \n");
-		pcap_loop(handle, 0, recvPackHandle, (u_char*)&sconfig);
+		pcap_loop(handle, 0, CaptureCallback, (u_char*)&opt);
 	}else{
-		addr_count = send_ArpRequest_AllAddr(sconfig);
+		opt.scanLoopCount = 1;
+		opt.timeout = 0;
+		while(true){
+			printf(" - Send arp packet to all addresses at %s\n", 
+					gettimestr());
+			
+			addr_count = send_ArpRequest_AllAddr(opt);
+			sleep(space);
+		}
 		kill(pid, SIGINT);
 		wait(NULL);
 	}
 
-	printf("[Scan Finished]\n");
 	pcap_close(handle);
-		
-	printf("\n");
-
-	//read log file
-	if((fp=fopen(sconfig.logname, "a+")) == NULL){
-		perror("scanLan fopen");
-		return -1;
-	}
-	sortLog(sconfig.logname);
-	printLog(sconfig.logname);
-	
-	return 1;
+	return 1; 
 }
+

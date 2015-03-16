@@ -29,7 +29,6 @@
 
 
 
-int send_ArpRequest_AllAddr(TLexOps sconfig);
 void recvPackHandle(u_char* nouse, 
 		const struct pcap_pkthdr* header,const u_char* packet);
 int scanLan(TLexOps sconfig);

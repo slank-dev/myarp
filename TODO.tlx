@@ -22,6 +22,10 @@
 				* member pa is ipaddr
 				* member port is port 
 				* meny function of sendPacket need this class
+[2015.03.17]	find bug in class info 				[2015.03.17]
+				member function str()
+				MOJIRETUKAKUHONADO
+
 
 
 

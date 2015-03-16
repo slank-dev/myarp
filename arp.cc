@@ -33,8 +33,46 @@
 
 #include "addr.h"
 #include "debug.h"
+#include "myclass.h"
 
 #define deb  printf("debug!!(LINE:%d)\n", __LINE__)
+
+
+/* for send_ArpRequest_AllAddr */
+int send_arp_request(const u_int32_t  ipaddr, const char* ifname);
+
+
+
+int send_ArpRequest_AllAddr(TLexOps sconfig){ 
+	u_int32_t alladdr[1000];
+	u_char macaddr[6];
+	int addr_count = getaddrsinlan(sconfig.ifname, alladdr, 1000);
+	int live_count = 0;
+	char bender_name[256];
+	
+	// wait just moment	
+	usleep(0.8 * 1000000);
+	
+
+	for(int k=0; k<sconfig.scanLoopCount; k++){
+		
+		//printf("send count[%d]\n", k);
+		for(int i=0; i<addr_count; i++){
+#ifdef DEBUG_send_ArpReqest_AllAddr
+			print_ipaddr((unsigned int*)&alladdr[i]);
+#endif
+			send_arp_request(alladdr[i], sconfig.ifname);
+		}
+		
+		usleep(sconfig.timeout * 1000000);
+	}
+
+	//return addr_count;
+	return 1;
+
+}   
+
+
 
 
 

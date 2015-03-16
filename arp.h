@@ -33,7 +33,10 @@
 #include <netinet/in.h>
 #include <net/if.h>
 
+#include "myclass.h"
 
+
+int send_ArpRequest_AllAddr(TLexOps sconfig);
 
 int send_arp_request(const u_int32_t  ipaddr, const char* ifname);
 int recv_arp_reply(const u_int32_t ipaddr, 

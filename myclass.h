@@ -58,7 +58,7 @@ class target{
 
 
 
-class TLexInfo{//[[[
+class TLexInfo{
 	public:
 		char name[32];
 		char version[16];
@@ -97,12 +97,12 @@ class TLexInfo{//[[[
 
 		char *str(){
 			char *str;
-			str = (char*)malloc(sizeof(char) * 256);
+			str = (char*)malloc(sizeof(char)*256);
 			sprintf(str, "%s %s ( %s )", name, version, url);
 			return str;
 		}
 
-};//]]]
+};
 
 
 
@@ -117,15 +117,20 @@ enum TLexModecode{	/* Tlex Originam Mode Code */
 	TLEXMODE_MONITOR,
 	TLEXMODE_CAPTURE
 };
+enum TLexVerbosecode{
+	VERBOSE_OFF,
+	VERBOSE_ON,
+	VERBOSE_SEMI
+};
 
 #define TLEXOPTS		100
-class TLexOps{//[[[ 
+class TLexOps{ 
 	public:
 		char ifname[32];
 		int scanLoopCount;
 		int timeout;
 		char logname[64];
-		int verbose;
+		int verbose;	//1:on 0:off 2:semiVerbose
 
 		int mode;	//1:normal, 2:monitor , 3:capture
 
@@ -153,13 +158,13 @@ class TLexOps{//[[[
 		printf("verbose info :  %-10d     \n", verbose);
 		printf("--------------------------------\n");
 	}
-};//]]]
+};
 
 
 
 
 
-class device{//[[[
+class device{
 	public:
 		u_int32_t pa;
 		u_char ha[6];
@@ -171,7 +176,7 @@ class device{//[[[
 		//time info
 		
 		device(){
-			lastchange = "datefime";
+//			lastchange = "datefime";
 		}
 
 		device(const device &c){
@@ -267,8 +272,9 @@ class device{//[[[
 			fprintf(fp, "%s \n", lastchange.c_str());
 			fclose(fp);
 			
-			if(verbose==1){
-				printf(" - add new log [%s, ", addrtostr((unsigned int)pa));
+			if(verbose==1 || verbose==2){
+				printf(" - Add new log at %s [%s, ", lastchange.c_str(),
+						addrtostr((unsigned int)pa));
 				for(int i=0; i<6; i++){
 					printf("%02x", ha[i]);
 					if(i<5)	fputc(':', stdout);
@@ -285,7 +291,7 @@ class device{//[[[
 			log.clear();
 
 			if((fp=fopen(filename, "r")) == NULL){
-				fprintf(stderr, "loadLog: logfile not found make newfile\n");
+				fprintf(stderr, " - loadLog: logfile not found make newfile\n");
 				return;
 			}
 
@@ -316,5 +322,5 @@ class device{//[[[
 			id = data;
 			return 	;
 		}
-};//]]]
+};
 #endif

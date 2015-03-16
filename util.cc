@@ -28,10 +28,23 @@
 #include <vector>
 #include <getopt.h>
 
+#include <time.h>
 #include "myclass.h"
 #include "debug.h"
 
 
+
+char* gettimestr(){
+	char* str;
+	time_t timer = time(NULL);
+	struct tm *time;
+
+	str = (char*)malloc(sizeof(char) * 256);
+	memset(str, 0, sizeof str);
+	time = localtime(&timer);
+	strftime(str, 255, "%H:%M:%S", time);
+	return str;
+}
 
 
 
