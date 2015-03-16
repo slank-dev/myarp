@@ -182,7 +182,14 @@ void printLog(const char* filename){
 		perror("printLog()");
 		return;
 	}
-
+	
+	
+	printf("  +----------------");
+	printf("---------------------------------------------------------+\n");
+	printf("  |  %-17s  |  %-17s  |  %-13s  |  %-7s  |\n", 
+			"IP address", "MAC address", "Bender", "Update");
+	printf("  +----------------");
+	printf("---------------------------------------------------------+\n");
 	while((fgets(line, sizeof(line), fp)) != NULL){
 		memset(buf_live, 0, sizeof(buf_live));
 		memset(buf_ipaddr, 0, sizeof(buf_ipaddr));
@@ -204,8 +211,20 @@ void printLog(const char* filename){
 		buf_dev.bender = buf_bender;
 		buf_dev.lastchange = buf_lastchange;
 	
-		buf_dev.showinfo();
+		//buf_dev.showinfo();
+
+
+		printf("  |  %s   \t|  ",addrtostr((unsigned int)buf_dev.pa));
+		for(int i=0; i<6; i++){
+			printf("%02x", buf_dev.ha[i]);
+			if(i<5)	fputc(':', stdout);
+			//else	fputc('\t', stdout);
+		}
+		printf("  | %s   \t|  ", buf_dev.bender.c_str());
+		printf("%s |\n", buf_dev.lastchange.c_str());
 	}
+	printf("  +----------------");
+	printf("---------------------------------------------------------+\n");
 }
 
 

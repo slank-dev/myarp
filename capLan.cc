@@ -99,7 +99,7 @@ void CaptureCallback(u_char *data, const struct pcap_pkthdr *header,
 
 int CaptureLan(TLexOps opt){
 	
-	int space = 60;
+	int space = 10;
 	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	pcap_t* handle;
@@ -132,6 +132,12 @@ int CaptureLan(TLexOps opt){
 			
 			addr_count = send_ArpRequest_AllAddr(opt);
 			sleep(space);
+
+			if(opt.verbose == 1){
+				printf("\n");
+				printLog(opt.logname);
+				printf("\n");
+			}
 		}
 		kill(pid, SIGINT);
 		wait(NULL);

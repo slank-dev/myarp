@@ -232,7 +232,7 @@ class device{
 
 		void showinfo(){
 			printf(" %s\t", (live==true)?"UP" : "DOWN");
-			printf("  %s   \t",addrtostr((unsigned int)pa));
+			printf("%s\t",addrtostr((unsigned int)pa));
 			for(int i=0; i<6; i++){
 				printf("%02x", ha[i]);
 				if(i<5)	fputc(':', stdout);

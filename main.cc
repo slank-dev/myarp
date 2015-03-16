@@ -207,6 +207,10 @@ int main(int argc, char** argv){
 		printf("--------------------------------\n");
 		printf("Interface    :  %-10s     \n", conf.ifname);
 		printf("logfile      :  %-10s     \n", conf.logname);
+		printf("verbose      :  ");
+		if(conf.verbose == 0)		printf("OFF\n");
+		else if(conf.verbose == 1)	printf("ON\n");
+		else if(conf.verbose == 2)	printf("SEMI\n");
 		printf("--------------------------------\n");
 
 		CaptureLan(conf);	
