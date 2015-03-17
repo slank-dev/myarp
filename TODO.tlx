@@ -26,6 +26,11 @@
 				member function str()
 				MOJIRETUKAKUHONADO
 [2015.03.17]	add option about "verbose"			[]
+[2015.03.17]	add member in class "device"		[]
+				* member int ip
+				* member int icmp
+				* member int tcp
+				* member int udp
 
 
 

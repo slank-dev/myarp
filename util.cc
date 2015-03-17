@@ -33,6 +33,8 @@
 #include "debug.h"
 
 
+void sortLog(const char* filename);
+
 
 char* gettimestr(){
 	char* str;
@@ -178,6 +180,8 @@ void printLog(const char* filename){
 	char buf_lastchange[16];
 	device buf_dev;
 
+	sortLog(filename);
+
 	if((fp=fopen(filename, "r")) == NULL){
 		perror("printLog()");
 		return;
@@ -220,7 +224,7 @@ void printLog(const char* filename){
 			if(i<5)	fputc(':', stdout);
 			//else	fputc('\t', stdout);
 		}
-		printf("  | %s   \t|  ", buf_dev.bender.c_str());
+		printf("  | %s      \t|  ", buf_dev.bender.c_str());
 		printf("%s |\n", buf_dev.lastchange.c_str());
 	}
 	printf("  +----------------");
