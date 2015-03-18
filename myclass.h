@@ -38,7 +38,7 @@
 #define TLEX_INFOPATH "TLEX.tlx"
 
 
-
+//[[[
 
 class target{
 	public:
@@ -159,7 +159,7 @@ class TLexOps{
 		printf("--------------------------------\n");
 	}
 };
-
+//]]]
 
 
 
@@ -172,10 +172,15 @@ class device{
 		std::string lastchange;
 		bool live;
 		unsigned int id;
-		std::vector<unsigned int> log;
-		//time info
+		std::vector<unsigned int> logs;
+
+		int countIP;
+
+
+
 		
 		device(){
+			countIP = 0;
 //			lastchange = "datefime";
 		}
 
@@ -246,8 +251,8 @@ class device{
 			getid();
 			loadLog(filename);
 					
-			for(int i=0; i<log.size(); i++){
-				if(id == log[i]){
+			for(int i=0; i<logs.size(); i++){
+				if(id == logs[i]){
 					if(verbose == 1)
 						printf(" - found this log\n");
 					return;
@@ -288,7 +293,7 @@ class device{
 			char line[100];
 			unsigned int buf;
 
-			log.clear();
+			logs.clear();
 
 			if((fp=fopen(filename, "r")) == NULL){
 				fprintf(stderr, " - loadLog: logfile not found make newfile\n");
@@ -297,12 +302,12 @@ class device{
 
 			while(fgets(line, sizeof(line), fp) != NULL){
 				sscanf(line, "%d", &buf);
-				log.push_back(buf);
+				logs.push_back(buf);
 			}
 			/*
 			printf("-------------------\n");
-			for(int i=0; i<log.size(); i++)
-				printf("[debug load_log_indev] id: %d\n", log[i]);
+			for(int i=0; i<logs.size(); i++)
+				printf("[debug load_log_indev] id: %d\n", logs[i]);
 			printf("-------------------\n");
 			*/
 
