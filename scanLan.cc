@@ -53,7 +53,7 @@
 
 void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 										const u_char* packet){
-	const u_char* packet0 = packet;
+	//const u_char* packet0 = packet;
 	struct ether_header* ethh;
 	struct ether_arp *arp;
 	//struct hostent *host;
@@ -105,7 +105,6 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 
 
 int scanLan(TLexOps sconfig){
-	int addr_count;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	bpf_u_int32 mask;
 	bpf_u_int32 net;
@@ -132,7 +131,7 @@ int scanLan(TLexOps sconfig){
 		printf("[ArpSend in LAN Started] \n");
 		pcap_loop(handle, 0, recvPackHandle, (u_char*)&sconfig);
 	}else{
-		addr_count = send_ArpRequest_AllAddr(sconfig);
+		send_ArpRequest_AllAddr(sconfig);
 		kill(pid, SIGINT);
 		wait(NULL);
 	}
