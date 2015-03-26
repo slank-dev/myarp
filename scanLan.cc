@@ -34,6 +34,8 @@
 #include <algorithm>
 #include <time.h>
 
+#include <thread>
+
 
 #include "arp.h"
 #include "addr.h"
@@ -103,19 +105,12 @@ void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
 
 
 
-
-int scanLan(TLexOps sconfig){
+int pcap_init_scan(TLexOps sconfig){
 	char errbuf[PCAP_ERRBUF_SIZE];
 	bpf_u_int32 mask;
 	bpf_u_int32 net;
 	pcap_t* handle;
-	pid_t pid;
-	device dev;
-	std::vector<device> vec;
-
-	FILE *fp;
 	
-
 	if(pcap_lookupnet(sconfig.ifname, &net, &mask, errbuf) == -1){
 		perror("pcap_lookupnet");
 		return -1;
@@ -124,28 +119,30 @@ int scanLan(TLexOps sconfig){
 		perror("pcap_open_live");
 		return -1;
 	}
-	
 
 
-	if((pid=fork()) == 0){
-		printf("[ArpSend in LAN Started] \n");
-		pcap_loop(handle, 0, recvPackHandle, (u_char*)&sconfig);
-	}else{
-		send_ArpRequest_AllAddr(sconfig);
-		kill(pid, SIGINT);
-		wait(NULL);
-	}
-
-	printf("[Scan Finished]\n");
+	pcap_loop(handle, 0, recvPackHandle, (u_char*)&sconfig);
 	pcap_close(handle);
-		
-	printf("\n");
 
-	//read log file
-	if((fp=fopen(sconfig.logname, "a+")) == NULL){
-		perror("scanLan fopen");
-		return -1;
-	}
+	return 1;
+
+}
+
+
+
+
+
+int scanLan(TLexOps sconfig){
+
+	std::thread scan(pcap_init_scan, sconfig);
+	
+	printf(" * [ARPSCAN] start\n");
+	send_ArpRequest_AllAddr(sconfig);
+	printf(" * [ARPSCAN] finish\n\n");
+
+	pthread_cancel(scan.native_handle());
+	scan.join();
+
 	sortLog(sconfig.logname);
 	printLog(sconfig.logname);
 	
