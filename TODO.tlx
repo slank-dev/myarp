@@ -1,18 +1,15 @@
 @Todos [add date]  describe	[finish date]
 
+[date]												[]
+[date]												[]
+[date]												[]
+
+
 [2015.02.01]	add long options					[2015.03.16]
 [2015.02.01]	add parse_option()	load option		[2015.03.16]
 [2015.02.01]	GlobalClass "TLexOpt" 				[2015.03.16]
-[2015.02.01]	serch run permission 				[]
 [2015.02.01]	write time to logFile 				[2015.03.16]
-[2015.02.01]	add scan option SYOUSAI				[]
 [2015.02.01]	write on thread() 					[2015.03.26]
-
-[2015.03.15]	add "Monitoring" mode  				[]
-				* if recieve packet then print 
-				  all infomation
-				* {send packets -> wait 60s}loops
-				* option "monitoring period" KIKAN
 [2015.03.16]	add readGeneralInfo()				[2015.03.16]
 				* read version from TLEX:TLEX_VERSION
 				* read url from TLEX:TLEX_URL
@@ -21,10 +18,17 @@
 				* member ha is macaddr
 				* member pa is ipaddr
 				* member port is port 
-				* meny function of sendPacket need this class
+				* meny function of sendPacket 
+				  need this class
 [2015.03.17]	find bug in class info 				[2015.03.17]
 				member function str()
 				MOJIRETUKAKUHONADO
+[2015.02.01]	serch run permission 				[]
+[2015.03.15]	add "Monitoring" mode  				[]
+				* if recieve packet then print 
+				  all infomation
+				* {send packets -> wait 60s}loops
+				* option "monitoring period" KIKAN
 [2015.03.17]	add option about "verbose"			[]
 [2015.03.17]	add member in class "device"		[]
 				* member int ip
@@ -32,11 +36,9 @@
 				* member int tcp
 				* member int udp
 
-[2015.03.26]	reanem capture mode to long			[]
+[2015.03.26]	rename capture mode to long			[]
 				* --mode long
 				* rename some functions
+[2015.02.01]	add scan option SYOUSAI				[]
 
 
-[date]												[]
-[date]												[]
-[date]												[]
