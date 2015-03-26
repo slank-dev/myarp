@@ -2,6 +2,7 @@
 #include "myclass.h"
 #include <pcap.h>
 
+int pcap_init_mon(TLexOps sconfig);
 
 char* mac_ntoa(u_char *d);
 

@@ -28,6 +28,7 @@
 
 
 
+int pcap_init_scan(TLexOps sconfig);
 
 void recvPackHandle(u_char* nouse, 
 		const struct pcap_pkthdr* header,const u_char* packet);

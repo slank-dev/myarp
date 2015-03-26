@@ -26,6 +26,8 @@
 #include "myclass.h"
 
 
+int pcap_init_cap(TLexOps sconfig);
+
 void CaptureCallback(u_char *data, const struct pcap_pkthdr *header,
 										const u_char* packet);
 int CaptureLan(TLexOps opt);
