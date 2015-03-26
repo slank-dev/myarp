@@ -118,11 +118,11 @@ int pcap_init_mon(TLexOps sconfig){
 	
 	if(pcap_lookupnet(sconfig.ifname, &net, &mask, errbuf) == -1){
 		perror("pcap_lookupnet");
-		return -1;
+		exit(-1);
 	}
 	if((handle=pcap_open_live(sconfig.ifname, 0, 0, 1000, errbuf)) == NULL){
 		perror("pcap_open_live");
-		return -1;
+		exit(-1);
 	}
 
 
