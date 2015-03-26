@@ -28,6 +28,7 @@
 				* rename some functions
 [2015.02.01]	add scan option about verbose		[2015.03.27]
 [2015.03.27]	add code about define DEBUG			[2015.03.27]
+[2015.03.17]	add option about "verbose"			[2015.03.27]
 
 
 
@@ -38,7 +39,6 @@
 				  all infomation
 				* {send packets -> wait 60s}loops
 				* option "monitoring period" KIKAN
-[2015.03.17]	add option about "verbose"			[]
 [2015.03.17]	add member in class "device"		[]
 				* member int ip
 				* member int icmp
