@@ -36,6 +36,8 @@
 #include "debug.h"
 
 
+
+
  
 
 char* get_paddr(const char* ifname){
@@ -55,10 +57,22 @@ char* get_paddr(const char* ifname){
 	close(sockd);
 	
 	sa = (struct sockaddr_in*)&ifr.ifr_addr;
-
 	ipstr = inet_ntoa(sa->sin_addr);
+
+
+#ifdef DEBUG_get_paddr
+	printf("[DEBUG] in function \"%s\" %s:%d  ", 
+					__func__, __FILE__, __LINE__);
+	printf("%s\n", ipstr);
+#endif 
+
+
 	return ipstr;
 }
+
+
+
+
 
 
 
@@ -81,8 +95,18 @@ char* get_pmask(const char* ifname){
 	sa = (struct sockaddr_in*)&ifr.ifr_addr;
 	maskstr = inet_ntoa(sa->sin_addr);
 
+
+#ifdef DEBUG_get_pmask
+	printf("[DEBUG] in function \"%s\" %s:%d  ", 
+					__func__, __FILE__, __LINE__);
+	printf("%s\n", maskstr);
+#endif 
+
 	return maskstr;
 }
+
+
+
 
 
 
@@ -104,7 +128,20 @@ void get_haddr( const char* ifname, u_char haddr[6]){
 	for(int i=0; i<6; i++)	
 		haddr[i] = (unsigned char)ifr.ifr_hwaddr.sa_data[i];
 
+#ifdef DEBUG_get_haddr
+	printf("[DEBUG] in function \"%s\" %s:%d  ", 
+					__func__, __FILE__, __LINE__);
+	for(int i=0; i<6; i++){
+		printf("%d", haddr[i]);
+		if(i<5)	printf(":");
+		else	printf("\n");
+	}
+#endif 
+
 }
+
+
+
 
 
 
@@ -125,7 +162,16 @@ void count_next_addr(unsigned int *p){
 			return;
 		}
 	}
+#ifdef DEBUG_count_next_addr
+	printf("[DEBUG] in function \"%s\" %s:%d  ", 
+					__func__, __FILE__, __LINE__);
+	printf("netaddr is ");
+	print_ipaddr((unsigned int*)p);
+#endif 
 }
+
+
+
 
 
 
@@ -142,6 +188,9 @@ void print_ipaddr( unsigned int* addr){
 		else		printf("\n");
 	}
 }
+
+
+
 
 
 
@@ -163,6 +212,9 @@ char* addrtostr(const unsigned int addr){
 
 
 
+
+
+
 int getclassbyaddr(unsigned int addr){
 	union lc{
 		unsigned int l;
@@ -171,11 +223,27 @@ int getclassbyaddr(unsigned int addr){
 	union lc lc;
 	lc.l = addr;
 
-	if(0 <= lc.c[0] && lc.c[0] <= 127)		return 0;	// class A
+
+#ifdef DEBUG_getclassbyaddr
+	printf("[DEBUG] in function \"%s\" %s:%d  ", 
+					__func__, __FILE__, __LINE__);
+	printf("class is ");
+	if(0 <= lc.c[0] && lc.c[0] <= 127)			printf("A\n");	// class A
+	else if(128 <= lc.c[0] && lc.c[0] <= 191)	printf("B\n");	// class B
+	else if(192 <= lc.c[0] && lc.c[0] <= 233)	printf("C\n");	// class C
+	else 										printf("error\n");	// error
+#endif 
+
+
+	if(0 <= lc.c[0] && lc.c[0] <= 127)			return 0;	// class A
 	else if(128 <= lc.c[0] && lc.c[0] <= 191)	return 1;	// class B
 	else if(192 <= lc.c[0] && lc.c[0] <= 233)	return 2;	// class C
-	else 	return -1;	// error
+	else 										return -1;	// error
+
 }
+
+
+
 
 
 
@@ -220,6 +288,9 @@ int getaddrsinlan(const char* ifname,  u_int32_t alladdr[], int size){
 }
 
  
+
+
+
 
 
 void getbenderbymac(const u_char data[6], char* bender){

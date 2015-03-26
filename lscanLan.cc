@@ -45,8 +45,19 @@
 
 
 
-void CaptureCallback(u_char *data, const struct pcap_pkthdr *header,
+void LongScanCallback(u_char *data, const struct pcap_pkthdr *header,
 										const u_char* packet){
+
+#ifdef DEBUG_LongScanCallback
+	printf("\n");
+	printf("[DEBUG] in function \"%s\" %s:%d  \n", 
+					__func__, __FILE__, __LINE__);
+	prnitf("print packet() !!! comming soon\n");
+	//printPacket(packet);
+	printf("\n");
+#endif
+
+
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
 	struct ether_arp *arp;
@@ -111,7 +122,7 @@ int pcap_init_cap(TLexOps sconfig){
 	}
 
 
-	pcap_loop(handle, 0, CaptureCallback, (u_char*)&sconfig);
+	pcap_loop(handle, 0, LongScanCallback, (u_char*)&sconfig);
 	pcap_close(handle);
 
 	return 1;
@@ -120,7 +131,7 @@ int pcap_init_cap(TLexOps sconfig){
 
 
 
-int CaptureLan(TLexOps opt){
+int LongScanLan(TLexOps opt){
 	
 	int space = 10;
 	std::thread scan(pcap_init_cap, opt);

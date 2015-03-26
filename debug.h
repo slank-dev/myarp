@@ -25,4 +25,14 @@
 //#define DEBUG_getbenderbymac
 //#define DEBUG_send_arp_request
 //#define DEBUG_send_ArpReqest_AllAddr
-
+//#define DEBUG_get_paddr
+//#define DEBUG_get_pmask
+//#define DEBUG_get_haddr
+//#define DEBUG_count_next_addr
+//#define DEBUG_getclassbyaddr
+//#define DEBUG_class_TLexInfo
+//#define DEBUG_class_device
+//#define DEBUG_parse_option
+//#ifdef DEBUG_recvPackHandle
+//#ifdef DEBUG_LongScanCallback
+//#ifdef DEBUG_MonitorCallback

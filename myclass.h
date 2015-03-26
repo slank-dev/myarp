@@ -38,7 +38,8 @@
 #define TLEX_INFOPATH "TLEX.tlx"
 
 
-//[[[
+
+
 
 class target{
 	public:
@@ -58,6 +59,7 @@ class target{
 
 
 
+
 class TLexInfo{
 	public:
 		char name[32];
@@ -66,6 +68,8 @@ class TLexInfo{
 		char buf[256];
 		char buf_item[256];
 		char buf_content[256];
+
+
 
 		TLexInfo(){		/* load file "TLEX" */
 			FILE *fp;
@@ -93,7 +97,21 @@ class TLexInfo{
 				else if(strcmp(buf_item, "TLEX_URL") == 0)
 					strcpy(url, buf_content);
 			}
+
+#ifdef DEBUG_class_TLexInfo
+			printf("\n");
+			printf("[DEBUG] in function \"%s\" %s:%d \n", 
+							__func__, __FILE__, __LINE__);
+			printf("name   : %s\n", name);
+			printf("version: %s\n", version);
+			printf("url    : %s\n", url);
+			printf("\n");
+#endif
+
 		}
+
+
+
 
 		char *str(){
 			char *str;
@@ -106,21 +124,22 @@ class TLexInfo{
 
 
 
-enum TLexOpcode{ 	/* TLex Original Option Code */
-	TLEXOPT_HELP,	
-	TLEXOPT_VERSION, 
-	TLEXOPT_PRINTLOG, 
-	TLEXOPT_SORTLOG
-};
+
+
+
 enum TLexModecode{	/* Tlex Originam Mode Code */
-	TLEXMODE_NORMAL,
-	TLEXMODE_MONITOR,
-	TLEXMODE_CAPTURE
+	TLEXMODE_SCAN_NORMAL,
+	TLEXMODE_SCAN_MONITOR,
+	TLEXMODE_SCAN_LONG,
+	TLEXMODE_HELP,	
+	TLEXMODE_VERSION, 
+	TLEXMODE_PRINTLOG, 
+	TLEXMODE_SORTLOG
 };
 enum TLexVerbosecode{
-	VERBOSE_OFF,
-	VERBOSE_ON,
-	VERBOSE_SEMI
+	TLEXVERBOSE_OFF,
+	TLEXVERBOSE_ON,
+	TLEXVERBOSE_SEMI		/* for mode "long" & "monitor" */ 
 };
 
 #define TLEXOPTS		100
@@ -130,14 +149,13 @@ class TLexOps{
 		int scanLoopCount;
 		int timeout;
 		char logname[64];
-		int verbose;	//1:on 0:off 2:semiVerbose
 
-		int mode;	//1:normal, 2:monitor , 3:capture
+		int verbose;	// enum TLexVerbosecode
+		int mode;	// enum TLexModecode
 
-		/*TLEx Original Option Code*/
-		int mainopt[TLEXOPTS];
 
 	
+
 	TLexOps(){
 		strcpy(ifname, "wlan0");
 		scanLoopCount = 1;
@@ -145,9 +163,37 @@ class TLexOps{
 		strcpy(logname, "test.log");
 		verbose = 1;
 		mode = 1;
-		memset(mainopt, 0, sizeof(mainopt));
 	}
 
+	void showMode(){
+		printf("mode: ");
+
+		switch(mode){
+			case TLEXMODE_SCAN_NORMAL:
+				printf("normal");
+				break;
+			case TLEXMODE_SCAN_MONITOR:
+				printf("monitor");
+				break;
+			case TLEXMODE_SCAN_LONG:
+				printf("long");
+				break;
+			case TLEXMODE_HELP:
+				printf("help");
+				break;
+			case TLEXMODE_VERSION:
+				printf("version");
+				break;
+			case TLEXMODE_PRINTLOG:
+				printf("printLog");
+				break;
+			case TLEXMODE_SORTLOG:
+				printf("sortLog");
+				break;
+		}
+
+		printf("\n");
+	}
 
 	void showConfig(){
 		printf("--------------------------------\n");
@@ -159,7 +205,8 @@ class TLexOps{
 		printf("--------------------------------\n");
 	}
 };
-//]]]
+
+
 
 
 
@@ -178,11 +225,12 @@ class device{
 
 
 
+
+
 		
-		device(){
-			countIP = 0;
-//			lastchange = "datefime";
-		}
+		device(){ countIP = 0; }
+
+
 
 		device(const device &c){
 			live = c.live;
@@ -191,6 +239,11 @@ class device{
 			bender = c.bender;
 			lastchange = c.lastchange;
 		}
+
+
+
+
+
 		//operator <, >, ==
 		bool operator<(device dev){
 			union data{
@@ -235,6 +288,9 @@ class device{
 		}
 
 
+
+
+
 		void showinfo(){
 			printf(" %s\t", (live==true)?"UP" : "DOWN");
 			printf("%s\t",addrtostr((unsigned int)pa));
@@ -246,6 +302,10 @@ class device{
 			printf("(%s)\t", bender.c_str());
 			printf("%s\n", lastchange.c_str());
 		}
+
+
+
+
 		void writeLog(const char* filename, int verbose=1){
 
 			getid();
@@ -286,7 +346,24 @@ class device{
 					else	printf(", %u]\n", id);
 				}
 			}
+#ifdef DEBUG_class_device
+			printf("\n");
+			printf("[DEBUG] in function \"%s\" %s:%d ", 
+							__func__, __FILE__, __LINE__);
+			printf("log is %s [%s, ", lastchange.c_str(),
+					addrtostr((unsigned int)pa));
+			for(int i=0; i<6; i++){
+				printf("%02x", ha[i]);
+				if(i<5)	fputc(':', stdout);
+				else	printf(", %u]\n", id);
+			}
+			printf("\n");
+#endif
 		}
+
+
+
+
 
 		void loadLog(const char* filename){
 			FILE *fp;
@@ -304,16 +381,14 @@ class device{
 				sscanf(line, "%d", &buf);
 				logs.push_back(buf);
 			}
-			/*
-			printf("-------------------\n");
-			for(int i=0; i<logs.size(); i++)
-				printf("[debug load_log_indev] id: %d\n", logs[i]);
-			printf("-------------------\n");
-			*/
 
 			fclose(fp);
 			return;
 		}
+
+
+
+
 
 		void getid(){
 			unsigned int data=0;

@@ -59,6 +59,9 @@ int send_ArpRequest_AllAddr(TLexOps sconfig){
 		//printf("send count[%d]\n", k);
 		for(int i=0; i<addr_count; i++){
 #ifdef DEBUG_send_ArpReqest_AllAddr
+			printf("[DEBUG] in function \"%s\" %s:%d  ", 
+							__func__, __FILE__, __LINE__);
+			printf("send arp to ")
 			print_ipaddr((unsigned int*)&alladdr[i]);
 #endif
 			send_arp_request(alladdr[i], sconfig.ifname);

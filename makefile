@@ -4,7 +4,7 @@
 program = tlex.out
 
 
-SRC = main.cc addr.cc arp.cc scanLan.cc util.cc capLan.cc monLan.cc
+SRC = main.cc addr.cc arp.cc scanLan.cc util.cc lscanLan.cc monLan.cc
 OBJ = $(SRC:.cc=.o)
 CFLAGS = -Wall -lpcap -pthread
 CPP = g++ 

@@ -38,6 +38,17 @@ char* mac_ntoa(u_char *d){
 void MonitorCallback(u_char *data, const struct pcap_pkthdr *header,
 										const u_char* packet){
 
+	
+#ifdef DEBUG_MonitorCallback
+	printf("\n");
+	printf("[DEBUG] in function \"%s\" %s:%d  \n", 
+					__func__, __FILE__, __LINE__);
+	prnitf("print packet() !!! comming soon\n");
+	//printPacket(packet);
+	printf("\n");
+#endif
+
+
 	const u_char* packet0 = packet;
 	struct ether_header* ethh;
 	struct ether_arp *arp;

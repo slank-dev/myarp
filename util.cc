@@ -25,16 +25,22 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#include <vector>
 #include <getopt.h>
-
 #include <time.h>
+#include <vector>
+
 #include "myclass.h"
 #include "debug.h"
 
 
 
+
 void sortLog(const char* filename);
+
+
+
+
+
 
 
 char* gettimestr(){
@@ -52,8 +58,13 @@ char* gettimestr(){
 
 
 
-void parse_option(int argc, char** argv, TLexOps& conf){
-	int opt;
+
+
+
+void parse_option(int argc, char** argv, TLexOps& opt){
+	opt.mode = TLEXMODE_SCAN_NORMAL;
+	int o;
+	int opt_index;
 	struct option long_options[] = {
 		{"version", no_argument, 0, 0},
 		{"help", no_argument, 0, 0},
@@ -61,23 +72,34 @@ void parse_option(int argc, char** argv, TLexOps& conf){
 		{"timeout", required_argument, 0, 0},
 		{"loop", required_argument, 0, 0},
 		{"file", required_argument, 0, 0},
-		{"mode", required_argument, 0, 0}
+		{"mode", required_argument, 0, 0},
+		{"verbose", no_argument, 0, 0},
+		{"noverbose", no_argument, 0, 0}
 	};
-	int opt_index;
 
 
-	while((opt=getopt_long(argc,argv, "hvi:l:t:p:s:f:", long_options, &opt_index)) != -1){
-		switch(opt){
+	while((o=getopt_long(argc,argv, "hvi:l:t:p:s:f:", long_options, &opt_index)) != -1){
+		switch(o){
 			case 0:
 				/* dont get argument */
 				if(strcmp(long_options[opt_index].name, "version") == 0){
-					printf("--version version()\n");
-					conf.mainopt[TLEXOPT_VERSION] = 1;
+					printf("--version \n");
+					opt.mode = TLEXMODE_VERSION;
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "help") == 0){
-					printf("--help help()\n");
-					conf.mainopt[TLEXOPT_HELP] = 1;
+					printf("--help \n");
+					opt.mode = TLEXMODE_HELP;
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "verbose") == 0){
+					printf("--verbose \n");
+					opt.verbose = TLEXVERBOSE_ON;
+					break;
+				}
+				else if(strcmp(long_options[opt_index].name, "noverbose") == 0){
+					printf("--noverbose\n");
+					opt.verbose = TLEXVERBOSE_OFF;
 					break;
 				}
 
@@ -85,33 +107,33 @@ void parse_option(int argc, char** argv, TLexOps& conf){
 
 				/* get argment */
 				else if(strcmp(long_options[opt_index].name, "interface") == 0){
-					printf("--interface set if\n");
-					strncpy(conf.ifname, optarg, sizeof(conf.ifname));
+					printf("--interface set [%s]\n", optarg);
+					strncpy(opt.ifname, optarg, sizeof(opt.ifname));
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "timeout") == 0){
-					printf("--timeout set timeout\n");
-					conf.timeout = atoi(optarg);
+					printf("--timeout set [%d]\n", atoi(optarg));
+					opt.timeout = atoi(optarg);
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "loop") == 0){
-					printf("--loop loopcount\n");
-					conf.scanLoopCount = atoi(optarg);
+					printf("--loop set [%d] \n", atoi(optarg));
+					opt.scanLoopCount = atoi(optarg);
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "file") == 0){
-					printf("--file select logfile\n");
-					strcpy(conf.logname, optarg);
+					printf("--file select [%s]\n", optarg);
+					strcpy(opt.logname, optarg);
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "mode") == 0){
-					printf("--mode select mode\n");
+					printf("--mode select [%s]\n", optarg);
 					if(strcmp(optarg, "normal") == 0)
-						conf.mode = 1;
+						opt.mode = TLEXMODE_SCAN_NORMAL;
 					else if(strcmp(optarg, "monitor") == 0)
-						conf.mode = 2;
-					else if(strcmp(optarg, "capture") == 0)
-						conf.mode = 3;
+						opt.mode = TLEXMODE_SCAN_MONITOR;
+					else if(strcmp(optarg, "long") == 0)
+						opt.mode = TLEXMODE_SCAN_LONG;
 					else{
 						fprintf(stderr, "parse_option: mode \"%s\" not found\n", optarg);
 						exit(-1);
@@ -121,49 +143,59 @@ void parse_option(int argc, char** argv, TLexOps& conf){
 
 
 
-
 			/* dont get argument */
 			case 'h':
 				printf("-h usage\n");
-				conf.mainopt[TLEXOPT_HELP] = 1;
+				opt.mode = TLEXMODE_HELP;
 				break;
 			case 'v':
-				printf("-v version()\n");
-				conf.mainopt[TLEXOPT_VERSION] = 1;
+				printf("-v version\n");
+				opt.mode = TLEXMODE_VERSION;
 				break;
 			case 'p':
-				printf("-p print log\n");
-				conf.mainopt[TLEXOPT_PRINTLOG] = 1;
+				printf("-p print log only\n");
+				opt.mode = TLEXMODE_PRINTLOG;
 				break;
 			case 's':
-				printf("-s sort log\n");
-				conf.mainopt[TLEXOPT_SORTLOG] = 1;
+				printf("-s sort log only\n");
+				opt.mode = TLEXMODE_SORTLOG;
 				break;
 
 
 			/* get argment */
 			case 'i':
-				printf("-i set interface\n");
-				strncpy(conf.ifname, optarg, sizeof(conf.ifname));
+				printf("-i set interface [%s]\n", optarg);
+				strncpy(opt.ifname, optarg, sizeof(opt.ifname));
 				break;
 			case 'l':
-				printf("-l set loopcount\n");
-				conf.scanLoopCount = atoi(optarg);
+				printf("-l set loopcount [%d]\n", atoi(optarg));
+				opt.scanLoopCount = atoi(optarg);
 				break;
 			case 't':
-				printf("-t set timeout\n");
-				conf.timeout = atoi(optarg);
+				printf("-t set timeout [%d]\n", atoi(optarg));
+				opt.timeout = atoi(optarg);
 				break;
 			case 'f':
-				printf("-f select logfile\n");
-				strcpy(conf.logname, optarg);
+				printf("-f select logfile [%s]\n", optarg);
+				strcpy(opt.logname, optarg);
 				break;
 		}
 	}
 
 
-	
+#ifdef DEBUG_parse_option
+	printf("\n");
+	printf("[DEBUG] in function \"%s\" %s:%d  ", 
+					__func__, __FILE__, __LINE__);
+	opt.showMode();
+	opt.showConfig();
+	printf("\n");
+#endif
+
 }
+
+
+
 
 
 
@@ -216,21 +248,25 @@ void printLog(const char* filename){
 		buf_dev.bender = buf_bender;
 		buf_dev.lastchange = buf_lastchange;
 	
-		//buf_dev.showinfo();
-
 
 		printf("  |  %s   \t|  ",addrtostr((unsigned int)buf_dev.pa));
 		for(int i=0; i<6; i++){
 			printf("%02x", buf_dev.ha[i]);
 			if(i<5)	fputc(':', stdout);
-			//else	fputc('\t', stdout);
 		}
 		printf("  | %s      \t|  ", buf_dev.bender.c_str());
 		printf("%s |\n", buf_dev.lastchange.c_str());
 	}
 	printf("  +----------------");
 	printf("---------------------------------------------------------+\n");
+	
+	fclose(fp);
 }
+
+
+
+
+
 
 
 
@@ -300,6 +336,9 @@ void sortLog(const char* filename){
 
 
 
+
+
+
 static const uint32_t FNV_OFFSET_BASIS_32 = 2166136261U;
 static const uint32_t FNV_PRIME_32 = 16777619U;
 
@@ -314,6 +353,9 @@ uint32_t hash(uint8_t *bytes, size_t length){
 
     return h;
 }
+
+
+
 
 
 
@@ -339,6 +381,10 @@ std::vector<unsigned int> getidbylogfile(){
 
 
 
+
+
+
+
 void usage(int argc, char **argv){	
 	printf("usage: %s\t[-i interface] [-l loop_count]\n", argv[0]);
 	printf("\t\t\t[-t timeout] [-p filename] [-s filename]\n");
@@ -360,26 +406,26 @@ void usage(int argc, char **argv){
 
 
 
+
+
+
+
 void version(){
 	printf("PROGRAMNAME version 0.10 \n\n");
 	printf("Copyright (C) 2014-2015 Hiroki Shirokura <mail: slank.dev@gmail.com>\n");
-	//printf("\n");
 	printf("This file is part of PROGRAMNAME.\n");
-	//printf("\n");
 	printf("PROGRAMNAME is free software: you can redistribute it and/or modify\n");
 	printf("it under the terms of the GNU General Public License as published by\n");
 	printf("the Free Software Foundation, either version 3 of the License, or\n");
 	printf("(at your option) any later version.\n");
-	//printf("\n");
 	printf("PROGRAMNAME is distributed in the hope that it will be useful,\n");
-	//printf("\n");
 	printf("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
 	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
 	printf("GNU General Public License for more details.\n");
-	//printf("\n");
 	printf("You should have received a copy of the GNU General Public License\n");
 	printf("along with this program.  \n");
 	printf("If not, see <http://slankdev.wordpress.com>.\n");
 	printf("slank (Hiroki Shirokura) <mail: slank.dev@gmail.com>\n");
-
 }
+
+

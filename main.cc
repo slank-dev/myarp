@@ -34,7 +34,7 @@
 #include "util.h"
 #include "myclass.h"
 #include "debug.h"
-#include "capLan.h"
+#include "lscanLan.h"
 #include "monLan.h"
 
 
@@ -44,66 +44,70 @@
 int main(int argc, char** argv){
 	struct timeval s, e;
 	clock_t startTime, endTime;
-	TLexOps conf;
+	TLexOps opt;
 	TLexInfo info;
 	
 
 	gettimeofday(&s, NULL);
 
-
-	parse_option(argc, argv, conf);
-	if(conf.mainopt[TLEXOPT_HELP]){
-		usage(argc,argv);
-		return 1;
-	}
-	else if(conf.mainopt[TLEXOPT_VERSION]){
-		version();
-		return 1;	
-	}
-	else if(conf.mainopt[TLEXOPT_PRINTLOG]){
-		printLog(conf.logname);
-		return 1;	
-	}
-	else if(conf.mainopt[TLEXOPT_SORTLOG]){
-		sortLog(conf.logname);
-		return 1;	
-	}
-
+	parse_option(argc, argv, opt);
 	
 
-
-	if(conf.mode == 1){
-		printf("\nStarting %s %s\n", info.str(), gettimestr());
-		conf.showConfig();
-
-		scanLan(conf);
-		gettimeofday(&e, NULL);
-
-		startTime = s.tv_sec + (double)(s.tv_usec * 1e-6);
-		endTime = e.tv_sec + (double)(e.tv_usec * 1e-6);
-
-		printf("\nTLex done: scan finished in %lu.%lu sec \n",
-				(long)e.tv_sec-s.tv_sec, (long)e.tv_usec-s.tv_usec);
 	
-	}else if(conf.mode == 2){
-		printf("\nStarting %s %s\n", info.str(), gettimestr());
-		conf.showConfig();
+	switch(opt.mode){
+		case TLEXMODE_HELP:
+			usage(argc,argv);
+			break;
+		case TLEXMODE_VERSION:
+			version();
+			break;
 
-		MonitorLan(conf);	
-	}else if(conf.mode == 3){
-		printf("\nStarting %s %s\n", info.str(), gettimestr());
+		case TLEXMODE_PRINTLOG:
+			printLog(opt.logname);
+			break;
 		
-		printf("--------------------------------\n");
-		printf("Interface    :  %-10s     \n", conf.ifname);
-		printf("logfile      :  %-10s     \n", conf.logname);
-		printf("verbose      :  ");
-		if(conf.verbose == 0)		printf("OFF\n");
-		else if(conf.verbose == 1)	printf("ON\n");
-		else if(conf.verbose == 2)	printf("SEMI\n");
-		printf("--------------------------------\n");
+		case TLEXMODE_SORTLOG:
+			sortLog(opt.logname);
+			break;
+		
+		case TLEXMODE_SCAN_NORMAL:
+			printf("\nStarting %s %s\n", info.str(), gettimestr());
+			opt.showConfig();
 
-		CaptureLan(conf);	
+			ScanLan(opt);
+			gettimeofday(&e, NULL);
+
+			startTime = s.tv_sec + (double)(s.tv_usec * 1e-6);
+			endTime = e.tv_sec + (double)(e.tv_usec * 1e-6);
+
+			printf("\nTLex done: scan finished in %lu.%lu sec \n",
+					(long)e.tv_sec-s.tv_sec, (long)e.tv_usec-s.tv_usec);
+			break;
+		
+		case TLEXMODE_SCAN_MONITOR:
+			printf("\nStarting %s %s\n", info.str(), gettimestr());
+			opt.showConfig();
+
+			MonitorLan(opt);	
+			break;
+		case TLEXMODE_SCAN_LONG:
+			printf("\nStarting %s %s\n", info.str(), gettimestr());
+			
+			printf("--------------------------------\n");
+			printf("Interface    :  %-10s     \n", opt.ifname);
+			printf("logfile      :  %-10s     \n", opt.logname);
+			printf("verbose      :  ");
+			if(opt.verbose == 0)		printf("OFF\n");
+			else if(opt.verbose == 1)	printf("ON\n");
+			else if(opt.verbose == 2)	printf("SEMI\n");
+			printf("--------------------------------\n");
+
+			LongScanLan(opt);
+			break;
 	}
+
+	return 1;
+
 
 
 }

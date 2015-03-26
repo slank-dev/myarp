@@ -53,12 +53,21 @@
 
 
 
-void recvPackHandle(u_char *data, const struct pcap_pkthdr *header,
+void ScanCallback(u_char *data, const struct pcap_pkthdr *header,
 										const u_char* packet){
-	//const u_char* packet0 = packet;
+
+#ifdef DEBUG_recvPackHandle
+	printf("\n");
+	printf("[DEBUG] in function \"%s\" %s:%d  \n", 
+					__func__, __FILE__, __LINE__);
+	prnitf("print packet() !!! comming soon\n");
+	//printPacket(packet);
+	printf("\n");
+#endif
+	
+
 	struct ether_header* ethh;
 	struct ether_arp *arp;
-	//struct hostent *host;
 	char mac_str[6];
 	char bender_str[256];
 	union lc{
@@ -121,7 +130,7 @@ int pcap_init_scan(TLexOps sconfig){
 	}
 
 
-	pcap_loop(handle, 0, recvPackHandle, (u_char*)&sconfig);
+	pcap_loop(handle, 0, ScanCallback, (u_char*)&sconfig);
 	pcap_close(handle);
 
 	return 1;
@@ -132,7 +141,7 @@ int pcap_init_scan(TLexOps sconfig){
 
 
 
-int scanLan(TLexOps sconfig){
+int ScanLan(TLexOps sconfig){
 
 	std::thread scan(pcap_init_scan, sconfig);
 	
