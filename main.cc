@@ -40,15 +40,11 @@
 
 
 
-
 int main(int argc, char** argv){
-	struct timeval s, e;
-	clock_t startTime, endTime;
 	TLexOps opt;
 	TLexInfo info;
+	mytimer tm;
 	
-
-	gettimeofday(&s, NULL);
 
 	parse_option(argc, argv, opt);
 	
@@ -74,22 +70,24 @@ int main(int argc, char** argv){
 			printf("\nStarting %s %s\n", info.str(), gettimestr());
 			opt.showConfig();
 
+			tm.mytimer_start();
 			ScanLan(opt);
-			gettimeofday(&e, NULL);
+			tm.mytimer_end();
 
-			startTime = s.tv_sec + (double)(s.tv_usec * 1e-6);
-			endTime = e.tv_sec + (double)(e.tv_usec * 1e-6);
-
-			printf("\nTLex done: scan finished in %lu.%lu sec \n",
-					(long)e.tv_sec-s.tv_sec, (long)e.tv_usec-s.tv_usec);
+			printf("\nTLex done: scan finished in %s sec \n",tm.intervalStr());
 			break;
 		
 		case TLEXMODE_SCAN_MONITOR:
 			printf("\nStarting %s %s\n", info.str(), gettimestr());
 			opt.showConfig();
 
+			tm.mytimer_start();
 			MonitorLan(opt);	
+			tm.mytimer_end();
+
+			printf("\nTLex done: scan finished in %s sec \n",tm.intervalStr());
 			break;
+
 		case TLEXMODE_SCAN_LONG:
 			printf("\nStarting %s %s\n", info.str(), gettimestr());
 			
@@ -102,7 +100,11 @@ int main(int argc, char** argv){
 			else if(opt.verbose == 2)	printf("SEMI\n");
 			printf("--------------------------------\n");
 
+			tm.mytimer_start();
 			LongScanLan(opt);
+			tm.mytimer_end();
+
+			printf("\nTLex done: scan finished in %s sec \n",tm.intervalStr());
 			break;
 	}
 

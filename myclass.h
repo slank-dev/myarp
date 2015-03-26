@@ -29,6 +29,9 @@
 #include <vector>
 #include <string>
 
+#include <time.h>
+#include <sys/time.h>
+
 #include "addr.h"
 
 
@@ -36,6 +39,45 @@
 #define INCLUDED_MYCLASS
 
 #define TLEX_INFOPATH "TLEX.tlx"
+
+
+
+
+class mytimer{
+	private:
+		struct timeval start;
+		struct timeval end;
+		
+		bool sflag;
+		bool eflag;
+
+	public:
+
+		mytimer(){ 
+			sflag = false;
+			eflag = false;
+			mytimer_start(); 
+		}
+		void mytimer_start(){
+			gettimeofday(&start, NULL);
+			sflag = true;
+		}
+		void mytimer_end(){
+			gettimeofday(&end, NULL);
+			eflag = true;
+		}
+		char* intervalStr(){
+			if(!(sflag && eflag))
+				return NULL;
+			
+			char *str;
+			str = (char*)malloc(sizeof(char) * 128);
+			memset(str, 0, sizeof(char)*128);
+			sprintf(str, "%.03lf", 
+					(end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec)*1.0E-6);	
+			return str;
+		}
+};
 
 
 
