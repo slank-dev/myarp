@@ -6,7 +6,7 @@
 [2015.02.01]	serch run permission 				[]
 [2015.02.01]	write time to logFile 				[2015.03.16]
 [2015.02.01]	add scan option SYOUSAI				[]
-[2015.02.01]	write on thread() 					[]
+[2015.02.01]	write on thread() 					[2015.03.26]
 
 [2015.03.15]	add "Monitoring" mode  				[]
 				* if recieve packet then print 
