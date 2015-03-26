@@ -32,6 +32,9 @@
 				* member int tcp
 				* member int udp
 
+[2015.03.26]	reanem capture mode to long			[]
+				* --mode long
+				* rename some functions
 
 
 [date]												[]

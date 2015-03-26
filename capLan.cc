@@ -33,6 +33,7 @@
 #include <netdb.h>
 #include <vector>
 #include <algorithm>
+#include <thread>
 #include <time.h>
 
 #include "arp.h"
@@ -94,56 +95,56 @@ void CaptureCallback(u_char *data, const struct pcap_pkthdr *header,
 } 
 
 
+int pcap_init_cap(TLexOps sconfig){
+	char errbuf[PCAP_ERRBUF_SIZE];
+	bpf_u_int32 mask;
+	bpf_u_int32 net;
+	pcap_t* handle;
+	
+	if(pcap_lookupnet(sconfig.ifname, &net, &mask, errbuf) == -1){
+		perror("pcap_lookupnet");
+		return -1;
+	}
+	if((handle=pcap_open_live(sconfig.ifname, 0, 0, 1000, errbuf)) == NULL){
+		perror("pcap_open_live");
+		return -1;
+	}
+
+
+	pcap_loop(handle, 0, CaptureCallback, (u_char*)&sconfig);
+	pcap_close(handle);
+
+	return 1;
+
+}
 
 
 
 int CaptureLan(TLexOps opt){
 	
 	int space = 10;
-	int addr_count;
-	char errbuf[PCAP_ERRBUF_SIZE];
-	pcap_t* handle;
-	bpf_u_int32 mask;
-	bpf_u_int32 net;
-	const u_char* packet;
-	struct pcap_pkthdr header;
-	pid_t pid;
+	std::thread scan(pcap_init_cap, opt);
+	
+	printf(" * [ARPSCAN] long mode start\n");
 
 
+	opt.scanLoopCount = 1;
+	opt.timeout = 0;
+	while(true){
+		printf(" - Send arp packet to all addresses at %s\n", 
+				gettimestr());
+		
+		send_ArpRequest_AllAddr(opt);
+		sleep(space);
 
-
-	if(pcap_lookupnet(opt.ifname, &net, &mask, errbuf) == -1){
-		perror("pcap_lookupnet");
-		return -1;
-	}
-	if((handle=pcap_open_live(opt.ifname, 0, 1, 1000, errbuf)) == NULL){
-		perror("pcap_open_live");
-		return -1;
-	}
-
-	if((pid=fork()) == 0){
-		pcap_loop(handle, 0, CaptureCallback, (u_char*)&opt);
-	}else{
-		opt.scanLoopCount = 1;
-		opt.timeout = 0;
-		while(true){
-			printf(" - Send arp packet to all addresses at %s\n", 
-					gettimestr());
-			
-			addr_count = send_ArpRequest_AllAddr(opt);
-			sleep(space);
-
-			if(opt.verbose == 1){
-				printf("\n");
-				printLog(opt.logname);
-				printf("\n");
-			}
+		if(opt.verbose == 1){
+			printf("\n");
+			printLog(opt.logname);
+			printf("\n");
 		}
-		kill(pid, SIGINT);
-		wait(NULL);
 	}
 
-	pcap_close(handle);
+	scan.join();
 	return 1; 
 }
 
