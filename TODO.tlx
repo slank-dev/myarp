@@ -5,6 +5,7 @@
 [date]												[]
 
 
+@ FINISH
 [2015.02.01]	add long options					[2015.03.16]
 [2015.02.01]	add parse_option()	load option		[2015.03.16]
 [2015.02.01]	GlobalClass "TLexOpt" 				[2015.03.16]
@@ -35,17 +36,19 @@
 
 
 
-
-[2015.03.15]	add "Monitoring" mode  				[]
-				* if recieve packet then print 
-				  all infomation
-				* {send packets -> wait 60s}loops
-				* option "monitoring period" KIKAN
+@ UNFINISH
 [2015.03.17]	add member in class "device"		[]
 				* member int ip
 				* member int icmp
 				* member int tcp
 				* member int udp
+[2015.03.27]	add mode "SYOUSAI"					[]
 
 
 
+@ RESERVATION
+[2015.03.15]	add "Monitoring" mode  				[]
+				* if recieve packet then print 
+				  all infomation
+				* {send packets -> wait 60s}loops
+				* option "monitoring period" KIKAN

@@ -70,7 +70,9 @@ char* gettimestr(){
 
 
 void parse_option(int argc, char** argv, TLexOps& opt){
+	
 	opt.mode = TLEXMODE_SCAN_NORMAL;
+	bool debug = false;
 	int o;
 	int opt_index;
 	struct option long_options[] = {
@@ -85,28 +87,33 @@ void parse_option(int argc, char** argv, TLexOps& opt){
 		{"noverbose", no_argument, 0, 0}
 	};
 
+#ifdef DEBUG_parse_option
+	debug = true;
+#endif
+
+
 
 	while((o=getopt_long(argc,argv, "hvi:l:t:p:s:f:", long_options, &opt_index)) != -1){
 		switch(o){
 			case 0:
 				/* dont get argument */
 				if(strcmp(long_options[opt_index].name, "version") == 0){
-					printf("--version \n");
+					if(debug)	printf("--version \n");
 					opt.mode = TLEXMODE_VERSION;
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "help") == 0){
-					printf("--help \n");
+					if(debug)	printf("--help \n");
 					opt.mode = TLEXMODE_HELP;
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "verbose") == 0){
-					printf("--verbose \n");
+					if(debug)	printf("--verbose \n");
 					opt.verbose = TLEXVERBOSE_ON;
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "noverbose") == 0){
-					printf("--noverbose\n");
+					if(debug)	printf("--noverbose\n");
 					opt.verbose = TLEXVERBOSE_OFF;
 					break;
 				}
@@ -115,7 +122,7 @@ void parse_option(int argc, char** argv, TLexOps& opt){
 
 				/* get argment */
 				else if(strcmp(long_options[opt_index].name, "interface") == 0){
-					printf("--interface set [%s]\n", optarg);
+					if(debug)	printf("--interface set [%s]\n", optarg);
 					strncpy(opt.ifname, optarg, sizeof(opt.ifname));
 					break;
 				}
@@ -125,17 +132,17 @@ void parse_option(int argc, char** argv, TLexOps& opt){
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "loop") == 0){
-					printf("--loop set [%d] \n", atoi(optarg));
+					if(debug)	printf("--loop set [%d] \n", atoi(optarg));
 					opt.scanLoopCount = atoi(optarg);
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "file") == 0){
-					printf("--file select [%s]\n", optarg);
+					if(debug)	printf("--file select [%s]\n", optarg);
 					strcpy(opt.logname, optarg);
 					break;
 				}
 				else if(strcmp(long_options[opt_index].name, "mode") == 0){
-					printf("--mode select [%s]\n", optarg);
+					if(debug)	printf("--mode select [%s]\n", optarg);
 					if(strcmp(optarg, "normal") == 0)
 						opt.mode = TLEXMODE_SCAN_NORMAL;
 					else if(strcmp(optarg, "monitor") == 0)
@@ -153,38 +160,38 @@ void parse_option(int argc, char** argv, TLexOps& opt){
 
 			/* dont get argument */
 			case 'h':
-				printf("-h usage\n");
+				if(debug)	printf("-h usage\n");
 				opt.mode = TLEXMODE_HELP;
 				break;
 			case 'v':
-				printf("-v version\n");
+				if(debug)	printf("-v version\n");
 				opt.mode = TLEXMODE_VERSION;
 				break;
 			case 'p':
-				printf("-p print log only\n");
+				if(debug)	printf("-p print log only\n");
 				opt.mode = TLEXMODE_PRINTLOG;
 				break;
 			case 's':
-				printf("-s sort log only\n");
+				if(debug)	printf("-s sort log only\n");
 				opt.mode = TLEXMODE_SORTLOG;
 				break;
 
 
 			/* get argment */
 			case 'i':
-				printf("-i set interface [%s]\n", optarg);
+				if(debug)	printf("-i set interface [%s]\n", optarg);
 				strncpy(opt.ifname, optarg, sizeof(opt.ifname));
 				break;
 			case 'l':
-				printf("-l set loopcount [%d]\n", atoi(optarg));
+				if(debug)	printf("-l set loopcount [%d]\n", atoi(optarg));
 				opt.scanLoopCount = atoi(optarg);
 				break;
 			case 't':
-				printf("-t set timeout [%d]\n", atoi(optarg));
+				if(debug)	printf("-t set timeout [%d]\n", atoi(optarg));
 				opt.timeout = atoi(optarg);
 				break;
 			case 'f':
-				printf("-f select logfile [%s]\n", optarg);
+				if(debug)	printf("-f select logfile [%s]\n", optarg);
 				strcpy(opt.logname, optarg);
 				break;
 		}
