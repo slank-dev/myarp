@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <vector>
 
+void checkPrivileges();
 
 char* gettimestr();
 void parse_option(int argc, char** argv, TLexOps& conf);

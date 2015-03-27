@@ -67,6 +67,8 @@ int main(int argc, char** argv){
 			break;
 		
 		case TLEXMODE_SCAN_NORMAL:
+			checkPrivileges();
+
 			printf("\nStarting %s %s\n", info.str(), gettimestr());
 			opt.showConfig();
 
@@ -78,6 +80,8 @@ int main(int argc, char** argv){
 			break;
 		
 		case TLEXMODE_SCAN_MONITOR:
+			checkPrivileges();
+			
 			printf("\nStarting %s %s\n", info.str(), gettimestr());
 			opt.showConfig();
 
@@ -89,6 +93,8 @@ int main(int argc, char** argv){
 			break;
 
 		case TLEXMODE_SCAN_LONG:
+			checkPrivileges();
+			
 			printf("\nStarting %s %s\n", info.str(), gettimestr());
 			
 			printf("--------------------------------\n");

@@ -40,6 +40,14 @@ void sortLog(const char* filename);
 
 
 
+void checkPrivileges(){
+	if(0 != getuid()){
+		fprintf(stderr, "TLex: requirs root privileges\n");
+		fprintf(stderr, "bye...\n");
+		exit(-1);
+	}
+}
+
 
 
 
