@@ -1,26 +1,42 @@
 #makefile
 
-CPP := g++ 
-CC  := gcc
-RM  := rm -rf
-MKDIR := mkdir -p
+export CC  := gcc
+export CPP := g++ 
+export CXX := g++ 
+export RM  := rm -rf
+export MKDIR := mkdir -p
 
-
-
-program = tlex.out
-
-SRC = main.cc addr.cc arp.cc scanLan.cc util.cc lscanLan.cc monLan.cc
-OBJ = $(SRC:.cc=.o)
-HDR = addr.h arp.h debug.h lscanLan.h monLan.h myclass.h scanLan.h util.h
-
-
-CFLAGS = -Wall -lpcap -pthread
 
 .SUFFIXES: .out .c .cc .o .h 
 
 
+program = tlex.out
+SRC = main.cc \
+	  addr.cc \
+	  arp.cc \
+	  scanLan.cc\
+	  util.cc \
+	  lscanLan.cc\
+	  monLan.cc
+HDR = addr.h\
+	  arp.h\
+	  debug.h\
+	  lscanLan.h\
+	  monLan.h\
+	  myclass.h\
+	  scanLan.h\
+	  util.h
+OBJ = $(SRC:.cc=.o)
+CFLAGS = -Wall -lpcap -pthread
+LIBPCAPDIR = libpcap
+
+
+
+
+
 
 all: $(program)
+
 
 $(program): $(OBJ)
 	$(CPP) $(OBJ) -o $(program) $(CFLAGS)
@@ -28,6 +44,10 @@ $(program): $(OBJ)
 
 .cc.o: 
 	$(CPP) -std=c++11 -c  $<  -o $@  
+
+
+
+#----------------------------------OTHERS--------------------------------------#
 
 
 
