@@ -1,28 +1,74 @@
 #makefile
 
+export CC  := gcc
+export CPP := g++ 
+export CXX := g++ 
+export RM  := rm -rf
+export MKDIR := mkdir -p
+
+
+.SUFFIXES: .out .c .cc .o .h 
+
 
 program = tlex.out
-
-
-SRC = main.cc addr.cc arp.cc scanLan.cc util.cc lscanLan.cc monLan.cc
+SRC = main.cc \
+	  addr.cc \
+	  arp.cc \
+	  scanLan.cc\
+	  util.cc \
+	  lscanLan.cc\
+	  monLan.cc
+HDR = addr.h\
+	  arp.h\
+	  debug.h\
+	  lscanLan.h\
+	  monLan.h\
+	  myclass.h\
+	  scanLan.h\
+	  util.h
 OBJ = $(SRC:.cc=.o)
 CFLAGS = -Wall -lpcap -pthread
-CPP = g++ 
+LIBPCAPDIR = libpcap
+
+
+
+
+
 
 all: $(program)
+
 
 $(program): $(OBJ)
 	$(CPP) $(OBJ) -o $(program) $(CFLAGS)
 
 
 .cc.o: 
-	$(CPP) -c -std=c++11 $<
+	$(CPP) -std=c++11 -c  $<  -o $@  
 
 
 
+#----------------------------------OTHERS--------------------------------------#
+
+
+
+install:
 clean:
-	rm *.o *.out
+	$(RM) *.o *.ouat
+info:
+distclean:
+check:
+
+version:
+	echo  $(MAKE_VERSION)
+
+
+
+#----------------------------------OTHERS--------------------------------------#
+
+
 
 
 allclean:
-	sudo rm *.o *.out *.log
+	sudo $(RM) -f  *.o *.out *.log
+
+

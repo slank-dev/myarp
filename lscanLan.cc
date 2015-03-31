@@ -133,7 +133,7 @@ int pcap_init_cap(TLexOps sconfig){
 
 int LongScanLan(TLexOps opt){
 	
-	int space = 10;
+	int space = 180;
 	std::thread scan(pcap_init_cap, opt);
 	
 	printf(" * [ARPSCAN] long mode start\n");
