@@ -406,15 +406,14 @@ void usage(int argc, char **argv){
 	printf("\t\t\t[-f filename] [-n noverbose]\n");
 	
 	printf("\n");
-	printf("\t-i	select interface\n");
-	printf("\t-l	loop count of send_arp_to_alladdr\n");
-	printf("\t-t	timeout\n");
-	printf("\t-f	select logfile if file not found then make newfile\n");
-	printf("\t-p	print logfile only\n");
-	printf("\t-s	sort logfile only\n");
-	printf("\t-n	no verbose\n");
-//	printf("\t-s	\n");
-//	printf("\t-s	\n");
+	printf("\t-h				help message\n");
+	printf("\t-v				version\n");
+	printf("\t-i [interface]	select interface\n");
+	printf("\t-l [loop count]	loop count of send_arp_to_alladdr\n");
+	printf("\t-t [timeout]		timeout\n");
+	printf("\t-f [filename]		select logfile if file not found then make newfile\n");
+	printf("\t-p [filename]		print logfile only\n");
+	printf("\t-s [filename]		sort logfile only\n");
 
 	return;
 }
