@@ -54,30 +54,34 @@ that is quickly and easily and safely your connection .
 	g++    -c -o util.o util.cc
 	g++  main.o addr.o arp.o scanLan.o util.o -o tlex.out -Wall -lpcap
 	
-	$ sudo ./tlex.out 
-	Starting TLex 0.10 
+
+	$ sudo ./tlex.out -i eth0
+	Starting TLex 0.1.0 ( http://www.tlex.org ) 02:27:54
 	--------------------------------
-	Interface    :  wlan0          
+	Interface    :  eth0           
 	scan_count   :  1              
 	timeout      :  5   sec  
 	logfile      :  test.log       
 	verbose info :  1              
 	--------------------------------
-	[ArpSend in LAN Started] 
-	loadLog: logfile not found make newfile
-	 - add new log [192.168.179.1, a2:12:42:17:d8:8f, 28551988]
-	 - add new log [192.168.179.3, 80:e6:50:17:18:46, 62106347]
-	 - add new log [192.168.179.2, 84:b1:53:6a:2f:20, 45329153]
-	 - found this log
-	[Scan Finished]
+	 * [ARPSCAN] start
+	 - Add new log at 02:27:55 [192.168.179.6, 80:e6:50:17:18:46, 112437995]
+	 - Add new log at 02:27:55 [192.168.179.1, a2:12:42:17:d8:8f, 28551988]
+	 - Add new log at 02:27:55 [192.168.179.15, b8:27:eb:34:6b:92, 263433147]
+	 - Add new log at 02:27:55 [192.168.179.4, 84:b1:53:6a:2f:20, 78883585]
+	 * [ARPSCAN] finish
 
-	 UP	  192.168.179.1	[a2:12:42:17:d8:8f(not-found)]	aterm.me
-	 UP	  192.168.179.2	[84:b1:53:6a:2f:20(Apple)]	
-	 UP	  192.168.179.3	[80:e6:50:17:18:46(Apple)]	
+	  +-------------------------------------------------------------------------+
+	  |  IP address         |  MAC address        |  Bender         |  Update   |
+	  +-------------------------------------------------------------------------+
+	  |  192.168.179.1   	|  a2:12:42:17:d8:8f  | not-found      	|  02:27:55 |
+	  |  192.168.179.4   	|  84:b1:53:6a:2f:20  | Apple      	|  02:27:55 |
+	  |  192.168.179.6   	|  80:e6:50:17:18:46  | Apple      	|  02:27:55 |
+	  |  192.168.179.15   	|  b8:27:eb:34:6b:92  | Raspberry      	|  02:27:55 |
+	  +-------------------------------------------------------------------------+
 
-	TLex done: scan finished in 86167.18446744073709396316 sec
-	$ 
-
+	TLex done: scan finished in 5.824 sec 
+	$
 
 ## Licence
  
