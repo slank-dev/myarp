@@ -3,8 +3,6 @@ TLexScan version 0.10 -The whole area of LAN examination Scaner
 Local area network scaner for linux from slank  
 
 ## Description
-無線LANに接続しているデバイスすべてを調べることができるプログラム。
-
 TLexScan looks for all devices  in the LAN, 
 you can create a list by examining their IP and MAC.  
 The survival confirmation of the device, I am using the arp.
