@@ -25,17 +25,28 @@ arpパケットを送り生存確認をしてMACアドレスも調べます。
 
 ## 使用方法
  
-	usage: ./tlex.out	[-i interface] [-c loop_count]
+	usage: ./tlex.out	[-i interface] [-l loop_count]
 				[-t timeout] [-p filename] [-s filename]
 				[-f filename] [-n noverbose]
 
-		-i	select interface
-		-c	loop count of send_arp_to_alladdr
-		-t	timeout
-		-f	select logfile if file not found then make newfile
-		-p	print logfile only
-		-s	sort logfile only
-		-n	no verbose
+		-h   help message
+		-v   version
+		-i [interface]   select interface
+		-l [loop count]   loop count of send_arp_to_alladdr
+		-t [timeout]   timeout
+		-f [filename]   select logfile if file not found then make newfile
+		-p [filename]   print logfile only
+		-s [filename]   sort logfile only
+
+		--version   show version
+		--help   show help
+		--interface   select interface
+		--timeout   set timeout
+		--loop   set scanLoop 
+		--file   select log file
+		--verbose   verbose mode 
+		--noverbose   noverbose mode 
+		--mode [ normal | long | monitor ]   select mode
 
 
 ## Contribution

@@ -406,14 +406,29 @@ void usage(int argc, char **argv){
 	printf("\t\t\t[-f filename] [-n noverbose]\n");
 	
 	printf("\n");
-	printf("\t-h				help message\n");
-	printf("\t-v				version\n");
-	printf("\t-i [interface]	select interface\n");
-	printf("\t-l [loop count]	loop count of send_arp_to_alladdr\n");
-	printf("\t-t [timeout]		timeout\n");
-	printf("\t-f [filename]		select logfile if file not found then make newfile\n");
-	printf("\t-p [filename]		print logfile only\n");
-	printf("\t-s [filename]		sort logfile only\n");
+	printf("\t-h   help message\n");
+	printf("\t-v   version\n");
+	printf("\t-i [interface]   select interface\n");
+	printf("\t-l [loop count]   loop count of send_arp_to_alladdr\n");
+	printf("\t-t [timeout]   timeout\n");
+	printf("\t-f [filename]   select logfile if file not found then make newfile\n");
+	printf("\t-p [filename]   print logfile only\n");
+	printf("\t-s [filename]   sort logfile only\n");
+
+	printf("\n");
+	printf("\t--version   show version\n");
+	printf("\t--help   show help\n");
+	printf("\t--interface   select interface\n");
+	printf("\t--timeout   set timeout\n");
+	printf("\t--loop   set scanLoop \n");
+	printf("\t--file   select log file\n");
+	printf("\t--verbose   verbose mode \n");
+	printf("\t--noverbose   noverbose mode \n");
+	printf("\t--mode [ normal | long | monitor ]   select mode\n");
+
+	printf("\n");
+
+
 
 	return;
 }
