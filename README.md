@@ -1,31 +1,30 @@
-# TLexScan 
+# TLex - network scaner 
 TLexScan version 0.10 -The whole area of LAN examination Scaner  
-Local area network scaner for linux from slank  
+LANに接続されているデバイス情報を調べるプログラム
 
-## Description
+## 概要
 無線LANに接続しているデバイスすべてを調べることができるプログラム。
+nic情報からipアドレスとネットマスクを調べ、そこからそのローカルネットワークに存在しうるアドレス全てに対して
+arpパケットを送り生存確認をしてMACアドレスも調べます。
+得られた情報からipアドレスとMACアドレスの対応表を作り標準出力に表示させます。
+スキャン方法や細かいタイムアウト設定などをオプションなどで柔軟に対応させられるようにしています。
 
-TLexScan looks for all devices  in the LAN, 
-you can create a list by examining their IP and MAC.  
-The survival confirmation of the device, I am using the arp.
-User will be able to know the information of the LAN 
-that is quickly and easily and safely your connection .  
 
-## Demo
- please see this video
+## デモ
+ youtubeにでも動画をアップロードしているのでそちらを参照してください
  http://youtu.be/X75uHbJuGr4
 
 
-## VS.
- Fing <http://www.overlooksoft.com/fing>  
+## 似たソフトウェア
+ Fing <http://www.overlooksoft.com/fing>   
 
-## Requirement
- libpcap <http://www.tcpdump.org>  
+## 開発ツール、ライブラリ
+ libpcap <http://www.tcpdump.org>   
  gcc (Ubuntu 4.8.2-19ubuntu1) 4.8.2 <http://gcc.gnu.org>  
  GNU Make 3.81 <http://www.gnu.org/software/make>  
 
-## Usage
-
+## 使用方法
+ 
 	usage: ./tlex.out	[-i interface] [-c loop_count]
 				[-t timeout] [-p filename] [-s filename]
 				[-f filename] [-n noverbose]
@@ -45,8 +44,8 @@ that is quickly and easily and safely your connection .
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
 
-
-## Instration
+ 
+## インストレーション
 	 
 	$ make
 	g++    -c -o main.o main.cc
@@ -84,9 +83,9 @@ that is quickly and easily and safely your connection .
 
 	TLex done: scan finished in 5.824 sec 
 	$
-
-## Licence
  
+## ライセンス
+  
 	Copyright (C) 2014-2015 Hiroki Shirokura <mail: slank.dev@gmail.com>
 
 	TLexScan is free software: you can redistribute it and/or modify
