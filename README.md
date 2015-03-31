@@ -59,13 +59,16 @@ arpパケットを送り生存確認をしてMACアドレスも調べます。
 ## インストレーション
 	 
 	$ make
-	g++    -c -o main.o main.cc
-	g++    -c -o addr.o addr.cc
-	g++    -c -o arp.o arp.cc
-	g++    -c -o scanLan.o scanLan.cc
-	g++    -c -o util.o util.cc
-	g++  main.o addr.o arp.o scanLan.o util.o -o tlex.out -Wall -lpcap
+	g++  -std=c++11 -c  main.cc  -o main.o  
+	g++  -std=c++11 -c  addr.cc  -o addr.o  
+	g++  -std=c++11 -c  arp.cc  -o arp.o  
+	g++  -std=c++11 -c  scanLan.cc  -o scanLan.o  
+	g++  -std=c++11 -c  util.cc  -o util.o  
+	g++  -std=c++11 -c  lscanLan.cc  -o lscanLan.o  
+	g++  -std=c++11 -c  monLan.cc  -o monLan.o  
+	g++  main.o addr.o arp.o scanLan.o util.o lscanLan.o monLan.o -o tlex.out -Wall -lpcap -pthread
 	
+
 
 	$ sudo ./tlex.out -i eth0
 	Starting TLex 0.1.0 ( http://www.tlex.org ) 02:27:54
