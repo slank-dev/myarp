@@ -427,7 +427,8 @@ int send_arp_request(const u_int32_t  ipaddr, const char* ifname){
 	get_haddr(ifname, mymac);		// UseMyfunction
 
 
-	if((sock=socket(PF_PACKET, SOCK_PACKET, htons(ETH_P_ARP)))<0){
+	//if((sock=socket(PF_PACKET, SOCK_PACKET, htons(ETH_P_ARP)))<0){
+	if((sock=socket(PF_PACKET, SOCK_PACKET, 0))<0){
 		perror("send_socket");
 		return -1;
 	}

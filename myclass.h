@@ -412,8 +412,8 @@ class pgen_device{
 		u_int32_t pa;
 		int port;
 
-		target(){}
-		target(u_char iha[6], u_int32_t ipa, int iport){
+		pgen_device(){}
+		pgen_device(u_char iha[6], u_int32_t ipa, int iport){
 			for(int i=0; i<6; i++)
 				ha[i] = iha[i];
 			pa = ipa;
