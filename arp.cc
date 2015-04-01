@@ -1,4 +1,4 @@
-
+//[[[
 /*
  *
  * GNU GENERAL PUBLIC LICENSE
@@ -341,7 +341,9 @@
  * library.  If this is what you want to do, use the GNU Lesser General
  * Public License instead of this License.
  *	
- */
+ *///]]]
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
