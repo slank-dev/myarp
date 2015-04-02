@@ -1,4 +1,4 @@
-
+//[[[
 /*
  *
  * GNU GENERAL PUBLIC LICENSE
@@ -341,7 +341,9 @@
  * library.  If this is what you want to do, use the GNU Lesser General
  * Public License instead of this License.
  *	
- */
+ *///]]]
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -353,18 +355,6 @@
 #include <netinet/in.h>
 #include <net/if.h>
 
-/*
-#define IPMASK_CLASS_A "255.0.0.0"
-#define IPMASK_CLASS_B "255.255.0.0"
-#define IPMASK_CLASS_C "255.255.255.0"
-*/
-
-/*
-union lc{
-	unsigned int l;
-	unsigned char c[4];
-};
-*/
 
 
 char* get_paddr(const char* ifname);
