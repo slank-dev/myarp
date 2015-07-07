@@ -525,7 +525,7 @@ class TLexOps{
 		strcpy(ifname, "wlan0");
 		scanLoopCount = 1;
 		timeout = 5;
-		strcpy(logname, "/usr/local/etc/test.log");
+		strcpy(logname, "test.log");
 		verbose = 1;
 		mode = 1;
 	}
