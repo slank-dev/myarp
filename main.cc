@@ -31,8 +31,7 @@
  *   To protect your rights, we need to make restrictions that forbid
  * anyone to deny you these rights or to ask you to surrender the rights.
  * These restrictions translate to certain responsibilities for you if you
- * distribute copies of the software, or if you modify it.
- * 
+ * distribute copies of the software, or if you modify it.  * 
  *   For example, if you distribute copies of such a program, whether
  * gratis or for a fee, you must give the recipients all the rights that
  * you have.  You must make sure that they, too, receive or can get the
@@ -135,8 +134,7 @@
  * the scope of this License.
  * 
  *   3. You may copy and distribute the Program (or a work based on it,
- * under Section 2) in object code or executable form under the terms of
- * Sections 1 and 2 above provided that you also do one of the following:
+ * under Section 2) in object code or executable form under the terms of * Sections 1 and 2 above provided that you also do one of the following:
  * 
  *     a) Accompany it with the complete corresponding machine-readable
  *     source code, which must be distributed under the terms of Sections
@@ -398,6 +396,8 @@ int main(int argc, char** argv){
 			tm.mytimer_end();
 
 			printf("\nTLex done: scan finished in %s sec \n",tm.intervalStr());
+			printf("rm log\n");
+			system("rm test.log");
 			break;
 		
 		case TLEXMODE_SCAN_MONITOR:
@@ -433,6 +433,7 @@ int main(int argc, char** argv){
 
 			printf("\nTLex done: scan finished in %s sec \n",tm.intervalStr());
 			break;
+			
 	}
 
 	return 1;

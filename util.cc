@@ -701,7 +701,7 @@ std::vector<unsigned int> getidbylogfile(){
 	unsigned int buf;
 	std::vector<unsigned int> vec;
 
-	if((fp=fopen("test.log", "r")) == NULL){
+	if((fp=fopen("/usr/local/etc/test.log", "r")) == NULL){
 		perror("load log");
 		return vec;
 	}
