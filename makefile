@@ -10,7 +10,7 @@ export MKDIR := mkdir -p
 .SUFFIXES: .out .c .cc .o .h 
 
 
-program = tlex.out
+program = tlex
 SRC = main.cc \
 	  addr.cc \
 	  arp.cc \
@@ -51,7 +51,6 @@ $(program): $(OBJ)
 
 
 
-install:
 clean:
 	$(RM) *.o *.ouat
 info:
@@ -70,5 +69,11 @@ version:
 
 allclean:
 	sudo $(RM) -f  *.o *.out *.log
+
+
+install:
+	cp $(program) /usr/local/bin
+
+
 
 
